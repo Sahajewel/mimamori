@@ -1,0 +1,16 @@
+// ─── Medicine ────────────────────────────────────────
+
+model Medicine {
+    id        String             @id @default(uuid())
+    seniorId  String
+    senior    Senior             @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    name      String
+    dosage    String?
+    frequency String
+    active    Boolean            @default(true)
+    reminders MedicineReminder[]
+    logs      MedicineLog[]
+
+    @@index([seniorId])
+    @@index([active])
+}

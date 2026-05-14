@@ -1,0 +1,20 @@
+// ─── Enums ───────────────────────────────────────────
+
+enum Role {
+    ADMIN
+    FAMILY
+    CAREGIVER
+}
+
+enum CheckInStatus {
+    OK
+    CONCERN
+    EMERGENCY
+}
+
+enum MedicineStatus {
+    PENDING
+    TAKEN
+    MISSED
+    SKIPPED
+}

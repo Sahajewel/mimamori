@@ -1,0 +1,18 @@
+// ─── User ────────────────────────────────────────────
+
+model User {
+    id           String        @id @default(uuid())
+    name         String
+    email        String        @unique
+    passwordHash String
+    role         Role          @default(FAMILY)
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    seniors      Senior[]
+    checkIns     CheckIn[]
+    careNotes    CareNote[]
+    medicineLogs MedicineLog[]
+
+    @@index([email])
+    @@index([role])
+}

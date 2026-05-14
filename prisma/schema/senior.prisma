@@ -1,0 +1,15 @@
+model Senior {
+    id        String     @id @default(uuid())
+    userId    String
+    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name      String
+    age       Int?
+    notes     String?
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    checkIns  CheckIn[]
+    medicines Medicine[]
+    careNotes CareNote[]
+
+    @@index([userId])
+}

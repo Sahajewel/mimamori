@@ -1,0 +1,12 @@
+// ─── MedicineReminder ────────────────────────────────
+
+model MedicineReminder {
+    id         String        @id @default(uuid())
+    medicineId String
+    medicine   Medicine      @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+    time       String
+    createdAt  DateTime      @default(now())
+    logs       MedicineLog[]
+
+    @@index([medicineId])
+}

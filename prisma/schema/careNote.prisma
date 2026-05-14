@@ -1,0 +1,14 @@
+// ─── CareNote ────────────────────────────────────────
+
+model CareNote {
+    id        String   @id @default(uuid())
+    seniorId  String
+    senior    Senior   @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    content   String
+    createdAt DateTime @default(now())
+
+    @@index([seniorId])
+    @@index([createdAt])
+}

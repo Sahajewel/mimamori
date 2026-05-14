@@ -1,0 +1,20 @@
+// ─── MedicineLog ─────────────────────────────────────
+
+model MedicineLog {
+    id         String           @id @default(uuid())
+    medicineId String
+    medicine   Medicine         @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+    reminderId String
+    reminder   MedicineReminder @relation(fields: [reminderId], references: [id])
+    userId     String
+    user       User             @relation(fields: [userId], references: [id])
+    status     MedicineStatus   @default(PENDING)
+    takenAt    DateTime?
+    note       String?
+    createdAt  DateTime         @default(now())
+
+    @@index([medicineId])
+    @@index([reminderId])
+    @@index([status])
+    @@index([createdAt])
+}
