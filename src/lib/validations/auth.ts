@@ -4,24 +4,24 @@ export const registerSchema = z
   .object({
     name: z
       .string()
-      .min(2, "নাম কমপক্ষে ২ অক্ষর হতে হবে")
-      .max(50, "নাম ৫০ অক্ষরের বেশি হবে না"),
-    email: z.email({ message: "সঠিক email দাও" }),
+      .min(2, "名前は2文字以上入力してください")
+      .max(50, "名前は50文字以内で入力してください"),
+    email: z.email("有効なメールアドレスを入力してください"),
     password: z
       .string()
-      .min(8, "password কমপক্ষে ৮ অক্ষর হতে হবে")
-      .regex(/[A-Z]/, "একটা বড় হাতের অক্ষর থাকতে হবে")
-      .regex(/[0-9]/, "একটা সংখ্যা থাকতে হবে"),
+      .min(8, "パスワードは8文字以上必要です")
+      .regex(/[A-Z]/, "大文字を1文字以上含めてください")
+      .regex(/[0-9]/, "数字を1文字以上含めてください"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "password মিলছে না",
+    message: "パスワードが一致しません",
     path: ["confirmPassword"],
   });
 
 export const loginSchema = z.object({
-  email: z.email({ message: "সঠিক email দাও" }),
-  password: z.string().min(1, "password দাও"),
+  email: z.email("有効なメールアドレスを入力してください"),
+  password: z.string().min(1, "パスワードを入力してください"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
