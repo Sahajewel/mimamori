@@ -8,6 +8,7 @@ model Medicine {
     dosage    String?
     frequency String
     active    Boolean            @default(true)
+    createdAt DateTime           @default(now())
     reminders MedicineReminder[]
     logs      MedicineLog[]
 

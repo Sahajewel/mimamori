@@ -6,6 +6,12 @@ enum Role {
     CAREGIVER
 }
 
+enum SeniorMemberRole {
+    OWNER // যে Senior বানিয়েছে
+    EDITOR // CheckIn, CareNote, Medicine করতে পারবে
+    VIEWER // শুধু দেখতে পারবে
+}
+
 enum CheckInStatus {
     OK
     CONCERN

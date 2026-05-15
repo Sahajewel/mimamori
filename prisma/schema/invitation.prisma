@@ -1,0 +1,20 @@
+// ─── Invitation ──────────────────────────────────────
+// OWNER অন্য family member-কে invite করবে
+
+model Invitation {
+    id        String           @id @default(uuid())
+    seniorId  String
+    senior    Senior           @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    invitedBy String
+    user      User             @relation(fields: [invitedBy], references: [id])
+    email     String
+    token     String           @unique
+    role      SeniorMemberRole @default(VIEWER)
+    accepted  Boolean          @default(false)
+    createdAt DateTime         @default(now())
+    expiresAt DateTime
+
+    @@index([token])
+    @@index([email])
+    @@index([seniorId])
+}
