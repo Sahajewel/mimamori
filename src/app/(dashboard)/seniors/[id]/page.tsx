@@ -22,7 +22,7 @@ export default async function SeniorDetailPage({
         include: {
           checkIns: {
             orderBy: { createdAt: "desc" },
-            take: 10,
+            take: 2,
             include: { user: { select: { name: true } } },
           },
           medicines: {
@@ -134,9 +134,17 @@ export default async function SeniorDetailPage({
 
         {/* CheckIn history */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
-          <h2 className="text-base font-medium text-gray-900 mb-4">
-            チェックイン履歴
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-medium text-gray-900">
+              チェックイン履歴
+            </h2>
+            <Link
+              href={`/seniors/${id}/checkins`}
+              className="text-sm text-indigo-600 hover:underline"
+            >
+              もっと見る →
+            </Link>
+          </div>
           {senior.checkIns.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">
               まだチェックインがありません
