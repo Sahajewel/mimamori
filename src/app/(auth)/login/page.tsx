@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react"; // 👈 এটি অবশ্যই ইম্পোর্ট করবেন
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,37 +18,26 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // Step 1: CSRF token নাও
-    const csrfRes = await fetch("/api/auth/csrf");
-    const { csrfToken } = await csrfRes.json();
-
-    // Step 2: Login করো
-    const res = await fetch("/api/auth/signin/credentials", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
+    try {
+      // 🛑 পুরানো ২টা স্টেপের (CSRF & manual fetch) বদলে শুধু এইটুকু কোড লিখুন:
+      const res = await signIn("credentials", {
+        redirect: false, // স্বয়ংক্রিয় রিডাইরেক্ট বন্ধ রাখলাম যেন আমরা নিজেরা হ্যান্ডেল করতে পারি
         email,
         password,
-        csrfToken,
-        json: "true",
-      }).toString(),
-      redirect: "manual",
-    });
+      });
 
-    // Step 3: Success check
-    if (
-      res.status === 200 ||
-      res.status === 302 ||
-      res.type === "opaqueredirect"
-    ) {
-      router.push("/dashboard");
-      router.refresh();
-    } else {
-      const data = await res.json().catch(() => null);
-      console.log("Login response:", res.status, data);
-      setError("Email বা password ভুল");
+      if (res?.error) {
+        console.log("Login error:", res.error);
+        setError("Email বা password ভুল");
+        setLoading(false);
+      } else {
+        // সেশন কুকি সেট হওয়া নিশ্চিত করে ড্যাশবোর্ডে পাঠানো
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err) {
+      console.error(err);
+      setError("エラーが発生しました");
       setLoading(false);
     }
   }
