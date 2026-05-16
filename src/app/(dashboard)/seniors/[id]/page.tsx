@@ -91,12 +91,20 @@ export default async function SeniorDetailPage({
               </div>
             </div>
             {role === "OWNER" && (
-              <Link
-                href={`/seniors/${id}/edit`}
-                className="text-sm text-gray-400 hover:text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
-              >
-                編集
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href={`/seniors/${id}/invite`}
+                  className="text-sm text-indigo-600 hover:underline border border-indigo-200 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  招待する
+                </Link>
+                <Link
+                  href={`/seniors/${id}/edit`}
+                  className="text-sm text-gray-400 hover:text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  編集
+                </Link>
+              </div>
             )}
           </div>
           {senior.notes && (
