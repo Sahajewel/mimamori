@@ -1,3 +1,4 @@
+import { LogoutButton } from "@/app/components/LogoutButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -39,12 +40,7 @@ export default async function DashboardPage() {
           <p className="text-sm text-gray-500 hidden sm:block">
             {session.user.name}さん
           </p>
-          <Link
-            href="/api/auth/signout"
-            className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            ログアウト
-          </Link>
+          <LogoutButton></LogoutButton>
         </div>
       </nav>
 
