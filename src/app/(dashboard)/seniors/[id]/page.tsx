@@ -1,0 +1,247 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { redirect, notFound } from "next/navigation";
+import Link from "next/link";
+
+export default async function SeniorDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
+  const seniorMember = await prisma.seniorMember.findFirst({
+    where: {
+      seniorId: id,
+      userId: session.user.id,
+    },
+    include: {
+      senior: {
+        include: {
+          checkIns: {
+            orderBy: { createdAt: "desc" },
+            take: 10,
+            include: { user: { select: { name: true } } },
+          },
+          medicines: {
+            where: { active: true },
+          },
+          careNotes: {
+            orderBy: { createdAt: "desc" },
+            take: 10,
+            include: { user: { select: { name: true } } },
+          },
+        },
+      },
+    },
+  });
+
+  if (!seniorMember) notFound();
+
+  const { senior, role } = seniorMember;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard"
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            ← 戻る
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+              <span className="text-indigo-600 text-sm">♡</span>
+            </div>
+            <p className="font-medium text-gray-900">Mimamori</p>
+          </div>
+        </div>
+        <Link
+          href="/api/auth/signout"
+          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          ログアウト
+        </Link>
+      </nav>
+
+      <div className="px-4 md:px-8 py-8 max-w-3xl mx-auto">
+        {/* Senior header */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-xl">
+                {senior.name.charAt(0)}
+              </div>
+              <div>
+                <h1 className="text-xl font-medium text-gray-900">
+                  {senior.name}
+                </h1>
+                <p className="text-sm text-gray-400">
+                  {senior.age && `${senior.age}歳`}
+                  {role === "OWNER" && (
+                    <span className="ml-2 text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+                      管理者
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+            {role === "OWNER" && (
+              <Link
+                href={`/seniors/${id}/edit`}
+                className="text-sm text-gray-400 hover:text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                編集
+              </Link>
+            )}
+          </div>
+          {senior.notes && (
+            <p className="mt-4 text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
+              {senior.notes}
+            </p>
+          )}
+        </div>
+
+        {/* Quick actions */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <Link
+            href={`/seniors/${id}/checkin`}
+            className="bg-indigo-600 text-white rounded-xl p-4 text-center hover:bg-indigo-700 transition-colors"
+          >
+            <p className="text-lg mb-1">✓</p>
+            <p className="text-sm font-medium">チェックイン</p>
+          </Link>
+          <Link
+            href={`/seniors/${id}/notes/new`}
+            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors"
+          >
+            <p className="text-lg mb-1">📝</p>
+            <p className="text-sm font-medium text-gray-700">ケアノート</p>
+          </Link>
+        </div>
+
+        {/* CheckIn history */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
+          <h2 className="text-base font-medium text-gray-900 mb-4">
+            チェックイン履歴
+          </h2>
+          {senior.checkIns.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">
+              まだチェックインがありません
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {senior.checkIns.map((checkIn) => (
+                <div
+                  key={checkIn.id}
+                  className="flex items-start justify-between py-2 border-b border-gray-50 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`text-sm font-medium ${
+                        checkIn.status === "OK"
+                          ? "text-green-500"
+                          : checkIn.status === "CONCERN"
+                            ? "text-amber-500"
+                            : "text-red-500"
+                      }`}
+                    >
+                      {checkIn.status === "OK"
+                        ? "✓ 良好"
+                        : checkIn.status === "CONCERN"
+                          ? "⚠ 要確認"
+                          : "🚨 緊急"}
+                    </span>
+                    {checkIn.note && (
+                      <p className="text-sm text-gray-500">{checkIn.note}</p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-400">{checkIn.user.name}</p>
+                    <p className="text-xs text-gray-300">
+                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP")}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Medicine list */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-medium text-gray-900">お薬一覧</h2>
+            <Link
+              href={`/seniors/${id}/medicines/new`}
+              className="text-sm text-indigo-600 hover:underline"
+            >
+              ＋ 追加
+            </Link>
+          </div>
+          {senior.medicines.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">
+              まだお薬が登録されていません
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {senior.medicines.map((medicine) => (
+                <div
+                  key={medicine.id}
+                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {medicine.name}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {medicine.dosage && `${medicine.dosage} · `}
+                      {medicine.frequency}
+                    </p>
+                  </div>
+                  <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                    服用中
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Care notes */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-6">
+          <h2 className="text-base font-medium text-gray-900 mb-4">
+            ケアノート
+          </h2>
+          {senior.careNotes.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">
+              まだノートがありません
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {senior.careNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className="py-3 border-b border-gray-50 last:border-0"
+                >
+                  <p className="text-sm text-gray-700 mb-1">{note.content}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-gray-400">{note.user.name}</p>
+                    <p className="text-xs text-gray-300">·</p>
+                    <p className="text-xs text-gray-300">
+                      {new Date(note.createdAt).toLocaleDateString("ja-JP")}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
