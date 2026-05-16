@@ -1,5 +1,3 @@
-// ─── Medicine ────────────────────────────────────────
-
 model Medicine {
     id        String             @id @default(uuid())
     seniorId  String
@@ -7,6 +5,11 @@ model Medicine {
     name      String
     dosage    String?
     frequency String
+    ongoing   Boolean            @default(true)
+    startDate DateTime           @default(now())
+    endDate   DateTime?
+    duration  Int?
+    notes     String?
     active    Boolean            @default(true)
     createdAt DateTime           @default(now())
     reminders MedicineReminder[]
@@ -14,4 +17,5 @@ model Medicine {
 
     @@index([seniorId])
     @@index([active])
+    @@index([endDate])
 }

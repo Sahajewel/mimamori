@@ -7,7 +7,12 @@ const medicineSchema = z.object({
   name: z.string().min(1, "お薬の名前を入力してください").max(100),
   dosage: z.string().max(50).optional(),
   frequency: z.string().min(1, "服用頻度を入力してください").max(100),
-  time: z.string().min(1, "服用時間を入力してください"),
+  times: z.array(z.string()).min(1, "服用タイミングを選択してください"),
+  ongoing: z.boolean().default(true),
+  startDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
+  duration: z.number().optional(),
+  notes: z.string().max(500).optional(),
 });
 
 export async function POST(
@@ -43,17 +48,32 @@ export async function POST(
       );
     }
 
+    const {
+      name,
+      dosage,
+      frequency,
+      times,
+      ongoing,
+      startDate,
+      endDate,
+      duration,
+      notes,
+    } = parsed.data;
+
     const medicine = await prisma.medicine.create({
       data: {
         seniorId: id,
-        name: parsed.data.name,
-        dosage: parsed.data.dosage,
-        frequency: parsed.data.frequency,
+        name,
+        dosage,
+        frequency,
+        ongoing,
+        startDate: startDate ? new Date(startDate) : new Date(),
+        endDate: endDate ? new Date(endDate) : null,
+        duration,
+        notes,
         active: true,
         reminders: {
-          create: {
-            time: parsed.data.time,
-          },
+          create: times.map((time) => ({ time })),
         },
       },
     });

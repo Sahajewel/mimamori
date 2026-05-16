@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { QuickLinkButton } from "@/app/components/QuickLinkButton";
 
 export default async function SeniorDetailPage({
   params,
@@ -80,14 +81,9 @@ export default async function SeniorDetailPage({
                 <h1 className="text-xl font-medium text-gray-900">
                   {senior.name}
                 </h1>
-                <p className="text-sm text-gray-400">
-                  {senior.age && `${senior.age}歳`}
-                  {role === "OWNER" && (
-                    <span className="ml-2 text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
-                      管理者
-                    </span>
-                  )}
-                </p>
+                {senior.age && (
+                  <span className="text-sm text-gray-400">{senior.age}歳</span>
+                )}
               </div>
             </div>
             {role === "OWNER" && (
@@ -111,6 +107,11 @@ export default async function SeniorDetailPage({
             <p className="mt-4 text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
               {senior.notes}
             </p>
+          )}
+          {role === "OWNER" && (
+            <div className="mt-4">
+              <QuickLinkButton seniorId={id} />
+            </div>
           )}
         </div>
 
@@ -179,7 +180,11 @@ export default async function SeniorDetailPage({
                   <div className="text-right">
                     <p className="text-xs text-gray-400">{checkIn.user.name}</p>
                     <p className="text-xs text-gray-300">
-                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP")}
+                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP")}{" "}
+                      {new Date(checkIn.createdAt).toLocaleTimeString("ja-JP", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </p>
                   </div>
                 </div>
@@ -204,58 +209,88 @@ export default async function SeniorDetailPage({
               まだお薬が登録されていません
             </p>
           ) : (
-            <div className="space-y-3">
-              {senior.medicines.map((medicine) => (
+            <>
+              <div className="space-y-3">
+                {senior.medicines.slice(0, 3).map((medicine) => (
+                  <Link
+                    key={medicine.id}
+                    href={`/seniors/${id}/medicines/${medicine.id}`}
+                    className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-lg px-2 transition-colors"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {medicine.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {medicine.dosage && `${medicine.dosage} · `}
+                        {medicine.frequency}
+                      </p>
+                    </div>
+                    <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                      服用中
+                    </span>
+                  </Link>
+                ))}
+              </div>
+              {senior.medicines.length > 3 && (
                 <Link
-                  key={medicine.id}
-                  href={`/seniors/${id}/medicines/${medicine.id}`}
-                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-lg px-2 transition-colors"
+                  href={`/seniors/${id}/medicines`}
+                  className="block text-center text-sm text-indigo-600 hover:underline mt-3"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {medicine.name}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {medicine.dosage && `${medicine.dosage} · `}
-                      {medicine.frequency}
-                    </p>
-                  </div>
-                  <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
-                    服用中
-                  </span>
+                  もっと見る ({senior.medicines.length - 3}件) →
                 </Link>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
 
         {/* Care notes */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6">
-          <h2 className="text-base font-medium text-gray-900 mb-4">
-            ケアノート
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-medium text-gray-900">ケアノート</h2>
+            <Link
+              href={`/seniors/${id}/notes/new`}
+              className="text-sm text-indigo-600 hover:underline"
+            >
+              ＋ 追加
+            </Link>
+          </div>
           {senior.careNotes.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">
               まだノートがありません
             </p>
           ) : (
-            <div className="space-y-3">
-              {senior.careNotes.map((note) => (
-                <div
-                  key={note.id}
-                  className="py-3 border-b border-gray-50 last:border-0"
-                >
-                  <p className="text-sm text-gray-700 mb-1">{note.content}</p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs text-gray-400">{note.user.name}</p>
-                    <p className="text-xs text-gray-300">·</p>
-                    <p className="text-xs text-gray-300">
-                      {new Date(note.createdAt).toLocaleDateString("ja-JP")}
-                    </p>
+            <>
+              <div className="space-y-3">
+                {senior.careNotes.slice(0, 3).map((note) => (
+                  <div
+                    key={note.id}
+                    className="py-3 border-b border-gray-50 last:border-0"
+                  >
+                    <p className="text-sm text-gray-700 mb-1">{note.content}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs text-gray-400">{note.user.name}</p>
+                      <p className="text-xs text-gray-300">·</p>
+                      <p className="text-xs text-gray-300">
+                        {new Date(note.createdAt).toLocaleDateString("ja-JP")}{" "}
+                        {new Date(note.createdAt).toLocaleTimeString("ja-JP", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+              {senior.careNotes.length > 3 && (
+                <Link
+                  href={`/seniors/${id}/notes`}
+                  className="block text-center text-sm text-indigo-600 hover:underline mt-3"
+                >
+                  もっと見る ({senior.careNotes.length - 3}件) →
+                </Link>
+              )}
+            </>
           )}
         </div>
       </div>

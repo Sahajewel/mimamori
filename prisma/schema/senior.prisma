@@ -1,10 +1,12 @@
 // ─── Senior ──────────────────────────────────────────
 
 model Senior {
-    id          String         @id @default(uuid())
-    name        String
-    age         Int?
-    notes       String?
+    id         String  @id @default(uuid())
+    name       String
+    age        Int?
+    notes      String?
+    quickToken String? @unique
+
     createdAt   DateTime       @default(now())
     updatedAt   DateTime       @updatedAt
     members     SeniorMember[]
@@ -14,4 +16,5 @@ model Senior {
     invitations Invitation[]
 
     @@index([id])
+    @@index([quickToken])
 }

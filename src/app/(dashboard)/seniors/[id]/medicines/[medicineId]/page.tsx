@@ -1,14 +1,13 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 type Reminder = { id: string; time: string };
 type Log = {
   id: string;
   status: string;
   note: string | null;
-  takenAt: string | null;
   createdAt: string;
   user: { name: string };
   reminder: { time: string };
@@ -18,29 +17,13 @@ type Medicine = {
   name: string;
   dosage: string | null;
   frequency: string;
+  ongoing: boolean;
+  startDate: string;
+  endDate: string | null;
+  duration: number | null;
+  notes: string | null;
   reminders: Reminder[];
 };
-
-const statusOptions = [
-  {
-    value: "TAKEN",
-    label: "飲んだ",
-    color: "border-green-500 bg-green-50 text-green-700",
-    icon: "✓",
-  },
-  {
-    value: "MISSED",
-    label: "飲めなかった",
-    color: "border-red-400 bg-red-50 text-red-600",
-    icon: "✗",
-  },
-  {
-    value: "SKIPPED",
-    label: "スキップ",
-    color: "border-gray-300 bg-gray-50 text-gray-500",
-    icon: "−",
-  },
-];
 
 export default function MedicineDetailPage() {
   const router = useRouter();
@@ -50,22 +33,6 @@ export default function MedicineDetailPage() {
 
   const [medicine, setMedicine] = useState<Medicine | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
-  const [selectedReminder, setSelectedReminder] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [note, setNote] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const fetchData = useCallback(async () => {
-    const [medRes, logRes] = await Promise.all([
-      fetch(`/api/seniors/${id}/medicines/${medicineId}`),
-      fetch(`/api/seniors/${id}/medicines/${medicineId}/logs`),
-    ]);
-    const medData = await medRes.json();
-    const logData = await logRes.json();
-    setMedicine(medData);
-    setLogs(logData);
-  }, [id, medicineId]);
 
   useEffect(() => {
     let ignore = false;
@@ -77,7 +44,6 @@ export default function MedicineDetailPage() {
       ]);
       const medData = await medRes.json();
       const logData = await logRes.json();
-
       if (!ignore) {
         setMedicine(medData);
         setLogs(logData);
@@ -85,52 +51,10 @@ export default function MedicineDetailPage() {
     }
 
     load();
-
     return () => {
       ignore = true;
     };
   }, [id, medicineId]);
-
-  async function handleSubmit() {
-    if (!selectedReminder || !selectedStatus) {
-      setError("服用タイミングと状態を選択してください");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    const res = await fetch(`/api/seniors/${id}/medicines/${medicineId}/logs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reminderId: selectedReminder,
-        status: selectedStatus,
-        note: note || undefined,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error || "エラーが発生しました");
-      setLoading(false);
-      return;
-    }
-
-    setSelectedReminder("");
-    setSelectedStatus("");
-    setNote("");
-    setLoading(false);
-    const [medRes, logRes] = await Promise.all([
-      fetch(`/api/seniors/${id}/medicines/${medicineId}`),
-      fetch(`/api/seniors/${id}/medicines/${medicineId}/logs`),
-    ]);
-    const medData = await medRes.json();
-    const logData = await logRes.json();
-    setMedicine(medData);
-    setLogs(logData);
-  }
 
   if (!medicine) {
     return (
@@ -139,6 +63,15 @@ export default function MedicineDetailPage() {
       </div>
     );
   }
+
+  const startDate = new Date(medicine.startDate).toLocaleDateString("ja-JP");
+  const endDate = medicine.endDate
+    ? new Date(medicine.endDate).toLocaleDateString("ja-JP")
+    : null;
+
+  const takenCount = logs.filter((l) => l.status === "TAKEN").length;
+  const missedCount = logs.filter((l) => l.status === "MISSED").length;
+  const totalCount = logs.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -151,98 +84,94 @@ export default function MedicineDetailPage() {
         </button>
 
         {/* Medicine info */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-green-600 text-lg">
+        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-2xl">
               💊
             </div>
             <div>
               <h1 className="text-lg font-medium text-gray-900">
                 {medicine.name}
               </h1>
-              <p className="text-xs text-gray-400">
-                {medicine.dosage && `${medicine.dosage} · `}
+              {medicine.dosage && (
+                <p className="text-sm text-gray-400">{medicine.dosage}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3 border-t border-gray-50 pt-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">服用頻度</span>
+              <span className="text-sm font-medium text-gray-700">
                 {medicine.frequency}
-              </p>
+              </span>
             </div>
+
+            <div className="flex items-start justify-between">
+              <span className="text-sm text-gray-400">服用タイミング</span>
+              <div className="flex flex-wrap gap-1 justify-end">
+                {medicine.reminders.map((r) => (
+                  <span
+                    key={r.id}
+                    className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full"
+                  >
+                    {r.time}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">服用期間</span>
+              <span className="text-sm font-medium text-gray-700">
+                {medicine.ongoing
+                  ? "継続中"
+                  : medicine.duration
+                    ? `${medicine.duration}日間`
+                    : "期間指定"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">開始日</span>
+              <span className="text-sm text-gray-700">{startDate}</span>
+            </div>
+
+            {endDate && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">終了日</span>
+                <span className="text-sm text-gray-700">{endDate}</span>
+              </div>
+            )}
+
+            {medicine.notes && (
+              <div className="pt-2 border-t border-gray-50">
+                <p className="text-xs text-gray-400 mb-1">医師からの指示</p>
+                <p className="text-sm text-gray-600 bg-amber-50 rounded-lg p-3">
+                  {medicine.notes}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Log form */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
-          <h2 className="text-base font-medium text-gray-900 mb-4">
-            服薬を記録する
-          </h2>
-
-          {/* Reminder select */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              服用タイミング
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {medicine.reminders.map((reminder) => (
-                <button
-                  key={reminder.id}
-                  onClick={() => setSelectedReminder(reminder.id)}
-                  className={`py-2 px-3 text-sm rounded-lg border transition-all ${
-                    selectedReminder === reminder.id
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "border-gray-200 text-gray-600 hover:border-indigo-300"
-                  }`}
-                >
-                  {reminder.time}
-                </button>
-              ))}
+        {/* Stats */}
+        {totalCount > 0 && (
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
+              <p className="text-xl font-medium text-green-500">{takenCount}</p>
+              <p className="text-xs text-gray-400 mt-0.5">飲んだ</p>
+            </div>
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
+              <p className="text-xl font-medium text-red-400">{missedCount}</p>
+              <p className="text-xs text-gray-400 mt-0.5">飲めなかった</p>
+            </div>
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
+              <p className="text-xl font-medium text-gray-500">{totalCount}</p>
+              <p className="text-xs text-gray-400 mt-0.5">合計</p>
             </div>
           </div>
-
-          {/* Status select */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              状態
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {statusOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setSelectedStatus(opt.value)}
-                  className={`py-2 px-3 text-sm rounded-lg border-2 transition-all ${
-                    selectedStatus === opt.value
-                      ? opt.color
-                      : "border-gray-200 text-gray-600"
-                  }`}
-                >
-                  <span className="block text-lg">{opt.icon}</span>
-                  <span className="text-xs">{opt.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Note */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              メモ（任意）
-            </label>
-            <input
-              type="text"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="気になることがあれば"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
-            />
-          </div>
-
-          {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !selectedReminder || !selectedStatus}
-            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? "記録中..." : "記録する"}
-          </button>
-        </div>
+        )}
 
         {/* Log history */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6">
@@ -258,13 +187,13 @@ export default function MedicineDetailPage() {
                   key={log.id}
                   className="flex items-start justify-between py-2 border-b border-gray-50 last:border-0"
                 >
-                  <div className="flex items-center gap-2">
+                  <div>
                     <span
                       className={`text-sm font-medium ${
                         log.status === "TAKEN"
                           ? "text-green-500"
                           : log.status === "MISSED"
-                            ? "text-red-500"
+                            ? "text-red-400"
                             : "text-gray-400"
                       }`}
                     >
@@ -275,12 +204,15 @@ export default function MedicineDetailPage() {
                           : "− スキップ"}
                     </span>
                     {log.note && (
-                      <span className="text-xs text-gray-400">{log.note}</span>
+                      <p className="text-xs text-gray-400 mt-0.5">{log.note}</p>
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-400">{log.reminder.time}</p>
+                    <p className="text-xs text-indigo-400 bg-indigo-50 px-2 py-0.5 rounded-full mb-1">
+                      {log.reminder.time}
+                    </p>
                     <p className="text-xs text-gray-300">
+                      {log.user.name} ·{" "}
                       {new Date(log.createdAt).toLocaleDateString("ja-JP")}
                     </p>
                   </div>
