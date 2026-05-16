@@ -198,9 +198,10 @@ export default async function SeniorDetailPage({
           ) : (
             <div className="space-y-3">
               {senior.medicines.map((medicine) => (
-                <div
+                <Link
                   key={medicine.id}
-                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                  href={`/seniors/${id}/medicines/${medicine.id}`}
+                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-lg px-2 transition-colors"
                 >
                   <div>
                     <p className="text-sm font-medium text-gray-900">
@@ -214,7 +215,7 @@ export default async function SeniorDetailPage({
                   <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
                     服用中
                   </span>
-                </div>
+                </Link>
               ))}
             </div>
           )}
