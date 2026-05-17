@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function NotificationButton() {
+  const [done, setDone] = useState(false);
+
   useEffect(() => {
     navigator.serviceWorker.addEventListener("message", (event) => {
       if (event.data?.type === "PLAY_SOUND") {
@@ -19,10 +21,7 @@ export function NotificationButton() {
   async function handleClick() {
     try {
       const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        alert("通知が拒否されました");
-        return;
-      }
+      if (permission !== "granted") return;
 
       const registration = await navigator.serviceWorker.ready;
       const existing = await registration.pushManager.getSubscription();
@@ -48,11 +47,18 @@ export function NotificationButton() {
         }),
       });
 
-      alert("通知の設定が完了しました ✓");
+      setDone(true);
     } catch (error) {
       console.error(error);
-      alert(`エラー: ${error}`);
     }
+  }
+
+  if (done) {
+    return (
+      <div className="bg-green-50 border border-green-100 rounded-lg px-4 py-2.5 text-center">
+        <p className="text-sm text-green-600">✓ 通知が設定済みです</p>
+      </div>
+    );
   }
 
   return (
