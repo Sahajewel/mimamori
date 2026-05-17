@@ -21,8 +21,14 @@ export async function GET(req: Request) {
   }
 
   const now = new Date();
-  const hour = now.getHours();
-  const today = new Date();
+  const japanTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const hour = japanTime.getHours();
+  const today = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+
   today.setHours(0, 0, 0, 0);
 
   // এখন কোন timing active আছে check করো

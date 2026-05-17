@@ -34,16 +34,20 @@ const TIMING_MAP: Record<string, { start: number; end: number }> = {
 };
 
 function isReminderActive(time: string): boolean {
-  const now = new Date();
-  const hour = now.getHours();
+  const japanTime = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const hour = japanTime.getHours();
   const timing = TIMING_MAP[time];
-  if (!timing) return true; // unknown → always show
+  if (!timing) return true;
   return hour >= timing.start && hour <= timing.end;
 }
 
 function isReminderUpcoming(time: string): boolean {
-  const now = new Date();
-  const hour = now.getHours();
+  const japanTime = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const hour = japanTime.getHours();
   const timing = TIMING_MAP[time];
   if (!timing) return false;
   return hour < timing.start;
