@@ -117,7 +117,10 @@ export default async function MedicinesPage({
                     </span>
                     {!medicine.ongoing && medicine.endDate && (
                       <p className="text-xs text-gray-300 mt-1">
-                        {new Date(medicine.endDate).toLocaleDateString("ja-JP")}
+                        {new Date(medicine.endDate).toLocaleDateString(
+                          "ja-JP",
+                          { timeZone: "Asia/Tokyo" },
+                        )}
                         まで
                       </p>
                     )}
