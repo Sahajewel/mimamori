@@ -88,6 +88,48 @@ export async function GET(req: Request) {
     }
   }
 
+  // Medicine refill check
+  const threeDaysLater = new Date(today);
+  threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+
+  const expiringMedicines = await prisma.medicine.findMany({
+    where: {
+      active: true,
+      ongoing: false,
+      endDate: {
+        gte: today,
+        lte: threeDaysLater,
+      },
+    },
+    include: {
+      senior: {
+        include: {
+          members: true,
+        },
+      },
+    },
+  });
+
+  for (const medicine of expiringMedicines) {
+    const senior = medicine.senior;
+    const ownerMember = senior.members.find((m) => m.role === "OWNER");
+
+    if (ownerMember) {
+      const daysLeft = Math.ceil(
+        (new Date(medicine.endDate!).getTime() - today.getTime()) /
+          (1000 * 60 * 60 * 24),
+      );
+
+      await sendPushToSeniorMembers(senior.id, ownerMember.userId, {
+        title: `💊 ${senior.name}さんの薬が残り${daysLeft}日です`,
+        body: `${medicine.name}をそろそろ薬局で購入してください`,
+        tag: "medicine-refill",
+        requireInteraction: false,
+        silent: false,
+      });
+    }
+  }
+
   return NextResponse.json({
     success: true,
     notificationCount,
