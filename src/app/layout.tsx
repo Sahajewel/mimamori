@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "Mimamori",
   description: "ご家族をつなぐ見守りアプリ",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
