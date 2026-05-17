@@ -4,7 +4,35 @@ export function NotificationButton() {
   async function handleClick() {
     try {
       const permission = await Notification.requestPermission();
-      alert(`Permission: ${permission}`);
+      if (permission !== "granted") {
+        alert("Permission denied");
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      alert(`SW ready: ${registration.active?.state}`);
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+      });
+
+      alert(`Subscribed: ${subscription.endpoint.slice(0, 50)}`);
+
+      const key = subscription.getKey("p256dh");
+      const auth = subscription.getKey("auth");
+
+      const res = await fetch("/api/push/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          endpoint: subscription.endpoint,
+          p256dh: key ? btoa(String.fromCharCode(...new Uint8Array(key))) : "",
+          auth: auth ? btoa(String.fromCharCode(...new Uint8Array(auth))) : "",
+        }),
+      });
+
+      alert(`Server response: ${res.status}`);
     } catch (e) {
       alert(`Error: ${e}`);
     }
