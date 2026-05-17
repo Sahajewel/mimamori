@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Senior, SeniorMemberRole } from "@prisma/client";
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -86,82 +84,70 @@ export default async function DashboardPage() {
         {/* Senior cards */}
         {seniorMembers.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {seniorMembers.map(
-              ({
-                senior,
-                role,
-              }: {
-                senior: Senior & { checkIns: any[]; medicines: any[] };
-                role: SeniorMemberRole;
-              }) => {
-                const lastCheckIn = senior.checkIns[0];
-                const medicineCount = senior.medicines.length;
+            {seniorMembers.map(({ senior, role }) => {
+              const lastCheckIn = senior.checkIns[0];
+              const medicineCount = senior.medicines.length;
 
-                return (
-                  <Link
-                    key={senior.id}
-                    href={`/seniors/${senior.id}`}
-                    className="bg-white border border-gray-100 rounded-2xl p-6 hover:border-indigo-200 hover:shadow-sm transition-all"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-base">
-                          {senior.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {senior.name}
-                          </p>
-                          {senior.age && (
-                            <p className="text-xs text-gray-400">
-                              {senior.age}歳
-                            </p>
-                          )}
-                        </div>
+              return (
+                <Link
+                  key={senior.id}
+                  href={`/seniors/${senior.id}`}
+                  className="bg-white border border-gray-100 rounded-2xl p-6 hover:border-indigo-200 hover:shadow-sm transition-all"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-base">
+                        {senior.name.charAt(0)}
                       </div>
-                      {role === "OWNER" && (
-                        <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
-                          管理者
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">
-                          今日のチェックイン
-                        </span>
-                        {lastCheckIn ? (
-                          <span
-                            className={`font-medium ${
-                              lastCheckIn.status === "OK"
-                                ? "text-green-500"
-                                : lastCheckIn.status === "CONCERN"
-                                  ? "text-amber-500"
-                                  : "text-red-500"
-                            }`}
-                          >
-                            {lastCheckIn.status === "OK"
-                              ? "✓ 良好"
-                              : lastCheckIn.status === "CONCERN"
-                                ? "⚠ 要確認"
-                                : "🚨 緊急"}
-                          </span>
-                        ) : (
-                          <span className="text-gray-300">未確認</span>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {senior.name}
+                        </p>
+                        {senior.age && (
+                          <p className="text-xs text-gray-400">
+                            {senior.age}歳
+                          </p>
                         )}
                       </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">お薬</span>
-                        <span className="text-gray-600">
-                          {medicineCount}種類
-                        </span>
-                      </div>
                     </div>
-                  </Link>
-                );
-              },
-            )}
+                    {role === "OWNER" && (
+                      <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+                        管理者
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-400">今日のチェックイン</span>
+                      {lastCheckIn ? (
+                        <span
+                          className={`font-medium ${
+                            lastCheckIn.status === "OK"
+                              ? "text-green-500"
+                              : lastCheckIn.status === "CONCERN"
+                                ? "text-amber-500"
+                                : "text-red-500"
+                          }`}
+                        >
+                          {lastCheckIn.status === "OK"
+                            ? "✓ 良好"
+                            : lastCheckIn.status === "CONCERN"
+                              ? "⚠ 要確認"
+                              : "🚨 緊急"}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300">未確認</span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-400">お薬</span>
+                      <span className="text-gray-600">{medicineCount}種類</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>
