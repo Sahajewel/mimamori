@@ -38,7 +38,10 @@ export default async function DashboardPage() {
   });
 
   const now = new Date();
-  const hour = now.getHours();
+  const japanTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const hour = japanTime.getHours();
 
   function getGreeting() {
     if (hour < 11) return "おはようございます";
@@ -72,6 +75,7 @@ export default async function DashboardPage() {
           </h1>
           <p className="text-sm text-gray-400 mt-1">
             {now.toLocaleDateString("ja-JP", {
+              timeZone: "Asia/Tokyo",
               year: "numeric",
               month: "long",
               day: "numeric",
