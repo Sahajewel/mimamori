@@ -75,7 +75,7 @@ export default async function CheckInsPage({
             </p>
           ) : (
             <div className="space-y-3">
-              {checkIns.map((checkIn, index) => (
+              {checkIns.map((checkIn: (typeof checkIns)[0], index: number) => (
                 <div
                   key={checkIn.id}
                   className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0"
