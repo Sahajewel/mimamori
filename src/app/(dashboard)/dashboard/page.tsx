@@ -1,4 +1,5 @@
 import { LogoutButton } from "@/app/components/LogoutButton";
+import { NotificationButton } from "@/app/components/NotificationButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -45,6 +46,10 @@ export default async function DashboardPage() {
 
       <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
         {/* Header */}
+        {/* Notification permission */}
+        <div className="mb-4">
+          <NotificationButton />
+        </div>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl md:text-2xl font-medium text-gray-900">
