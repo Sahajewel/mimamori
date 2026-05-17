@@ -110,7 +110,7 @@ export default async function SeniorDetailPage({
           )}
           {role === "OWNER" && (
             <div className="mt-4">
-              <QuickLinkButton seniorId={id} />
+              <QuickLinkButton seniorId={id} seniorName={senior.name} />
             </div>
           )}
         </div>
