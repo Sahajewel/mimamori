@@ -84,7 +84,9 @@ export default async function DashboardPage() {
         {/* Senior cards */}
         {seniorMembers.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {seniorMembers.map(({ senior, role }) => {
+            {seniorMembers.map((member) => {
+              const senior = member.senior;
+              const role = member.role;
               const lastCheckIn = senior.checkIns[0];
               const medicineCount = senior.medicines.length;
 
