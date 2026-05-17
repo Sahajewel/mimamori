@@ -127,7 +127,7 @@ export default function QuickPage() {
   const statusInfo = checkedInStatus ? getStatusInfo(checkedInStatus) : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white px-4 py-8">
+    <div className="min-h-screen bg-linear-to-b from-indigo-50 to-white px-4 py-8">
       <div className="max-w-sm mx-auto space-y-4">
         {/* Header */}
         <div className="text-center pb-2">
