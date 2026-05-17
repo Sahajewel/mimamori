@@ -275,8 +275,11 @@ export default async function SeniorDetailPage({
                       <p className="text-xs text-gray-400">{note.user.name}</p>
                       <p className="text-xs text-gray-300">·</p>
                       <p className="text-xs text-gray-300">
-                        {new Date(note.createdAt).toLocaleDateString("ja-JP")}{" "}
+                        {new Date(note.createdAt).toLocaleDateString("ja-JP", {
+                          timeZone: "Asia/Tokyo",
+                        })}{" "}
                         {new Date(note.createdAt).toLocaleTimeString("ja-JP", {
+                          timeZone: "Asia/Tokyo",
                           hour: "2-digit",
                           minute: "2-digit",
                         })}

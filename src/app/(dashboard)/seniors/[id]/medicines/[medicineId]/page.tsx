@@ -64,9 +64,13 @@ export default function MedicineDetailPage() {
     );
   }
 
-  const startDate = new Date(medicine.startDate).toLocaleDateString("ja-JP");
+  const startDate = new Date(medicine.startDate).toLocaleDateString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+  });
   const endDate = medicine.endDate
-    ? new Date(medicine.endDate).toLocaleDateString("ja-JP")
+    ? new Date(medicine.endDate).toLocaleDateString("ja-JP", {
+        timeZone: "Asia/Tokyo",
+      })
     : null;
 
   const takenCount = logs.filter((l) => l.status === "TAKEN").length;
@@ -213,7 +217,9 @@ export default function MedicineDetailPage() {
                     </p>
                     <p className="text-xs text-gray-300">
                       {log.user.name} ·{" "}
-                      {new Date(log.createdAt).toLocaleDateString("ja-JP")}
+                      {new Date(log.createdAt).toLocaleDateString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                      })}
                     </p>
                   </div>
                 </div>

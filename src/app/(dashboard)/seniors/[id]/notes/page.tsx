@@ -5,12 +5,33 @@ import Link from "next/link";
 
 const PER_PAGE = 10;
 
+interface CareNotesPageParams {
+  id: string;
+}
+
+interface CareNotesPageSearchParams {
+  page?: string;
+}
+
+interface Senior {
+  name: string;
+}
+
+interface CareNoteWithUser {
+  id: string;
+  content: string;
+  createdAt: Date;
+  user: {
+    name: string;
+  };
+}
+
 export default async function CareNotesPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ page?: string }>;
+  params: Promise<CareNotesPageParams>;
+  searchParams: Promise<CareNotesPageSearchParams>;
 }) {
   const { id } = await params;
   const { page } = await searchParams;
@@ -24,7 +45,7 @@ export default async function CareNotesPage({
   });
   if (!member) notFound();
 
-  const senior = await prisma.senior.findUnique({
+  const senior: Senior | null = await prisma.senior.findUnique({
     where: { id },
     select: { name: true },
   });
@@ -35,7 +56,7 @@ export default async function CareNotesPage({
 
   const totalPages = Math.ceil(total / PER_PAGE);
 
-  const notes = await prisma.careNote.findMany({
+  const notes: CareNoteWithUser[] = await prisma.careNote.findMany({
     where: { seniorId: id },
     orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * PER_PAGE,
@@ -101,10 +122,14 @@ export default async function CareNotesPage({
                         </p>
                         <p className="text-xs text-gray-300">·</p>
                         <p className="text-xs text-gray-300">
-                          {new Date(note.createdAt).toLocaleDateString("ja-JP")}{" "}
+                          {new Date(note.createdAt).toLocaleDateString(
+                            "ja-JP",
+                            { timeZone: "Asia/Tokyo" },
+                          )}{" "}
                           {new Date(note.createdAt).toLocaleTimeString(
                             "ja-JP",
                             {
+                              timeZone: "Asia/Tokyo",
                               hour: "2-digit",
                               minute: "2-digit",
                             },

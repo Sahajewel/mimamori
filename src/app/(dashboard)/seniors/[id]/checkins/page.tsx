@@ -110,8 +110,11 @@ export default async function CheckInsPage({
                   <div className="text-right">
                     <p className="text-xs text-gray-400">{checkIn.user.name}</p>
                     <p className="text-xs text-gray-300">
-                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP")}{" "}
+                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                      })}{" "}
                       {new Date(checkIn.createdAt).toLocaleTimeString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
