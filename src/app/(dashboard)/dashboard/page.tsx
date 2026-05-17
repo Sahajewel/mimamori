@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -19,12 +20,31 @@ export default async function DashboardPage() {
           },
           medicines: {
             where: { active: true },
+            include: {
+              reminders: true,
+              logs: {
+                where: {
+                  createdAt: {
+                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                  },
+                },
+              },
+            },
           },
         },
       },
     },
     orderBy: { createdAt: "asc" },
   });
+
+  const now = new Date();
+  const hour = now.getHours();
+
+  function getGreeting() {
+    if (hour < 11) return "おはようございます";
+    if (hour < 17) return "こんにちは";
+    return "こんばんは";
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -40,28 +60,41 @@ export default async function DashboardPage() {
           <p className="text-sm text-gray-500 hidden sm:block">
             {session.user.name}さん
           </p>
-          <LogoutButton></LogoutButton>
+          <LogoutButton />
         </div>
       </nav>
 
       <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
-        {/* Header */}
-        {/* Notification permission */}
-        <div className="mb-4">
+        {/* Greeting */}
+        <div className="mb-6">
+          <h1 className="text-xl md:text-2xl font-medium text-gray-900">
+            {getGreeting()}、{session.user.name}さん 👋
+          </h1>
+          <p className="text-sm text-gray-400 mt-1">
+            {now.toLocaleDateString("ja-JP", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              weekday: "long",
+            })}
+          </p>
+        </div>
+
+        {/* Notification button */}
+        <div className="mb-6">
           <NotificationButton />
         </div>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl md:text-2xl font-medium text-gray-900">
-              ご家族一覧
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">見守り中のご家族の状況</p>
-          </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-medium text-gray-700">
+            見守り中のご家族
+          </h2>
           <Link
             href="/seniors/new"
             className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            ＋ 家族を追加
+            ＋ 追加
           </Link>
         </div>
 
@@ -89,11 +122,33 @@ export default async function DashboardPage() {
         {/* Senior cards */}
         {seniorMembers.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {seniorMembers.map((member: (typeof seniorMembers)[0]) => {
+            {seniorMembers.map((member) => {
               const senior = member.senior;
               const role = member.role;
               const lastCheckIn = senior.checkIns[0];
-              const medicineCount = senior.medicines.length;
+
+              // 今日の薬の状況
+              const totalReminders = senior.medicines.flatMap(
+                (m) => m.reminders,
+              ).length;
+              const takenToday = senior.medicines.flatMap((m) =>
+                m.logs.filter((l) => l.status === "TAKEN"),
+              ).length;
+
+              // Last checkin time
+              const lastCheckInTime = lastCheckIn
+                ? (() => {
+                    const diff = Math.floor(
+                      (now.getTime() -
+                        new Date(lastCheckIn.createdAt).getTime()) /
+                        1000 /
+                        60,
+                    );
+                    if (diff < 60) return `${diff}分前`;
+                    if (diff < 1440) return `${Math.floor(diff / 60)}時間前`;
+                    return `${Math.floor(diff / 1440)}日前`;
+                  })()
+                : null;
 
               return (
                 <Link
@@ -101,6 +156,7 @@ export default async function DashboardPage() {
                   href={`/seniors/${senior.id}`}
                   className="bg-white border border-gray-100 rounded-2xl p-6 hover:border-indigo-200 hover:shadow-sm transition-all"
                 >
+                  {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-base">
@@ -124,34 +180,84 @@ export default async function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-400">今日のチェックイン</span>
-                      {lastCheckIn ? (
-                        <span
-                          className={`font-medium ${
-                            lastCheckIn.status === "OK"
-                              ? "text-green-500"
-                              : lastCheckIn.status === "CONCERN"
-                                ? "text-amber-500"
-                                : "text-red-500"
-                          }`}
-                        >
-                          {lastCheckIn.status === "OK"
-                            ? "✓ 良好"
-                            : lastCheckIn.status === "CONCERN"
-                              ? "⚠ 要確認"
-                              : "🚨 緊急"}
+                  {/* Status */}
+                  <div className="space-y-2.5">
+                    {/* CheckIn */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-400">今日の体調</span>
+                      <div className="flex items-center gap-2">
+                        {lastCheckIn ? (
+                          <>
+                            <span
+                              className={`text-xs font-medium ${
+                                lastCheckIn.status === "OK"
+                                  ? "text-green-500"
+                                  : lastCheckIn.status === "CONCERN"
+                                    ? "text-amber-500"
+                                    : "text-red-500"
+                              }`}
+                            >
+                              {lastCheckIn.status === "OK"
+                                ? "✓ 良好"
+                                : lastCheckIn.status === "CONCERN"
+                                  ? "⚠ 要確認"
+                                  : "🚨 緊急"}
+                            </span>
+                            {lastCheckInTime && (
+                              <span className="text-xs text-gray-300">
+                                {lastCheckInTime}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-xs text-gray-300">未確認</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Medicine */}
+                    {totalReminders > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">
+                          今日のお薬
                         </span>
-                      ) : (
-                        <span className="text-gray-300">未確認</span>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-400">お薬</span>
-                      <span className="text-gray-600">{medicineCount}種類</span>
-                    </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-xs font-medium ${
+                              takenToday === totalReminders
+                                ? "text-green-500"
+                                : takenToday > 0
+                                  ? "text-amber-500"
+                                  : "text-gray-400"
+                            }`}
+                          >
+                            {takenToday === totalReminders
+                              ? "✓ 完了"
+                              : `${takenToday}/${totalReminders} 服用済み`}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Medicine count */}
+                    {totalReminders === 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">お薬</span>
+                        <span className="text-xs text-gray-400">
+                          {senior.medicines.length}種類
+                        </span>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Emergency alert */}
+                  {lastCheckIn?.status === "EMERGENCY" && (
+                    <div className="mt-3 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                      <p className="text-xs text-red-600 font-medium">
+                        🚨 緊急状態です。すぐに確認してください！
+                      </p>
+                    </div>
+                  )}
                 </Link>
               );
             })}
