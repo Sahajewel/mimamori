@@ -21,6 +21,40 @@ type Data = {
   todayCheckIn: { status: string } | null;
 };
 
+// Timing map — reminder time → active hours
+const TIMING_MAP: Record<string, { start: number; end: number }> = {
+  朝食後: { start: 7, end: 12 },
+  朝食前: { start: 6, end: 9 },
+  昼食後: { start: 11, end: 16 },
+  昼食前: { start: 10, end: 13 },
+  夕食後: { start: 17, end: 22 },
+  夕食前: { start: 16, end: 19 },
+  就寝前: { start: 20, end: 24 },
+  食間: { start: 10, end: 14 },
+};
+
+function isReminderActive(time: string): boolean {
+  const now = new Date();
+  const hour = now.getHours();
+  const timing = TIMING_MAP[time];
+  if (!timing) return true; // unknown → always show
+  return hour >= timing.start && hour <= timing.end;
+}
+
+function isReminderUpcoming(time: string): boolean {
+  const now = new Date();
+  const hour = now.getHours();
+  const timing = TIMING_MAP[time];
+  if (!timing) return false;
+  return hour < timing.start;
+}
+
+function getTimeLabel(time: string): string {
+  const timing = TIMING_MAP[time];
+  if (!timing) return "";
+  return `${timing.start}:00〜${timing.end}:00`;
+}
+
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 11) return "おはようございます 🌅";
@@ -32,18 +66,15 @@ function getStatusInfo(status: string) {
   if (status === "OK")
     return {
       label: "✓ 元気です",
-      bg: "bg-green-500",
       light: "bg-green-50 border-green-200 text-green-700",
     };
   if (status === "CONCERN")
     return {
       label: "⚠ 少し気になります",
-      bg: "bg-amber-400",
       light: "bg-amber-50 border-amber-200 text-amber-700",
     };
   return {
     label: "🚨 助けてください",
-    bg: "bg-red-500",
     light: "bg-red-50 border-red-200 text-red-700",
   };
 }
@@ -120,10 +151,15 @@ export default function QuickPage() {
   const allMedicinesDone =
     data.medicines.length === 0 ||
     data.medicines.every((m) =>
-      m.reminders.every((r) => doneReminders.has(r.id)),
+      m.reminders.every((r) => {
+        // active time でない reminder は skip
+        if (!isReminderActive(r.time) && isReminderUpcoming(r.time))
+          return true;
+        return doneReminders.has(r.id);
+      }),
     );
-  const allDone = checkedInStatus !== null && allMedicinesDone;
 
+  const allDone = checkedInStatus !== null && allMedicinesDone;
   const statusInfo = checkedInStatus ? getStatusInfo(checkedInStatus) : null;
 
   return (
@@ -235,6 +271,8 @@ export default function QuickPage() {
                   <div className="space-y-2 pl-6">
                     {medicine.reminders.map((reminder) => {
                       const isDone = doneReminders.has(reminder.id);
+                      const active = isReminderActive(reminder.time);
+                      const upcoming = isReminderUpcoming(reminder.time);
                       const todayLog = data.todayLogs.find(
                         (l) => l.reminderId === reminder.id,
                       );
@@ -246,7 +284,12 @@ export default function QuickPage() {
                         <div key={reminder.id}>
                           <p className="text-xs text-gray-400 mb-1">
                             {reminder.time}
+                            <span className="text-gray-300 ml-1">
+                              {getTimeLabel(reminder.time)}
+                            </span>
                           </p>
+
+                          {/* Done */}
                           {isDone ? (
                             <div
                               className={`rounded-xl py-2.5 text-center text-sm font-medium ${
@@ -259,7 +302,22 @@ export default function QuickPage() {
                                 ? "✓ 飲みました"
                                 : "✗ 飲めませんでした"}
                             </div>
+                          ) : /* Upcoming — not yet time */
+                          upcoming ? (
+                            <div className="rounded-xl py-2.5 text-center bg-gray-50 border border-gray-100">
+                              <p className="text-xs text-gray-400">
+                                🔒 {getTimeLabel(reminder.time)}から
+                              </p>
+                            </div>
+                          ) : /* Past — missed */
+                          !active && !upcoming ? (
+                            <div className="rounded-xl py-2.5 text-center bg-red-50 border border-red-100">
+                              <p className="text-xs text-red-400">
+                                ✗ 時間が過ぎました
+                              </p>
+                            </div>
                           ) : (
+                            /* Active — show buttons */
                             <div className="grid grid-cols-2 gap-2">
                               <button
                                 onClick={() =>
