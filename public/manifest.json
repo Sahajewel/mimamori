@@ -1,0 +1,16 @@
+{
+  "name": "Mimamori",
+  "short_name": "Mimamori",
+  "description": "ご家族をつなぐ見守りアプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4F46E5",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "256x256",
+      "type": "image/x-icon"
+    }
+  ]
+}

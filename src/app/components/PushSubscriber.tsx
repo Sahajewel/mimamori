@@ -17,17 +17,15 @@ export function PushSubscriber() {
         const existing = await registration.pushManager.getSubscription();
         if (existing) {
           await sendToServer(existing);
-          return;
+        } else {
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+            ),
+          });
+          await sendToServer(subscription);
         }
-
-        const subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(
-            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-          ),
-        });
-
-        await sendToServer(subscription);
       } catch (error) {
         console.error("Push subscription failed:", error);
       }
@@ -47,6 +45,18 @@ export function PushSubscriber() {
         }),
       });
     }
+
+    // Sound listener
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data?.type === "PLAY_SOUND") {
+        const audio = new Audio(
+          event.data.sound === "emergency"
+            ? "/sounds/emergency.mp3"
+            : "/sounds/notification.mp3",
+        );
+        audio.play().catch(console.error);
+      }
+    });
 
     subscribe();
   }, []);

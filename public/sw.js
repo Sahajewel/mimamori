@@ -8,8 +8,11 @@ self.addEventListener("push", (event) => {
     badge: "/favicon.ico",
     tag: data.tag || "default",
     requireInteraction: data.requireInteraction ?? false,
-    silent: data.silent ?? false,
-    vibrate: data.tag === "emergency" ? [200, 100, 200, 100, 200] : [100],
+    silent: false,
+    vibrate: data.tag === "emergency" ? [300, 100, 300, 100, 300] : [100],
+    data: {
+      sound: data.tag === "emergency" ? "emergency" : "normal",
+    },
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
@@ -17,5 +20,17 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(clients.openWindow("/dashboard"));
+  event.waitUntil(
+    clients.matchAll({ type: "window" }).then((clientList) => {
+      for (const client of clientList) {
+        client.postMessage({
+          type: "PLAY_SOUND",
+          sound: event.notification.data?.sound,
+        });
+        if ("focus" in client) client.focus();
+        return;
+      }
+      clients.openWindow("/dashboard");
+    }),
+  );
 });
