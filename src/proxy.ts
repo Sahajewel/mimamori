@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
