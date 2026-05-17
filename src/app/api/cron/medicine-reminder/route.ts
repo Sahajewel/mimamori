@@ -1,0 +1,90 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendPushToSeniorMembers } from "@/lib/push";
+
+const TIMING_MAP: Record<string, { start: number; end: number }> = {
+  朝食後: { start: 7, end: 12 },
+  朝食前: { start: 6, end: 9 },
+  昼食後: { start: 11, end: 16 },
+  昼食前: { start: 10, end: 13 },
+  夕食後: { start: 17, end: 22 },
+  夕食前: { start: 16, end: 19 },
+  就寝前: { start: 20, end: 24 },
+  食間: { start: 10, end: 14 },
+};
+
+export async function GET(req: Request) {
+  // Vercel cron secret check
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const now = new Date();
+  const hour = now.getHours();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // এখন কোন timing active আছে check করো
+  const activeTimings = Object.entries(TIMING_MAP)
+    .filter(([, { start, end }]) => hour >= start + 1 && hour <= end)
+    .map(([time]) => time);
+
+  if (activeTimings.length === 0) {
+    return NextResponse.json({ message: "No active timings" });
+  }
+
+  // সব active medicine reminders খোঁজো
+  const reminders = await prisma.medicineReminder.findMany({
+    where: {
+      time: { in: activeTimings },
+      medicine: { active: true },
+    },
+    include: {
+      medicine: {
+        include: {
+          senior: {
+            include: {
+              members: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  let notificationCount = 0;
+
+  for (const reminder of reminders) {
+    // আজকে এই reminder-এর log আছে কিনা check করো
+    const log = await prisma.medicineLog.findFirst({
+      where: {
+        reminderId: reminder.id,
+        createdAt: { gte: today },
+      },
+    });
+
+    if (!log) {
+      // Log নেই → miss হয়েছে → notification পাঠাও
+      const senior = reminder.medicine.senior;
+      const ownerMember = senior.members.find((m) => m.role === "OWNER");
+
+      if (ownerMember) {
+        await sendPushToSeniorMembers(senior.id, ownerMember.userId, {
+          title: `💊 ${senior.name}さんのお薬を確認してください`,
+          body: `${reminder.time}の${reminder.medicine.name}がまだ記録されていません`,
+          tag: "medicine-reminder",
+          requireInteraction: false,
+          silent: false,
+        });
+        notificationCount++;
+      }
+    }
+  }
+
+  return NextResponse.json({
+    success: true,
+    notificationCount,
+    activeTimings,
+  });
+}
