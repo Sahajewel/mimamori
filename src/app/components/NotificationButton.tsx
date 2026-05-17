@@ -1,10 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; i++) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function sendToServer(subscription: PushSubscription) {
+  const key = subscription.getKey("p256dh");
+  const auth = subscription.getKey("auth");
+
+  await fetch("/api/push/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      endpoint: subscription.endpoint,
+      p256dh: key ? btoa(String.fromCharCode(...new Uint8Array(key))) : "",
+      auth: auth ? btoa(String.fromCharCode(...new Uint8Array(auth))) : "",
+    }),
+  });
+}
 
 export function NotificationButton() {
-  const [status, setStatus] = useState<"idle" | "granted" | "denied">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "granted" | "denied" | "loading"
+  >("loading");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    async function checkExisting() {
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        setStatus("idle");
+        return;
+      }
+
+      const permission = Notification.permission;
+      if (permission === "denied") {
+        setStatus("denied");
+        return;
+      }
+
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const existing = await registration.pushManager.getSubscription();
+        if (existing) {
+          await sendToServer(existing);
+          setStatus("granted");
+        } else {
+          setStatus("idle");
+        }
+      } catch {
+        setStatus("idle");
+      }
+    }
+
+    checkExisting();
+  }, []);
 
   async function requestPermission() {
     try {
@@ -16,9 +74,6 @@ export function NotificationButton() {
         return;
       }
 
-      setStatus("granted");
-
-      // Subscribe
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -27,47 +82,31 @@ export function NotificationButton() {
         ),
       });
 
-      const key = subscription.getKey("p256dh");
-      const auth = subscription.getKey("auth");
-
-      const res = await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          endpoint: subscription.endpoint,
-          p256dh: key ? btoa(String.fromCharCode(...new Uint8Array(key))) : "",
-          auth: auth ? btoa(String.fromCharCode(...new Uint8Array(auth))) : "",
-        }),
-      });
-
-      if (res.ok) {
-        setMessage("通知の設定が完了しました ✓");
-      } else {
-        setMessage("設定に失敗しました。もう一度お試しください");
-      }
+      await sendToServer(subscription);
+      setStatus("granted");
+      setMessage("通知の設定が完了しました ✓");
     } catch (error) {
       console.error(error);
       setMessage("エラーが発生しました");
     }
   }
 
-  function urlBase64ToUint8Array(base64String: string) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; i++) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  }
+  if (status === "loading") return null;
 
   if (status === "granted") {
     return (
       <div className="bg-green-50 border border-green-100 rounded-lg px-4 py-2.5 text-center">
-        <p className="text-sm text-green-600">✓ {message}</p>
+        <p className="text-sm text-green-600">✓ 通知が設定済みです</p>
+      </div>
+    );
+  }
+
+  if (status === "denied") {
+    return (
+      <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-2.5 text-center">
+        <p className="text-sm text-red-500">
+          通知が拒否されています。設定から許可してください
+        </p>
       </div>
     );
   }
