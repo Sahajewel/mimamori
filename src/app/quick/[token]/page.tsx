@@ -60,7 +60,10 @@ function getTimeLabel(time: string): string {
 }
 
 function getGreeting() {
-  const hour = new Date().getHours();
+  const japanTime = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  );
+  const hour = japanTime.getHours();
   if (hour < 11) return "おはようございます 🌅";
   if (hour < 17) return "こんにちは ☀️";
   return "こんばんは 🌙";
