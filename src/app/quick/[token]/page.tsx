@@ -64,8 +64,8 @@ function getGreeting() {
     new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
   );
   const hour = japanTime.getHours();
-  if (hour < 11) return "おはようございます 🌅";
-  if (hour < 17) return "こんにちは ☀️";
+  if (hour >= 5 && hour < 11) return "おはようございます 🌅";
+  if (hour >= 11 && hour < 17) return "こんにちは ☀️";
   return "こんばんは 🌙";
 }
 

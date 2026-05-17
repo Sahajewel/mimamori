@@ -44,11 +44,10 @@ export default async function DashboardPage() {
   const hour = japanTime.getHours();
 
   function getGreeting() {
-    if (hour < 11) return "おはようございます";
-    if (hour < 17) return "こんにちは";
+    if (hour >= 5 && hour < 11) return "おはようございます";
+    if (hour >= 11 && hour < 17) return "こんにちは";
     return "こんばんは";
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
