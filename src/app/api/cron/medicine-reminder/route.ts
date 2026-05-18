@@ -57,6 +57,17 @@ export async function GET(req: Request) {
 
   let notificationCount = 0;
 
+  // Senior-এ group করো
+  const seniorMissedMap: Record<
+    string,
+    {
+      seniorId: string;
+      seniorName: string;
+      ownerId: string;
+      medicines: string[];
+    }
+  > = {};
+
   for (const reminder of reminders) {
     const log = await prisma.medicineLog.findFirst({
       where: {
@@ -70,17 +81,32 @@ export async function GET(req: Request) {
       const ownerMember = senior.members.find((m) => m.role === "OWNER");
 
       if (ownerMember) {
-        await sendPushToSeniorMembers(senior.id, ownerMember.userId, {
-          title: `💊 ${senior.name}さんのお薬を確認してください`,
-          body: `${reminder.time}の${reminder.medicine.name}がまだ記録されていません`,
-          tag: "medicine-reminder",
-          requireInteraction: false,
-          silent: false,
-          url: `/seniors/${senior.id}`,
-        });
-        notificationCount++;
+        if (!seniorMissedMap[senior.id]) {
+          seniorMissedMap[senior.id] = {
+            seniorId: senior.id,
+            seniorName: senior.name,
+            ownerId: ownerMember.userId,
+            medicines: [],
+          };
+        }
+        seniorMissedMap[senior.id].medicines.push(
+          `${reminder.medicine.name}(${reminder.time})`,
+        );
       }
     }
+  }
+
+  // Senior-এ একটা notification
+  for (const data of Object.values(seniorMissedMap)) {
+    await sendPushToSeniorMembers(data.seniorId, data.ownerId, {
+      title: `💊 ${data.seniorName}さんのお薬を確認してください`,
+      body: data.medicines.join("、") + "がまだ記録されていません",
+      tag: "medicine-reminder",
+      requireInteraction: false,
+      silent: false,
+      url: `/seniors/${data.seniorId}`,
+    });
+    notificationCount++;
   }
 
   // Medicine refill check
