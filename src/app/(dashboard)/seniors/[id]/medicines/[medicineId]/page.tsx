@@ -8,12 +8,13 @@ const PER_PAGE = 10;
 type Reminder = { id: string; time: string };
 type Log = {
   id: string;
+  date: string;
+  reminderId: string;
+  reminderTime: string;
   status: string;
   note: string | null;
   createdAt: string;
-  takenAt: string | null;
-  user: { name: string };
-  reminder: { time: string };
+  userName: string | null;
 };
 type Medicine = {
   id: string;
@@ -220,22 +221,15 @@ export default function MedicineDetailPage() {
                     {/* 日付・時間 */}
                     <div>
                       <p className="text-xs text-gray-700">
-                        {new Date(log.createdAt).toLocaleDateString("ja-JP", {
+                        {new Date(log.date).toLocaleDateString("ja-JP", {
                           timeZone: "Asia/Tokyo",
-                        })}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(log.createdAt).toLocaleTimeString("ja-JP", {
-                          timeZone: "Asia/Tokyo",
-                          hour: "2-digit",
-                          minute: "2-digit",
                         })}
                       </p>
                     </div>
 
                     {/* タイミング */}
                     <span className="text-xs bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full text-center">
-                      {log.reminder.time}
+                      {log.reminderTime}
                     </span>
 
                     {/* 状態 */}
@@ -245,19 +239,23 @@ export default function MedicineDetailPage() {
                           ? "text-green-500"
                           : log.status === "MISSED"
                             ? "text-red-400"
-                            : "text-gray-400"
+                            : log.status === "SKIPPED"
+                              ? "text-gray-400"
+                              : "text-gray-300" // NONE
                       }`}
                     >
                       {log.status === "TAKEN"
                         ? "✓ 飲んだ"
                         : log.status === "MISSED"
                           ? "✗ 飲めなかった"
-                          : "− スキップ"}
+                          : log.status === "SKIPPED"
+                            ? "− スキップ"
+                            : "− 記録なし"}
                     </span>
 
                     {/* 記録者 */}
                     <span className="text-xs text-gray-500">
-                      {log.user.name}
+                      {log.userName || "-"}
                     </span>
                   </div>
                 ))}
