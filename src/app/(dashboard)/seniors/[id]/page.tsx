@@ -28,10 +28,11 @@ export default async function SeniorDetailPage({
           },
           medicines: {
             where: { active: true },
+            include: { reminders: true },
           },
           careNotes: {
             orderBy: { createdAt: "desc" },
-            take: 10,
+            take: 3,
             include: { user: { select: { name: true } } },
           },
         },
@@ -108,6 +109,88 @@ export default async function SeniorDetailPage({
               {senior.notes}
             </p>
           )}
+          {/* Today CheckIn status */}
+          {(() => {
+            const todayJapan = new Date(
+              new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+            );
+            todayJapan.setHours(0, 0, 0, 0);
+
+            const todayCheckIn = senior.checkIns.find((c) => {
+              const checkInDate = new Date(
+                new Date(c.createdAt).toLocaleString("en-US", {
+                  timeZone: "Asia/Tokyo",
+                }),
+              );
+              checkInDate.setHours(0, 0, 0, 0);
+              return checkInDate.getTime() === todayJapan.getTime();
+            });
+
+            const lastCheckIn = senior.checkIns[0];
+            const lastSeenText = lastCheckIn
+              ? (() => {
+                  const diff = Math.floor(
+                    (new Date().getTime() -
+                      new Date(lastCheckIn.createdAt).getTime()) /
+                      1000 /
+                      60,
+                  );
+                  if (diff < 60) return `${diff}分前`;
+                  if (diff < 1440) return `${Math.floor(diff / 60)}時間前`;
+                  return `${Math.floor(diff / 1440)}日前`;
+                })()
+              : null;
+
+            return (
+              <div className="mt-4 bg-gray-50 rounded-xl p-4 space-y-2">
+                {/* Today CheckIn */}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-400">今日の体調</span>
+                  {todayCheckIn ? (
+                    <span
+                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                        todayCheckIn.status === "OK"
+                          ? "bg-green-50 text-green-600"
+                          : todayCheckIn.status === "CONCERN"
+                            ? "bg-amber-50 text-amber-600"
+                            : "bg-red-50 text-red-600"
+                      }`}
+                    >
+                      {todayCheckIn.status === "OK"
+                        ? "✓ 良好"
+                        : todayCheckIn.status === "CONCERN"
+                          ? "⚠ 要確認"
+                          : "🚨 緊急"}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-300">未確認</span>
+                  )}
+                </div>
+
+                {/* Last seen */}
+                {lastSeenText && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">最終確認</span>
+                    <span className="text-xs text-gray-500">
+                      {lastSeenText}
+                    </span>
+                  </div>
+                )}
+
+                {/* Today CheckIn update button */}
+                {todayCheckIn && (
+                  <div className="pt-1">
+                    <Link
+                      href={`/seniors/${id}/checkin`}
+                      className="text-xs text-indigo-500 hover:underline"
+                    >
+                      体調を更新する →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
           {role === "OWNER" && (
             <div className="mt-4">
               <QuickLinkButton seniorId={id} seniorName={senior.name} />
