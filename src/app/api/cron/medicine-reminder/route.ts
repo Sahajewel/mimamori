@@ -98,7 +98,7 @@ export async function GET(req: Request) {
 
   // Senior-এ একটা notification
   for (const data of Object.values(seniorMissedMap)) {
-    await sendPushToSeniorMembers(data.seniorId, data.ownerId, {
+    await sendPushToSeniorMembers(data.seniorId, "", {
       title: `💊 ${data.seniorName}さんのお薬を確認してください`,
       body: data.medicines.join("、") + "がまだ記録されていません",
       tag: "medicine-reminder",
@@ -141,7 +141,7 @@ export async function GET(req: Request) {
           (1000 * 60 * 60 * 24),
       );
 
-      await sendPushToSeniorMembers(senior.id, ownerMember.userId, {
+      await sendPushToSeniorMembers(senior.id, "", {
         title: `💊 ${senior.name}さんの薬が残り${daysLeft}日です`,
         body: `${medicine.name}をそろそろ薬局で購入してください`,
         tag: "medicine-refill",
