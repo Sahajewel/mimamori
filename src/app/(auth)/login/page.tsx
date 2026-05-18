@@ -55,8 +55,12 @@ export default function LoginPage() {
       } else {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
+        const callbackUrl = urlParams.get("callbackUrl");
         if (token) {
           window.location.href = `/invite/${token}`;
+        } else if (callbackUrl) {
+          router.push(callbackUrl);
+          router.refresh();
         } else {
           router.push("/dashboard");
           router.refresh();

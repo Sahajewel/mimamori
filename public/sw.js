@@ -35,7 +35,10 @@ self.addEventListener("notificationclick", (event) => {
             return client.focus();
           }
         }
-        return clients.openWindow(url);
+        // Login page-এ callbackUrl দিয়ে যাবে
+        return clients.openWindow(
+          `/login?callbackUrl=${encodeURIComponent(url)}`,
+        );
       }),
   );
 });
