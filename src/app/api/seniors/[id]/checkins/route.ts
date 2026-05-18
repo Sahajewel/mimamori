@@ -64,6 +64,7 @@ export async function POST(
         tag: "emergency",
         requireInteraction: true,
         silent: false,
+        url: `/seniors/${id}`,
       });
     } else if (parsed.data.status === "CONCERN") {
       await sendPushToSeniorMembers(id, session.user.id, {

@@ -14,7 +14,6 @@ const TIMING_MAP: Record<string, { start: number; end: number }> = {
 };
 
 export async function GET(req: Request) {
-  // Vercel cron secret check
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -28,10 +27,8 @@ export async function GET(req: Request) {
   const today = new Date(
     now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
   );
-
   today.setHours(0, 0, 0, 0);
 
-  // এখন কোন timing active আছে check করো
   const activeTimings = Object.entries(TIMING_MAP)
     .filter(([, { start, end }]) => hour >= start + 1 && hour <= end)
     .map(([time]) => time);
@@ -40,7 +37,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ message: "No active timings" });
   }
 
-  // সব active medicine reminders খোঁজো
   const reminders = await prisma.medicineReminder.findMany({
     where: {
       time: { in: activeTimings },
@@ -62,7 +58,6 @@ export async function GET(req: Request) {
   let notificationCount = 0;
 
   for (const reminder of reminders) {
-    // আজকে এই reminder-এর log আছে কিনা check করো
     const log = await prisma.medicineLog.findFirst({
       where: {
         reminderId: reminder.id,
@@ -71,7 +66,6 @@ export async function GET(req: Request) {
     });
 
     if (!log) {
-      // Log নেই → miss হয়েছে → notification পাঠাও
       const senior = reminder.medicine.senior;
       const ownerMember = senior.members.find((m) => m.role === "OWNER");
 
@@ -82,6 +76,7 @@ export async function GET(req: Request) {
           tag: "medicine-reminder",
           requireInteraction: false,
           silent: false,
+          url: `/seniors/${senior.id}`,
         });
         notificationCount++;
       }
@@ -126,6 +121,7 @@ export async function GET(req: Request) {
         tag: "medicine-refill",
         requireInteraction: false,
         silent: false,
+        url: `/seniors/${senior.id}`,
       });
     }
   }

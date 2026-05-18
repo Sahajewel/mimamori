@@ -15,18 +15,27 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
+
+  const tag = event.notification.tag;
+  const data = event.notification.data;
+
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
+        const url = data?.url || "/dashboard";
+
         for (const client of clientList) {
-          client.postMessage({
-            type: "PLAY_SOUND",
-            sound: event.notification.data?.sound,
-          });
-          if ("focus" in client) return client.focus();
+          if ("focus" in client) {
+            client.postMessage({
+              type: "PLAY_SOUND",
+              sound: tag === "emergency" ? "emergency" : "normal",
+            });
+            client.navigate(url);
+            return client.focus();
+          }
         }
-        return clients.openWindow("/dashboard");
+        return clients.openWindow(url);
       }),
   );
 });

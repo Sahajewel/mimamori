@@ -15,6 +15,7 @@ type NotificationPayload = {
   tag?: string;
   requireInteraction?: boolean;
   silent?: boolean;
+  url?: string; // ← যোগ করো
 };
 
 export async function sendPushToSeniorMembers(
@@ -47,7 +48,11 @@ export async function sendPushToSeniorMembers(
               auth: sub.auth,
             },
           },
-          JSON.stringify(payload),
+          JSON.stringify({
+            // ← এই line replace করো
+            ...payload,
+            data: { url: payload.url || "/dashboard" },
+          }),
         );
       } catch (error) {
         console.error("Push failed:", error);
