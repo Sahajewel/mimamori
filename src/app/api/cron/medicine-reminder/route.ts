@@ -113,7 +113,7 @@ export async function GET(req: Request) {
       tag: "medicine-reminder",
       requireInteraction: false,
       silent: false,
-      url: `/seniors/${data.seniorId}`,
+      url: `/seniors/${data.seniorId}/medicines/missed`,
     });
     notificationCount++;
   }
