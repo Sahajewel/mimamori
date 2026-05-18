@@ -16,6 +16,7 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
+  const tag = event.notification.tag;
   const url = event.notification.data?.url || "/dashboard";
 
   event.waitUntil(
@@ -24,10 +25,13 @@ self.addEventListener("notificationclick", (event) => {
       .then((clientList) => {
         for (const client of clientList) {
           if ("focus" in client) {
-            client.postMessage({
-              type: "PLAY_SOUND",
-              sound: event.notification.data?.sound,
-            });
+            // শুধু emergency-তে sound
+            if (tag === "emergency") {
+              client.postMessage({
+                type: "PLAY_SOUND",
+                sound: "emergency",
+              });
+            }
             return client.focus();
           }
         }
