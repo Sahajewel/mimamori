@@ -332,15 +332,24 @@ export default async function SeniorDetailPage({
                           {medicine.frequency}
                         </p>
                       </div>
-                      {rate !== null && rate > 0 ? (
-                        <span className={`text-xs font-medium ...`}>
-                          {rate}%
+                      <div className="flex items-center gap-2">
+                        {rate !== null && (
+                          <span
+                            className={`text-xs font-medium ${
+                              rate >= 80
+                                ? "text-green-500"
+                                : rate >= 60
+                                  ? "text-amber-500"
+                                  : "text-red-400"
+                            }`}
+                          >
+                            {rate}%
+                          </span>
+                        )}
+                        <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                          服用中
                         </span>
-                      ) : rate === 0 && total > 0 ? (
-                        <span className="text-xs font-medium text-red-400">
-                          0%
-                        </span>
-                      ) : null}
+                      </div>
                     </Link>
                   );
                 })}
