@@ -40,7 +40,16 @@ export async function GET(req: Request) {
   const reminders = await prisma.medicineReminder.findMany({
     where: {
       time: { in: activeTimings },
-      medicine: { active: true },
+      medicine: {
+        active: true,
+        OR: [
+          { ongoing: true },
+          {
+            ongoing: false,
+            endDate: { gte: today },
+          },
+        ],
+      },
     },
     include: {
       medicine: {
