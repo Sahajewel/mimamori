@@ -16,22 +16,18 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const tag = event.notification.tag;
-  const data = event.notification.data;
+  const url = event.notification.data?.url || "/dashboard";
 
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
-        const url = data?.url || "/dashboard";
-
         for (const client of clientList) {
           if ("focus" in client) {
             client.postMessage({
               type: "PLAY_SOUND",
-              sound: tag === "emergency" ? "emergency" : "normal",
+              sound: event.notification.data?.sound,
             });
-            client.navigate(url);
             return client.focus();
           }
         }
