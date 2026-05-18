@@ -82,7 +82,12 @@ export default function MedicineDetailPage() {
   const missedCount = logs.filter((l) => l.status === "MISSED").length;
   const totalCount = logs.length;
 
-  // Pagination
+  const recordedCount = logs.filter(
+    (l) => l.status === "TAKEN" || l.status === "MISSED",
+  ).length;
+  const adherenceRate =
+    recordedCount > 0 ? Math.round((takenCount / recordedCount) * 100) : 0;
+
   const totalPages = Math.ceil(totalCount / PER_PAGE);
   const paginatedLogs = logs.slice(
     (currentPage - 1) * PER_PAGE,
@@ -168,7 +173,7 @@ export default function MedicineDetailPage() {
 
         {/* Stats */}
         {totalCount > 0 && (
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-4 gap-3 mb-4">
             <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
               <p className="text-xl font-medium text-green-500">{takenCount}</p>
               <p className="text-xs text-gray-400 mt-0.5">飲んだ</p>
@@ -180,6 +185,28 @@ export default function MedicineDetailPage() {
             <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
               <p className="text-xl font-medium text-gray-500">{totalCount}</p>
               <p className="text-xs text-gray-400 mt-0.5">合計</p>
+            </div>
+            <div
+              className={`border rounded-xl p-3 text-center ${
+                adherenceRate >= 80
+                  ? "bg-green-50 border-green-100"
+                  : adherenceRate >= 60
+                    ? "bg-amber-50 border-amber-100"
+                    : "bg-red-50 border-red-100"
+              }`}
+            >
+              <p
+                className={`text-xl font-medium ${
+                  adherenceRate >= 80
+                    ? "text-green-500"
+                    : adherenceRate >= 60
+                      ? "text-amber-500"
+                      : "text-red-400"
+                }`}
+              >
+                {adherenceRate}%
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">服薬率</p>
             </div>
           </div>
         )}
@@ -203,22 +230,19 @@ export default function MedicineDetailPage() {
             </p>
           ) : (
             <>
-              {/* Table header */}
               <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-gray-50 text-xs text-gray-400 font-medium">
-                <span>日付・時間</span>
+                <span>日付</span>
                 <span>タイミング</span>
                 <span>状態</span>
                 <span>記録者</span>
               </div>
 
-              {/* Table rows */}
               <div className="divide-y divide-gray-50">
                 {paginatedLogs.map((log) => (
                   <div
                     key={log.id}
                     className="grid grid-cols-4 gap-2 px-4 py-3 items-center"
                   >
-                    {/* 日付・時間 */}
                     <div>
                       <p className="text-xs text-gray-700">
                         {new Date(log.date).toLocaleDateString("ja-JP", {
@@ -227,12 +251,10 @@ export default function MedicineDetailPage() {
                       </p>
                     </div>
 
-                    {/* タイミング */}
                     <span className="text-xs bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full text-center">
                       {log.reminderTime}
                     </span>
 
-                    {/* 状態 */}
                     <span
                       className={`text-xs font-medium ${
                         log.status === "TAKEN"
@@ -241,7 +263,7 @@ export default function MedicineDetailPage() {
                             ? "text-red-400"
                             : log.status === "SKIPPED"
                               ? "text-gray-400"
-                              : "text-gray-300" // NONE
+                              : "text-gray-300"
                       }`}
                     >
                       {log.status === "TAKEN"
@@ -253,7 +275,6 @@ export default function MedicineDetailPage() {
                             : "− 記録なし"}
                     </span>
 
-                    {/* 記録者 */}
                     <span className="text-xs text-gray-500">
                       {log.userName || "-"}
                     </span>
