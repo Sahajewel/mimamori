@@ -68,8 +68,10 @@ export async function POST(
       );
     }
 
-    const { content } = await req.json();
-    if (!content?.trim()) {
+    const { content, imageUrl } = await req.json();
+
+    // Image থাকলে content empty হতে পারবে
+    if (!content?.trim() && !imageUrl) {
       return NextResponse.json(
         { error: "メッセージを入力してください" },
         { status: 400 },
@@ -80,7 +82,8 @@ export async function POST(
       data: {
         seniorId: id,
         userId: session.user.id,
-        content: content.trim(),
+        content: content?.trim() || "",
+        imageUrl: imageUrl || null,
       },
       include: {
         user: { select: { name: true, id: true } },

@@ -1,12 +1,15 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 type Message = {
   id: string;
   content: string;
+  imageUrl: string | null;
   createdAt: string;
   user: { name: string; id: string };
 };
@@ -70,8 +73,11 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [myId, setMyId] = useState("");
   const [seniorName, setSeniorName] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   async function fetchMessages() {
     const res = await fetch(`/api/seniors/${id}/messages`);
@@ -96,9 +102,8 @@ export default function ChatPage() {
   }, [id]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMessages();
-    const interval = setInterval(fetchMessages, 15000);
+    const interval = setInterval(fetchMessages, 10000);
     return () => clearInterval(interval);
   }, [id]);
 
@@ -106,24 +111,20 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // iOS: scroll input into view on focus
-  useEffect(() => {
-    const handleFocus = () => {
-      setTimeout(() => {
-        inputRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 300);
-    };
-    const inputEl = inputRef.current;
-    inputEl?.addEventListener("focus", handleFocus);
-    return () => inputEl?.removeEventListener("focus", handleFocus);
-  }, []);
-
   async function handleSend() {
-    if (!input.trim() || loading) return;
+    if ((!input.trim() && !imageUploading) || loading) return;
     setLoading(true);
+
+    // Optimistic update
+    const tempMsg: Message = {
+      id: `temp-${Date.now()}`,
+      content: input.trim(),
+      imageUrl: null,
+      createdAt: new Date().toISOString(),
+      user: { name: "あなた", id: myId },
+    };
+    setMessages((prev) => [...prev, tempMsg]);
+    setInput("");
 
     const res = await fetch(`/api/seniors/${id}/messages`, {
       method: "POST",
@@ -132,11 +133,36 @@ export default function ChatPage() {
     });
 
     if (res.ok) {
-      setInput("");
       await fetchMessages();
-      inputRef.current?.focus();
     }
     setLoading(false);
+    inputRef.current?.focus();
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
+      const { url } = await res.json();
+      const msgRes = await fetch(`/api/seniors/${id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: "", imageUrl: url }),
+      });
+      if (msgRes.ok) await fetchMessages();
+    }
+    setImageUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
   }
 
   async function handleKeyDown(e: React.KeyboardEvent) {
@@ -147,12 +173,12 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-dvh bg-gray-50">
-      {/* Navbar – full width */}
+    <div className="flex flex-col bg-gray-50" style={{ height: "100dvh" }}>
+      {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.back()}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          className="text-gray-400 hover:text-gray-600"
         >
           ←
         </button>
@@ -171,7 +197,7 @@ export default function ChatPage() {
         </div>
       </nav>
 
-      {/* Messages – centered with max width */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 max-w-2xl mx-auto w-full">
         {messages.length === 0 ? (
           <div className="text-center py-16">
@@ -193,6 +219,7 @@ export default function ChatPage() {
               const showName =
                 !isMe &&
                 (!prevMsg || prevMsg.user.id !== msg.user.id || showDate);
+              const isTemp = msg.id.startsWith("temp-");
 
               return (
                 <div key={msg.id}>
@@ -211,24 +238,34 @@ export default function ChatPage() {
                       <div className="flex items-end gap-1.5">
                         {isMe && (
                           <p className="text-xs text-gray-300 mb-0.5">
-                            {new Date(msg.createdAt).toLocaleTimeString(
-                              "ja-JP",
-                              {
-                                timeZone: "Asia/Tokyo",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              },
-                            )}
+                            {isTemp
+                              ? "送信中..."
+                              : new Date(msg.createdAt).toLocaleTimeString(
+                                  "ja-JP",
+                                  {
+                                    timeZone: "Asia/Tokyo",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  },
+                                )}
                           </p>
                         )}
                         <div
                           className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                             isMe
-                              ? "bg-indigo-600 text-white rounded-tr-sm"
+                              ? `bg-indigo-600 text-white rounded-tr-sm ${isTemp ? "opacity-70" : ""}`
                               : "bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm"
                           }`}
                         >
-                          {msg.content}
+                          {msg.imageUrl && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={msg.imageUrl}
+                              alt="image"
+                              className="rounded-xl max-w-full max-h-48 object-cover mb-1"
+                            />
+                          )}
+                          {msg.content && <p>{msg.content}</p>}
                         </div>
                         {!isMe && (
                           <p className="text-xs text-gray-300 mb-0.5">
@@ -253,12 +290,47 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area – full width white background, but content centered */}
+      {/* Emoji Picker */}
+      {showEmoji && (
+        <div className="shrink-0 max-w-2xl mx-auto w-full">
+          <EmojiPicker
+            onEmojiClick={(emoji: EmojiClickData) => {
+              setInput((prev) => prev + emoji.emoji);
+              setShowEmoji(false);
+              inputRef.current?.focus();
+            }}
+            width="100%"
+            height={300}
+          />
+        </div>
+      )}
+
+      {/* Input */}
       <div
         className="bg-white border-t border-gray-100 px-3 py-2 shrink-0"
         style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
       >
         <div className="max-w-2xl mx-auto flex items-end gap-2">
+          <button
+            onClick={() => setShowEmoji(!showEmoji)}
+            className="w-9 h-9 shrink-0 flex items-center justify-center text-xl"
+          >
+            😊
+          </button>
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={imageUploading}
+            className="w-9 h-9 shrink-0 flex items-center justify-center text-xl disabled:opacity-50"
+          >
+            {imageUploading ? "⏳" : "📷"}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
           <textarea
             ref={inputRef}
             value={input}
