@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: "/icon.svg",
+    shortcut: "/icon.svg",
     apple: "/icon.svg",
   },
   appleWebApp: {
@@ -35,12 +36,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ja"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
-        {" "}
-        <PushSubscriber></PushSubscriber>
+        <PushSubscriber />
         {children}
       </body>
     </html>
