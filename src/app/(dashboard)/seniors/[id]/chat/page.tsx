@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -75,9 +76,13 @@ export default function ChatPage() {
   const [seniorName, setSeniorName] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function fetchMessages() {
     const res = await fetch(`/api/seniors/${id}/messages`);
@@ -111,11 +116,32 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  function handlePressStart(msgId: string, isMe: boolean) {
+    if (!isMe) return;
+    longPressTimer.current = setTimeout(() => {
+      setDeleteId(msgId);
+    }, 500);
+  }
+
+  function handlePressEnd() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteId) return;
+    await fetch(`/api/seniors/${id}/messages/${deleteId}`, {
+      method: "DELETE",
+    });
+    setDeleteId(null);
+    await fetchMessages();
+  }
+
   async function handleSend() {
-    if ((!input.trim() && !imageUploading) || loading) return;
+    if (!input.trim() || loading) return;
     setLoading(true);
 
-    // Optimistic update
     const tempMsg: Message = {
       id: `temp-${Date.now()}`,
       content: input.trim(),
@@ -124,12 +150,13 @@ export default function ChatPage() {
       user: { name: "あなた", id: myId },
     };
     setMessages((prev) => [...prev, tempMsg]);
+    const sentContent = input.trim();
     setInput("");
 
     const res = await fetch(`/api/seniors/${id}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: input.trim() }),
+      body: JSON.stringify({ content: sentContent }),
     });
 
     if (res.ok) {
@@ -174,11 +201,73 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col bg-gray-50" style={{ height: "100dvh" }}>
+      {/* Image Zoom Modal */}
+      {zoomImage && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setZoomImage(null)}
+        >
+          <div className="relative max-w-full max-h-full">
+            <img
+              src={zoomImage}
+              alt="zoom"
+              className="max-w-full max-h-screen rounded-xl object-contain"
+            />
+            <div className="absolute top-2 right-2 flex gap-2">
+              <a
+                href={zoomImage}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white text-gray-700 text-xs px-3 py-1.5 rounded-full font-medium shadow"
+              >
+                💾 保存
+              </a>
+              <button
+                onClick={() => setZoomImage(null)}
+                className="bg-white text-gray-700 text-xs px-3 py-1.5 rounded-full font-medium shadow"
+              >
+                ✕ 閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {deleteId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mb-4">
+            <p className="text-sm font-medium text-gray-900 mb-1 text-center">
+              メッセージを削除しますか？
+            </p>
+            <p className="text-xs text-gray-400 text-center mb-4">
+              この操作は取り消せません
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setDeleteId(null)}
+                className="py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleDelete}
+                className="py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium"
+              >
+                削除する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.back()}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 text-lg"
         >
           ←
         </button>
@@ -251,18 +340,23 @@ export default function ChatPage() {
                           </p>
                         )}
                         <div
-                          className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                          className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed cursor-pointer select-none ${
                             isMe
                               ? `bg-indigo-600 text-white rounded-tr-sm ${isTemp ? "opacity-70" : ""}`
                               : "bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm"
                           }`}
+                          onMouseDown={() => handlePressStart(msg.id, isMe)}
+                          onMouseUp={handlePressEnd}
+                          onMouseLeave={handlePressEnd}
+                          onTouchStart={() => handlePressStart(msg.id, isMe)}
+                          onTouchEnd={handlePressEnd}
                         >
                           {msg.imageUrl && (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={msg.imageUrl}
                               alt="image"
-                              className="rounded-xl max-w-full max-h-48 object-cover mb-1"
+                              className="rounded-xl max-w-full max-h-48 object-cover mb-1 cursor-pointer"
+                              onClick={() => setZoomImage(msg.imageUrl)}
                             />
                           )}
                           {msg.content && <p>{msg.content}</p>}
