@@ -183,10 +183,10 @@ export default function ChatPage() {
                 <div key={msg.id}>
                   {showDate && <DateSeparator date={msg.createdAt} />}
                   <div
-                    className={`flex ${isMe ? "justify-end" : "justify-start"} mb-1`}
+                    className={`flex ${isMe ? "justify-end" : "justify-start"} mb-1 w-full`}
                   >
                     <div
-                      className={`flex flex-col ${isMe ? "items-end" : "items-start"} max-w-xs md:max-w-md`}
+                      className={`flex flex-col ${isMe ? "items-end" : "items-start"} max-w-[75%]`}
                     >
                       {showName && (
                         <p className="text-xs text-gray-400 mb-1 ml-1">
@@ -239,7 +239,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3 shrink-0 safe-bottom">
+      <div className="bg-white border-t border-gray-100 px-4 py-3 flex-shrink-0">
         <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea
             ref={inputRef}
@@ -252,13 +252,13 @@ export default function ChatPage() {
             onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
             rows={1}
-            className="flex-1 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none max-h-32"
+            className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none max-h-32"
             style={{ height: "42px" }}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors shrink-0"
+            className="w-10 h-10 shrink-0 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
             {loading ? (
               <span className="text-xs">...</span>
