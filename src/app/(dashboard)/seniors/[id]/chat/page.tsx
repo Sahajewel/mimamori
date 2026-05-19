@@ -243,48 +243,44 @@ export default function ChatPage() {
 
       {/* Input */}
       <div
-        className="bg-white border-t border-gray-100 px-4 py-3 shrink-0"
-        style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+        className="bg-white border-t border-gray-100 px-3 py-2 flex-shrink-0"
+        style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
       >
-        <div className="max-w-2xl mx-auto flex items-end gap-2">
+        <div className="flex items-end gap-2">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
               e.target.style.height = "auto";
-              e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+              e.target.style.height = `${Math.min(e.target.scrollHeight, 100)}px`;
             }}
             onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
             rows={1}
-            className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none max-h-32"
-            style={{ height: "42px" }}
+            className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+            style={{ height: "38px", maxHeight: "100px" }}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="w-10 h-10 shrink-0 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="w-9 h-9 flex-shrink-0 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
-            {loading ? (
-              <span className="text-xs">...</span>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M22 2L11 13"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M22 2L15 22L11 13L2 9L22 2Z"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M22 2L11 13"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M22 2L15 22L11 13L2 9L22 2Z"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
       </div>
