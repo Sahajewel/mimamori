@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -131,9 +132,9 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-50 flex flex-col">
+    <div className="fixed inset-0 bg-gray-50 flex flex-col overflow-hidden">
       {/* Navbar */}
-      <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 flex-shrink-0">
+      <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.back()}
           className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
@@ -238,7 +239,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3 flex-shrink-0">
+      <div className="bg-white border-t border-gray-100 px-4 py-3 shrink-0 safe-bottom">
         <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea
             ref={inputRef}
@@ -257,7 +258,7 @@ export default function ChatPage() {
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors flex-shrink-0"
+            className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors shrink-0"
           >
             {loading ? (
               <span className="text-xs">...</span>
