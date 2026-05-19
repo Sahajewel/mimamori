@@ -41,7 +41,8 @@ export async function POST(req: Request) {
     await sendPasswordResetEmail(email, resetUrl);
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Forgot password error:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },
