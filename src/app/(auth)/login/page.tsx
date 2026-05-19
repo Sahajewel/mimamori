@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 type FieldErrors = {
   email?: string;
@@ -149,6 +150,21 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm mt-6 text-gray-400">
+          アカウントをお持ちでない方は{" "}
+          <a href="/register" className="text-indigo-600 hover:underline">
+            新規登録
+          </a>
+        </p>
+        <p className="text-center text-sm mt-6 text-gray-400">
+          <Link
+            href="/forgot-password"
+            className="text-indigo-600 hover:underline"
+          >
+            パスワードをお忘れですか？
+          </Link>
+        </p>
+
+        <p className="text-center text-sm mt-2 text-gray-400">
           アカウントをお持ちでない方は{" "}
           <a href="/register" className="text-indigo-600 hover:underline">
             新規登録
