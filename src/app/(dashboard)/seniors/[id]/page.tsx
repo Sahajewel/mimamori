@@ -418,6 +418,29 @@ export default async function SeniorDetailPage({
             </>
           )}
         </div>
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <Link
+            href={`/seniors/${id}/checkin`}
+            className="bg-indigo-600 text-white rounded-xl p-4 text-center hover:bg-indigo-700 transition-colors"
+          >
+            <p className="text-lg mb-1">✓</p>
+            <p className="text-sm font-medium">チェックイン</p>
+          </Link>
+          <Link
+            href={`/seniors/${id}/chat`}
+            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors"
+          >
+            <p className="text-lg mb-1">💬</p>
+            <p className="text-sm font-medium text-gray-700">チャット</p>
+          </Link>
+          <Link
+            href={`/seniors/${id}/notes/new`}
+            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors"
+          >
+            <p className="text-lg mb-1">📝</p>
+            <p className="text-sm font-medium text-gray-700">ケアノート</p>
+          </Link>
+        </div>
       </div>
     </div>
   );

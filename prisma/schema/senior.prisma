@@ -14,6 +14,7 @@ model Senior {
     medicines   Medicine[]
     careNotes   CareNote[]
     invitations Invitation[]
+    messages    Message[]
 
     @@index([id])
     @@index([quickToken])

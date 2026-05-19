@@ -1,0 +1,11 @@
+model Message {
+    id        String   @id @default(uuid())
+    seniorId  String
+    senior    Senior   @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    content   String
+    createdAt DateTime @default(now())
+
+    @@index([seniorId])
+}
