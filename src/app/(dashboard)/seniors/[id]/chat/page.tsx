@@ -131,7 +131,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col">
+    <div className="fixed inset-0 bg-gray-50 flex flex-col">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 flex-shrink-0">
         <button
