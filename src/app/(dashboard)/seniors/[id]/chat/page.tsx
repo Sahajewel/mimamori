@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -74,55 +73,15 @@ export default function ChatPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // iOS-এর কিবোর্ড হাইট ডাইনামিকালি হ্যান্ডেল করার স্টেট
-  const [visualHeight, setVisualHeight] = useState("100dvh");
-
-  // iPhone-এর ভিউপোর্ট এবং কিবোর্ড বাগ ফিক্স (অ্যাসিঙ্ক স্টেট আপডেট সহ)
-  useEffect(() => {
-    if (!window.visualViewport) return;
-
-    const handleResize = () => {
-      // requestAnimationFrame ব্যবহার করায় সিনক্রোনাস ক্যাসকেডিং রেন্ডার এররটি আর আসবে না
-      requestAnimationFrame(() => {
-        if (window.visualViewport) {
-          setVisualHeight(`${window.visualViewport.height}px`);
-        }
-      });
-
-      setTimeout(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    };
-
-    window.visualViewport.addEventListener("resize", handleResize);
-    window.visualViewport.addEventListener("scroll", handleResize);
-
-    // প্রথম রেন্ডারেও সাইজ সেট করে নেওয়া
-    handleResize();
-
-    return () => {
-      window.visualViewport?.removeEventListener("resize", handleResize);
-      window.visualViewport?.removeEventListener("scroll", handleResize);
-    };
-  }, []);
-
-  // মেসেজ ফেচ করার ফাংশন
   async function fetchMessages() {
-    try {
-      const res = await fetch(`/api/seniors/${id}/messages`);
-      if (res.ok) {
-        const data = await res.json();
-        setMessages(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
+    const res = await fetch(`/api/seniors/${id}/messages`);
+    if (res.ok) {
+      const data = await res.json();
+      setMessages(data);
     }
   }
 
-  // ডেটা লোড এবং পোলিং
   useEffect(() => {
-    if (!id) return;
-
     fetch("/api/auth/session")
       .then((r) => r.json())
       .then((d) => {
@@ -134,19 +93,33 @@ export default function ChatPage() {
       .then((d) => {
         if (d?.name) setSeniorName(d.name);
       });
+  }, [id]);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMessages();
-
-    const interval = setInterval(() => {
-      fetchMessages();
-    }, 15000);
-
+    const interval = setInterval(fetchMessages, 15000);
     return () => clearInterval(interval);
   }, [id]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Optional: scroll input into view on focus (helps on iOS)
+  useEffect(() => {
+    const handleFocus = () => {
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 300);
+    };
+    const inputEl = inputRef.current;
+    inputEl?.addEventListener("focus", handleFocus);
+    return () => inputEl?.removeEventListener("focus", handleFocus);
+  }, []);
 
   async function handleSend() {
     if (!input.trim() || loading) return;
@@ -160,7 +133,6 @@ export default function ChatPage() {
 
     if (res.ok) {
       setInput("");
-      if (inputRef.current) inputRef.current.style.height = "38px";
       await fetchMessages();
       inputRef.current?.focus();
     }
@@ -175,10 +147,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div
-      className="absolute inset-0 bg-gray-50 flex flex-col overflow-hidden"
-      style={{ height: visualHeight }}
-    >
+    <div className="flex flex-col min-h-dvh bg-gray-50">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
@@ -284,7 +253,7 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
+      {/* Input area */}
       <div
         className="bg-white border-t border-gray-100 px-3 py-2 shrink-0"
         style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
@@ -301,7 +270,8 @@ export default function ChatPage() {
             onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
             rows={1}
-            className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+            // Key fix: font-size >= 16px prevents iOS zoom
+            className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
             style={{ height: "38px", maxHeight: "100px" }}
           />
           <button
