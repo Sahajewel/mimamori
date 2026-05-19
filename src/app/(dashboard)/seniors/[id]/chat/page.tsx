@@ -243,7 +243,7 @@ export default function ChatPage() {
 
       {/* Input */}
       <div
-        className="bg-white border-t border-gray-100 px-3 py-2 flex-shrink-0"
+        className="bg-white border-t border-gray-100 px-3 py-2 shrink-0"
         style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
       >
         <div className="flex items-end gap-2">
@@ -253,18 +253,18 @@ export default function ChatPage() {
             onChange={(e) => {
               setInput(e.target.value);
               e.target.style.height = "auto";
-              e.target.style.height = `${Math.min(e.target.scrollHeight, 100)}px`;
+              e.target.style.height = `${Math.min(e.target.scrollHeight, 50)}px`;
             }}
             onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
             rows={1}
             className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
-            style={{ height: "38px", maxHeight: "100px" }}
+            style={{ height: "38px", maxHeight: "50px" }}
           />
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="w-9 h-9 flex-shrink-0 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="w-9 h-9 shrink-0 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path
