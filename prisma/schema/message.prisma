@@ -5,6 +5,7 @@ model Message {
     userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     content   String
+    imageUrl  String?
     createdAt DateTime @default(now())
 
     @@index([seniorId])
