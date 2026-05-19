@@ -132,7 +132,10 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-50 flex flex-col overflow-hidden">
+    <div
+      className="fixed inset-0 bg-gray-50 flex flex-col"
+      style={{ height: "100dvh" }}
+    >
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
@@ -239,7 +242,10 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3 flex-shrink-0">
+      <div
+        className="bg-white border-t border-gray-100 px-4 py-3 shrink-0"
+        style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+      >
         <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea
             ref={inputRef}
