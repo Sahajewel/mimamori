@@ -106,7 +106,7 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Optional: scroll input into view on focus (helps on iOS)
+  // iOS: scroll input into view on focus
   useEffect(() => {
     const handleFocus = () => {
       setTimeout(() => {
@@ -148,7 +148,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col min-h-dvh bg-gray-50">
-      {/* Navbar */}
+      {/* Navbar – full width */}
       <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
         <button
           onClick={() => router.back()}
@@ -171,7 +171,7 @@ export default function ChatPage() {
         </div>
       </nav>
 
-      {/* Messages */}
+      {/* Messages – centered with max width */}
       <div className="flex-1 overflow-y-auto px-4 py-4 max-w-2xl mx-auto w-full">
         {messages.length === 0 ? (
           <div className="text-center py-16">
@@ -253,12 +253,12 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area */}
+      {/* Input area – full width white background, but content centered */}
       <div
         className="bg-white border-t border-gray-100 px-3 py-2 shrink-0"
         style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
       >
-        <div className="flex items-end gap-2">
+        <div className="max-w-2xl mx-auto flex items-end gap-2">
           <textarea
             ref={inputRef}
             value={input}
@@ -270,7 +270,6 @@ export default function ChatPage() {
             onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
             rows={1}
-            // Key fix: font-size >= 16px prevents iOS zoom
             className="flex-1 min-w-0 border border-gray-200 rounded-2xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
             style={{ height: "38px", maxHeight: "100px" }}
           />
