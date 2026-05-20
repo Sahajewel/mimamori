@@ -42,8 +42,7 @@ export default function NewMedicinePage() {
   const [frequency, setFrequency] = useState("");
   const [customFrequency, setCustomFrequency] = useState("");
   const [times, setTimes] = useState<string[]>([]);
-  const [customTime, setCustomTime] = useState("");
-  const [showCustomTime, setShowCustomTime] = useState(false);
+
   const [ongoing, setOngoing] = useState(true);
   const [duration, setDuration] = useState("");
   const [startDate, setStartDate] = useState(
@@ -57,14 +56,6 @@ export default function NewMedicinePage() {
     setTimes((prev) =>
       prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time],
     );
-  }
-
-  function addCustomTime() {
-    if (customTime.trim() && !times.includes(customTime.trim())) {
-      setTimes((prev) => [...prev, customTime.trim()]);
-      setCustomTime("");
-      setShowCustomTime(false);
-    }
   }
 
   function getPreview() {
@@ -251,40 +242,7 @@ export default function NewMedicinePage() {
                   {opt.label}
                 </button>
               ))}
-              {/* Custom timing button */}
-              <button
-                onClick={() => setShowCustomTime(!showCustomTime)}
-                className={`py-2.5 text-sm rounded-lg border-2 transition-all font-medium ${
-                  showCustomTime
-                    ? "bg-green-600 text-white border-green-600"
-                    : "border-gray-200 text-gray-600 hover:border-green-300"
-                }`}
-              >
-                カスタム
-              </button>
             </div>
-
-            {/* Custom timing input */}
-            {showCustomTime && (
-              <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={customTime}
-                  onChange={(e) => setCustomTime(e.target.value)}
-                  placeholder="例：起床後、入浴後"
-                  className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") addCustomTime();
-                  }}
-                />
-                <button
-                  onClick={addCustomTime}
-                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
-                >
-                  追加
-                </button>
-              </div>
-            )}
 
             {/* Selected custom timings */}
             {times.filter((t) => !timeOptions.find((o) => o.value === t))
