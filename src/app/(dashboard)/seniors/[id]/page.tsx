@@ -67,22 +67,36 @@ export default async function SeniorDetailPage({
       },
     },
   });
+  if (!seniorMember) notFound();
+
+  const { senior, role } = seniorMember;
+
+  // আগের lastReadAt save করো
+  const lastReadAt = seniorMember.lastReadAt;
+
+  // এখন update করো
+  await prisma.seniorMember.update({
+    where: {
+      userId_seniorId: {
+        userId: session.user.id,
+        seniorId: id,
+      },
+    },
+    data: { lastReadAt: new Date() },
+  });
   const oneDayAgo = new Date();
   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
+  // আগের lastReadAt দিয়ে count করো
   const unreadCount = await prisma.message.count({
     where: {
       seniorId: id,
       createdAt: {
-        gte: oneDayAgo,
+        gte: lastReadAt || oneDayAgo,
       },
       userId: { not: session.user.id },
     },
   });
-
-  if (!seniorMember) notFound();
-
-  const { senior, role } = seniorMember;
 
   return (
     <div className="min-h-screen bg-gray-50">

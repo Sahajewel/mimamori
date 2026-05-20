@@ -115,7 +115,10 @@ export default function ChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
+  useEffect(() => {
+    // Chat page-এ আসলে localStorage-এ time save করো
+    localStorage.setItem(`chat-read-${id}`, new Date().toISOString());
+  }, [id]);
   function handlePressStart(msgId: string, isMe: boolean) {
     if (!isMe) return;
     longPressTimer.current = setTimeout(() => {
