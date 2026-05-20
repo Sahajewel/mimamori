@@ -27,7 +27,22 @@ export default async function SeniorDetailPage({
             include: { user: { select: { name: true } } },
           },
           medicines: {
-            where: { active: true },
+            where: {
+              active: true,
+              OR: [
+                { ongoing: true },
+                {
+                  ongoing: false,
+                  endDate: {
+                    gte: new Date(
+                      new Date().toLocaleString("en-US", {
+                        timeZone: "Asia/Tokyo",
+                      }),
+                    ),
+                  },
+                },
+              ],
+            },
             include: {
               reminders: true,
               logs: {
@@ -41,6 +56,7 @@ export default async function SeniorDetailPage({
                 },
               },
             },
+            orderBy: { createdAt: "asc" },
           },
           careNotes: {
             orderBy: { createdAt: "desc" },
