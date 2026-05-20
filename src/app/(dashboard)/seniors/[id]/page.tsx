@@ -77,9 +77,10 @@ export default async function SeniorDetailPage({
   // এখন update করো
   await prisma.seniorMember.update({
     where: {
-      userId_seniorId: {
-        userId: session.user.id,
+      seniorId_userId: {
+        // ← userId_seniorId না!
         seniorId: id,
+        userId: session.user.id,
       },
     },
     data: { lastReadAt: new Date() },
