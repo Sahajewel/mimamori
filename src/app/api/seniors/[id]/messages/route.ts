@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
+import { sendPushToSeniorMembers } from "@/lib/push";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -70,7 +70,6 @@ export async function POST(
 
     const { content, imageUrl } = await req.json();
 
-    // Image থাকলে content empty হতে পারবে
     if (!content?.trim() && !imageUrl) {
       return NextResponse.json(
         { error: "メッセージを入力してください" },
@@ -87,7 +86,20 @@ export async function POST(
       },
       include: {
         user: { select: { name: true, id: true } },
+        senior: { select: { name: true } },
       },
+    });
+
+    // Notification পাঠাও
+    await sendPushToSeniorMembers(id, session.user.id, {
+      title: `💬 ${message.user.name}さんからメッセージ`,
+      body: message.imageUrl
+        ? "📷 写真を送りました"
+        : message.content.slice(0, 50),
+      tag: "chat-message",
+      requireInteraction: false,
+      silent: false,
+      url: `/seniors/${id}/chat`,
     });
 
     return NextResponse.json(message, { status: 201 });
@@ -98,3 +110,5 @@ export async function POST(
     );
   }
 }
+
+// message create-এর পরে:

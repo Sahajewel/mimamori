@@ -67,6 +67,18 @@ export default async function SeniorDetailPage({
       },
     },
   });
+  const oneDayAgo = new Date();
+  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+
+  const unreadCount = await prisma.message.count({
+    where: {
+      seniorId: id,
+      createdAt: {
+        gte: oneDayAgo,
+      },
+      userId: { not: session.user.id },
+    },
+  });
 
   if (!seniorMember) notFound();
 
@@ -237,10 +249,15 @@ export default async function SeniorDetailPage({
           </Link>
           <Link
             href={`/seniors/${id}/chat`}
-            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors"
+            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors relative"
           >
             <p className="text-lg mb-1">💬</p>
             <p className="text-sm font-medium text-gray-700">チャット</p>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
           </Link>
           <Link
             href={`/seniors/${id}/notes/new`}
