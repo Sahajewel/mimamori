@@ -95,7 +95,7 @@ export default function QuickPage() {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [checkedInStatus, setCheckedInStatus] = useState<string | null>(null);
   const [showChangeCheckIn, setShowChangeCheckIn] = useState(false);
-
+  const [doneStatuses, setDoneStatuses] = useState<Record<string, string>>({});
   useEffect(() => {
     fetch(`/api/quick/${token}`)
       .then((r) => r.json())
@@ -133,10 +133,10 @@ export default function QuickPage() {
     reminderId: string,
     status: string,
   ) {
-    // সাথে সাথে UI update করো
+    // Optimistic update
     setDoneReminders((prev) => new Set([...prev, reminderId]));
+    setDoneStatuses((prev) => ({ ...prev, [reminderId]: status }));
     setLoadingId(`${reminderId}-${status}`);
-
     await fetch(`/api/quick/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -303,12 +303,12 @@ export default function QuickPage() {
                           {isDone ? (
                             <div
                               className={`rounded-xl py-2.5 text-center text-sm font-medium ${
-                                todayLog?.status === "TAKEN" || !todayLog
-                                  ? "bg-green-50 text-green-600 border border-green-100"
-                                  : "bg-gray-50 text-gray-400 border border-gray-100"
+                                doneStatuses[reminder.id] === "MISSED"
+                                  ? "bg-gray-50 text-gray-400 border border-gray-100"
+                                  : "bg-green-50 text-green-600 border border-green-100"
                               }`}
                             >
-                              {todayLog?.status === "MISSED"
+                              {doneStatuses[reminder.id] === "MISSED"
                                 ? "✗ 飲めませんでした"
                                 : "✓ 飲みました"}
                             </div>
