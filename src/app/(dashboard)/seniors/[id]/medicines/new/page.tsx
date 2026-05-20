@@ -12,13 +12,25 @@ const frequencyOptions = [
 ];
 
 const timeOptions = [
+  { value: "朝食前", label: "朝食前" },
   { value: "朝食後", label: "朝食後" },
+  { value: "昼食前", label: "昼食前" },
+  { value: "食間", label: "食間" },
   { value: "昼食後", label: "昼食後" },
+  { value: "夕食前", label: "夕食前" },
   { value: "夕食後", label: "夕食後" },
   { value: "就寝前", label: "就寝前" },
-  { value: "朝食前", label: "朝食前" },
-  { value: "食間", label: "食間" },
 ];
+
+function getFrequencyCount(freq: string): number {
+  if (freq === "1日1回") return 1;
+  if (freq === "1日2回") return 2;
+  if (freq === "1日3回") return 3;
+  if (freq === "週1回") return 1;
+  if (freq === "必要時") return 0;
+  const match = freq.match(/(\d+)/);
+  return match ? parseInt(match[1]) : 0;
+}
 
 export default function NewMedicinePage() {
   const router = useRouter();
@@ -30,6 +42,8 @@ export default function NewMedicinePage() {
   const [frequency, setFrequency] = useState("");
   const [customFrequency, setCustomFrequency] = useState("");
   const [times, setTimes] = useState<string[]>([]);
+  const [customTime, setCustomTime] = useState("");
+  const [showCustomTime, setShowCustomTime] = useState(false);
   const [ongoing, setOngoing] = useState(true);
   const [duration, setDuration] = useState("");
   const [startDate, setStartDate] = useState(
@@ -45,7 +59,14 @@ export default function NewMedicinePage() {
     );
   }
 
-  // Preview text
+  function addCustomTime() {
+    if (customTime.trim() && !times.includes(customTime.trim())) {
+      setTimes((prev) => [...prev, customTime.trim()]);
+      setCustomTime("");
+      setShowCustomTime(false);
+    }
+  }
+
   function getPreview() {
     if (!name) return "";
     const freq = frequency === "カスタム" ? customFrequency : frequency;
@@ -67,6 +88,17 @@ export default function NewMedicinePage() {
       setError("服用タイミングを選択してください");
       return;
     }
+
+    const freqCount = getFrequencyCount(
+      frequency === "カスタム" ? customFrequency : frequency,
+    );
+    if (freqCount > 0 && times.length !== freqCount) {
+      setError(
+        `服用頻度が${freqCount}回のため、タイミングも${freqCount}つ選択してください`,
+      );
+      return;
+    }
+
     if (!ongoing && !duration) {
       setError("服用期間を入力してください");
       return;
@@ -198,7 +230,7 @@ export default function NewMedicinePage() {
             )}
           </div>
 
-          {/* Timing — multiple select */}
+          {/* Timing */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               服用タイミング <span className="text-red-400">*</span>
@@ -219,7 +251,65 @@ export default function NewMedicinePage() {
                   {opt.label}
                 </button>
               ))}
+              {/* Custom timing button */}
+              <button
+                onClick={() => setShowCustomTime(!showCustomTime)}
+                className={`py-2.5 text-sm rounded-lg border-2 transition-all font-medium ${
+                  showCustomTime
+                    ? "bg-green-600 text-white border-green-600"
+                    : "border-gray-200 text-gray-600 hover:border-green-300"
+                }`}
+              >
+                カスタム
+              </button>
             </div>
+
+            {/* Custom timing input */}
+            {showCustomTime && (
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  value={customTime}
+                  onChange={(e) => setCustomTime(e.target.value)}
+                  placeholder="例：起床後、入浴後"
+                  className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") addCustomTime();
+                  }}
+                />
+                <button
+                  onClick={addCustomTime}
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
+                >
+                  追加
+                </button>
+              </div>
+            )}
+
+            {/* Selected custom timings */}
+            {times.filter((t) => !timeOptions.find((o) => o.value === t))
+              .length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {times
+                  .filter((t) => !timeOptions.find((o) => o.value === t))
+                  .map((t) => (
+                    <span
+                      key={t}
+                      className="flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2 py-1 rounded-full"
+                    >
+                      {t}
+                      <button
+                        onClick={() =>
+                          setTimes((prev) => prev.filter((x) => x !== t))
+                        }
+                        className="text-green-400 hover:text-green-600"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+              </div>
+            )}
           </div>
 
           {/* Duration */}

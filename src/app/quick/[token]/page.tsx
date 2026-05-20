@@ -23,14 +23,14 @@ type Data = {
 
 // Timing map — reminder time → active hours
 const TIMING_MAP: Record<string, { start: number; end: number }> = {
-  朝食後: { start: 7, end: 12 },
-  朝食前: { start: 6, end: 9 },
-  昼食後: { start: 11, end: 16 },
-  昼食前: { start: 10, end: 13 },
-  夕食後: { start: 17, end: 22 },
-  夕食前: { start: 16, end: 19 },
-  就寝前: { start: 20, end: 24 },
-  食間: { start: 10, end: 14 },
+  朝食前: { start: 6, end: 8 }, // 朝食の前
+  朝食後: { start: 7, end: 10 }, // 朝食の後
+  昼食前: { start: 10, end: 12 }, // 昼食の前
+  食間: { start: 10, end: 14 }, // 食間
+  昼食後: { start: 11, end: 14 }, // 昼食の後
+  夕食前: { start: 16, end: 18 }, // 夕食の前
+  夕食後: { start: 17, end: 20 }, // 夕食の後
+  就寝前: { start: 20, end: 23 }, // 就寝前
 };
 
 function isReminderActive(time: string): boolean {
@@ -109,6 +109,7 @@ export default function QuickPage() {
             .map((l: TodayLog) => l.reminderId),
         );
         setDoneReminders(done);
+
         if (d.todayCheckIn) {
           setCheckedInStatus(d.todayCheckIn.status);
         }
@@ -132,8 +133,10 @@ export default function QuickPage() {
     reminderId: string,
     status: string,
   ) {
-    setLoadingId(`${reminderId}-${status}`);
+    // সাথে সাথে UI update করো
     setDoneReminders((prev) => new Set([...prev, reminderId]));
+    setLoadingId(`${reminderId}-${status}`);
+
     await fetch(`/api/quick/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -300,14 +303,14 @@ export default function QuickPage() {
                           {isDone ? (
                             <div
                               className={`rounded-xl py-2.5 text-center text-sm font-medium ${
-                                todayLog?.status === "TAKEN"
+                                todayLog?.status === "TAKEN" || !todayLog
                                   ? "bg-green-50 text-green-600 border border-green-100"
                                   : "bg-gray-50 text-gray-400 border border-gray-100"
                               }`}
                             >
-                              {todayLog?.status === "TAKEN"
-                                ? "✓ 飲みました"
-                                : "✗ 飲めませんでした"}
+                              {todayLog?.status === "MISSED"
+                                ? "✗ 飲めませんでした"
+                                : "✓ 飲みました"}
                             </div>
                           ) : /* Upcoming — not yet time */
                           upcoming ? (

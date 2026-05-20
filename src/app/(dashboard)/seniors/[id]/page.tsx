@@ -313,63 +313,61 @@ export default async function SeniorDetailPage({
               まだお薬が登録されていません
             </p>
           ) : (
-            <>
-              <div className="space-y-3">
-                {senior.medicines.slice(0, 3).map((medicine) => {
-                  const taken = medicine.logs.filter(
-                    (l) => l.status === "TAKEN",
-                  ).length;
-                  const total = medicine.logs.length;
-                  const rate =
-                    total > 0 ? Math.round((taken / total) * 100) : null;
+            <div className="space-y-3">
+              {senior.medicines.map((medicine) => {
+                const taken = medicine.logs.filter(
+                  (l) => l.status === "TAKEN",
+                ).length;
+                const recorded = medicine.logs.length;
+                const rate =
+                  recorded > 0 ? Math.round((taken / recorded) * 100) : null;
 
-                  return (
-                    <Link
-                      key={medicine.id}
-                      href={`/seniors/${id}/medicines/${medicine.id}`}
-                      className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-lg px-2 transition-colors"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {medicine.name}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {medicine.dosage && `${medicine.dosage} · `}
-                          {medicine.frequency}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {rate !== null && (
-                          <span
-                            className={`text-xs font-medium ${
-                              rate >= 80
-                                ? "text-green-500"
-                                : rate >= 60
-                                  ? "text-amber-500"
-                                  : "text-red-400"
-                            }`}
-                          >
-                            {rate}%
-                          </span>
-                        )}
-                        <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
-                          服用中
+                return (
+                  <Link
+                    key={medicine.id}
+                    href={`/seniors/${id}/medicines/${medicine.id}`}
+                    className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-lg px-2 transition-colors"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {medicine.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {medicine.dosage && `${medicine.dosage} · `}
+                        {medicine.frequency}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {rate !== null && recorded > 0 && (
+                        <span
+                          className={`text-xs font-medium ${
+                            rate >= 80
+                              ? "text-green-500"
+                              : rate >= 60
+                                ? "text-amber-500"
+                                : "text-red-400"
+                          }`}
+                        >
+                          {rate}%
                         </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-              {senior.medicines.length > 3 && (
-                <Link
-                  href={`/seniors/${id}/medicines`}
-                  className="block text-center text-sm text-indigo-600 hover:underline mt-3"
-                >
-                  もっと見る ({senior.medicines.length - 3}件) →
-                </Link>
-              )}
-            </>
+                      )}
+                      <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                        服用中
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           )}
+
+          {/* History button */}
+          <Link
+            href={`/seniors/${id}/medicines`}
+            className="block text-center text-sm text-indigo-600 hover:underline mt-4"
+          >
+            服薬履歴を見る →
+          </Link>
         </div>
 
         {/* Care notes */}
