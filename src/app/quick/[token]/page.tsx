@@ -40,7 +40,7 @@ function isReminderActive(time: string): boolean {
   const hour = japanTime.getHours();
   const timing = TIMING_MAP[time];
   if (!timing) return true;
-  return hour >= timing.start && hour <= timing.end;
+  return hour >= timing.start && hour < timing.end;
 }
 
 function isReminderUpcoming(time: string): boolean {
