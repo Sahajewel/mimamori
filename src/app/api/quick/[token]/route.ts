@@ -15,12 +15,25 @@ export async function GET(
 ) {
   try {
     const { token } = await params;
+    const today = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+    );
+    today.setHours(0, 0, 0, 0);
 
     const senior = await prisma.senior.findUnique({
       where: { quickToken: token },
       include: {
         medicines: {
-          where: { active: true },
+          where: {
+            active: true,
+            OR: [
+              { ongoing: true },
+              {
+                ongoing: false,
+                endDate: { gte: today },
+              },
+            ],
+          },
           include: { reminders: true },
         },
         checkIns: {
@@ -33,10 +46,6 @@ export async function GET(
     if (!senior) {
       return NextResponse.json({ error: "見つかりません" }, { status: 404 });
     }
-
-    // 今日のログ
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const todayLogs = await prisma.medicineLog.findMany({
       where: {
