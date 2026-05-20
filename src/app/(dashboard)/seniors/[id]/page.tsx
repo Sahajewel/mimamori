@@ -34,7 +34,7 @@ export default async function SeniorDetailPage({
                 {
                   ongoing: false,
                   endDate: {
-                    gte: new Date(
+                    gt: new Date(
                       new Date().toLocaleString("en-US", {
                         timeZone: "Asia/Tokyo",
                       }),

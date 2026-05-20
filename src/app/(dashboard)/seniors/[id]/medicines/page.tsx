@@ -32,7 +32,7 @@ export default async function MedicineHistoryPage({
     where: {
       seniorId: id,
       ongoing: false,
-      endDate: { lt: today },
+      endDate: { lte: today },
     },
     orderBy: { endDate: "desc" },
   });
