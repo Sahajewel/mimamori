@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { QuickLinkButton } from "@/app/components/QuickLinkButton";
+import { ChatButton } from "@/app/components/ChatButton";
 
 export default async function SeniorDetailPage({
   params,
@@ -81,19 +82,6 @@ export default async function SeniorDetailPage({
       },
     },
     data: { lastReadAt: new Date() },
-  });
-  const oneDayAgo = new Date();
-  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-
-  // আগের lastReadAt দিয়ে count করো
-  const unreadCount = await prisma.message.count({
-    where: {
-      seniorId: id,
-      createdAt: {
-        gte: lastReadAt || oneDayAgo,
-      },
-      userId: { not: session.user.id },
-    },
   });
 
   return (
@@ -259,18 +247,8 @@ export default async function SeniorDetailPage({
             <p className="text-lg mb-1">✓</p>
             <p className="text-sm font-medium">チェックイン</p>
           </Link>
-          <Link
-            href={`/seniors/${id}/chat`}
-            className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors relative"
-          >
-            <p className="text-lg mb-1">💬</p>
-            <p className="text-sm font-medium text-gray-700">チャット</p>
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
+          <ChatButton seniorId={id}></ChatButton>
+
           <Link
             href={`/seniors/${id}/notes/new`}
             className="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-indigo-200 transition-colors"

@@ -13,13 +13,20 @@ export async function GET(
       return NextResponse.json({ count: 0 });
     }
 
-    // Last 24 hours-এ নতুন message count
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const member = await prisma.seniorMember.findFirst({
+      where: { seniorId: id, userId: session.user.id },
+      select: { lastReadAt: true },
+    });
+
+    const oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
     const count = await prisma.message.count({
       where: {
         seniorId: id,
-        createdAt: { gte: since },
+        createdAt: {
+          gte: member?.lastReadAt || oneDayAgo,
+        },
         userId: { not: session.user.id },
       },
     });
