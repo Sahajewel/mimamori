@@ -29,6 +29,7 @@ export async function POST(req: Request) {
         featureRequest: featureRequest || null,
         name: name || null,
         email: email || null,
+        showOnLanding: rating >= 4 && !!comment,
       },
     });
 
