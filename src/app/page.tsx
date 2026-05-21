@@ -10,7 +10,7 @@ export default async function HomePage() {
       comment: { not: null },
     },
     orderBy: { createdAt: "desc" },
-    take: 4,
+    take: 6,
   });
 
   // Static fallback যদি কোনো feedback না থাকে
