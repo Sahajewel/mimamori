@@ -2,22 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NotificationButton } from "./NotificationButton";
 
 export function BottomNav() {
   const pathname = usePathname();
 
   const items = [
     {
-      href: "/dashboard",
+      href: "/",
       icon: "🏠",
       label: "ホーム",
-      active: pathname === "/dashboard",
-    },
-    {
-      href: "/notifications",
-      icon: "🔔",
-      label: "通知",
-      active: pathname === "/notifications",
+      active: pathname === "/",
     },
     {
       href: "/settings",
@@ -48,6 +43,7 @@ export function BottomNav() {
               className={`text-xs font-medium ${item.active ? "text-indigo-600" : "text-gray-400"}`}
             >
               {item.label}
+              <NotificationButton></NotificationButton>
             </span>
             {item.active && (
               <span className="absolute bottom-0 w-1 h-1 bg-indigo-600 rounded-full" />
