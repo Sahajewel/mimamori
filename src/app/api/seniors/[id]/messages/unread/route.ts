@@ -36,3 +36,29 @@ export async function GET(
     return NextResponse.json({ count: 0 });
   }
 }
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ success: false });
+    }
+
+    await prisma.seniorMember.update({
+      where: {
+        seniorId_userId: {
+          seniorId: id,
+          userId: session.user.id,
+        },
+      },
+      data: { lastReadAt: new Date() },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ success: false });
+  }
+}

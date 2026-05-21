@@ -125,7 +125,12 @@ export default function ChatPage() {
       setDeleteId(msgId);
     }, 500);
   }
-
+  useEffect(() => {
+    // Chat page-এ আসলে read mark করো
+    fetch(`/api/seniors/${id}/messages/unread`, {
+      method: "POST",
+    });
+  }, [id]);
   function handlePressEnd() {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
