@@ -68,11 +68,8 @@ export default async function SeniorDetailPage({
     },
   });
   if (!seniorMember) notFound();
-
-  const { senior, role } = seniorMember;
-
-  // আগের lastReadAt save করো
   const lastReadAt = seniorMember.lastReadAt;
+  const { senior, role } = seniorMember;
 
   // এখন update করো
   await prisma.seniorMember.update({
