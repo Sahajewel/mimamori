@@ -24,12 +24,15 @@ export async function DELETE(
       return NextResponse.json({ error: "見つかりません" }, { status: 404 });
     }
 
-    // 自分のメッセージのみ削除可能
     if (message.userId !== session.user.id) {
       return NextResponse.json({ error: "削除できません" }, { status: 403 });
     }
 
-    await prisma.message.delete({ where: { id: messageId } });
+    // Hard delete না, soft delete করো
+    await prisma.message.update({
+      where: { id: messageId },
+      data: { deletedAt: new Date() },
+    });
 
     return NextResponse.json({ success: true });
   } catch {

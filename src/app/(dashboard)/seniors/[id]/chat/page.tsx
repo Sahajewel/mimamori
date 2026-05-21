@@ -12,6 +12,7 @@ type Message = {
   content: string;
   imageUrl: string | null;
   createdAt: string;
+  deleted: boolean;
   user: { name: string; id: string };
 };
 
@@ -154,6 +155,7 @@ export default function ChatPage() {
       id: `temp-${Date.now()}`,
       content: input.trim(),
       imageUrl: null,
+      deleted: false,
       createdAt: new Date().toISOString(),
       user: { name: "あなた", id: myId },
     };
@@ -353,21 +355,35 @@ export default function ChatPage() {
                               ? `bg-indigo-600 text-white rounded-tr-sm ${isTemp ? "opacity-70" : ""}`
                               : "bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm"
                           }`}
-                          onMouseDown={() => handlePressStart(msg.id, isMe)}
+                          onMouseDown={() =>
+                            !msg.deleted && handlePressStart(msg.id, isMe)
+                          }
                           onMouseUp={handlePressEnd}
                           onMouseLeave={handlePressEnd}
-                          onTouchStart={() => handlePressStart(msg.id, isMe)}
+                          onTouchStart={() =>
+                            !msg.deleted && handlePressStart(msg.id, isMe)
+                          }
                           onTouchEnd={handlePressEnd}
                         >
-                          {msg.imageUrl && (
-                            <img
-                              src={msg.imageUrl}
-                              alt="image"
-                              className="rounded-xl max-w-full max-h-48 object-cover mb-1 cursor-pointer"
-                              onClick={() => setZoomImage(msg.imageUrl)}
-                            />
+                          {msg.deleted ? (
+                            <p
+                              className={`text-xs italic ${isMe ? "text-indigo-200" : "text-gray-400"}`}
+                            >
+                              このメッセージは削除されました
+                            </p>
+                          ) : (
+                            <>
+                              {msg.imageUrl && (
+                                <img
+                                  src={msg.imageUrl}
+                                  alt="image"
+                                  className="rounded-xl max-w-full max-h-48 object-cover mb-1 cursor-pointer"
+                                  onClick={() => setZoomImage(msg.imageUrl)}
+                                />
+                              )}
+                              {msg.content && <p>{msg.content}</p>}
+                            </>
                           )}
-                          {msg.content && <p>{msg.content}</p>}
                         </div>
                         {!isMe && (
                           <p className="text-xs text-gray-300 mb-0.5">

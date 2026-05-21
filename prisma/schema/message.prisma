@@ -1,12 +1,13 @@
 model Message {
-    id        String   @id @default(uuid())
+    id        String    @id @default(uuid())
     seniorId  String
-    senior    Senior   @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    senior    Senior    @relation(fields: [seniorId], references: [id], onDelete: Cascade)
     userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     content   String
     imageUrl  String?
-    createdAt DateTime @default(now())
+    createdAt DateTime  @default(now())
+    deletedAt DateTime?
 
     @@index([seniorId])
 }

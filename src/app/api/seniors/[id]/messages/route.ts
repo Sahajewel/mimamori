@@ -34,8 +34,14 @@ export async function GET(
         user: { select: { name: true, id: true } },
       },
     });
+    const processedMessages = messages.map((msg) => ({
+      ...msg,
+      content: msg.deletedAt ? "" : msg.content,
+      imageUrl: msg.deletedAt ? null : msg.imageUrl,
+      deleted: !!msg.deletedAt,
+    }));
 
-    return NextResponse.json(messages);
+    return NextResponse.json(processedMessages);
   } catch {
     return NextResponse.json(
       { error: "エラーが発生しました" },
