@@ -13,6 +13,7 @@ type Message = {
   imageUrl: string | null;
   createdAt: string;
   deleted: boolean;
+  editedAt: string | null;
   user: { name: string; id: string };
 };
 
@@ -78,7 +79,9 @@ export default function ChatPage() {
   const [showEmoji, setShowEmoji] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [zoomImage, setZoomImage] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [actionMsg, setActionMsg] = useState<Message | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editInput, setEditInput] = useState("");
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -105,33 +108,28 @@ export default function ChatPage() {
       .then((d) => {
         if (d?.name) setSeniorName(d.name);
       });
+
+    // Mark as read
+    fetch(`/api/seniors/${id}/messages/unread`, { method: "POST" });
   }, [id]);
 
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 10000);
+    const interval = setInterval(fetchMessages, 5000);
     return () => clearInterval(interval);
   }, [id]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  useEffect(() => {
-    // Chat page-এ আসলে localStorage-এ time save করো
-    localStorage.setItem(`chat-read-${id}`, new Date().toISOString());
-  }, [id]);
-  function handlePressStart(msgId: string, isMe: boolean) {
-    if (!isMe) return;
+
+  function handlePressStart(msg: Message, isMe: boolean) {
+    if (!isMe || msg.deleted) return;
     longPressTimer.current = setTimeout(() => {
-      setDeleteId(msgId);
+      setActionMsg(msg);
     }, 500);
   }
-  useEffect(() => {
-    // Chat page-এ আসলে read mark করো
-    fetch(`/api/seniors/${id}/messages/unread`, {
-      method: "POST",
-    });
-  }, [id]);
+
   function handlePressEnd() {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
@@ -139,11 +137,30 @@ export default function ChatPage() {
   }
 
   async function handleDelete() {
-    if (!deleteId) return;
-    await fetch(`/api/seniors/${id}/messages/${deleteId}`, {
+    if (!actionMsg) return;
+    await fetch(`/api/seniors/${id}/messages/${actionMsg.id}`, {
       method: "DELETE",
     });
-    setDeleteId(null);
+    setActionMsg(null);
+    await fetchMessages();
+  }
+
+  function handleEditStart() {
+    if (!actionMsg) return;
+    setEditingId(actionMsg.id);
+    setEditInput(actionMsg.content);
+    setActionMsg(null);
+  }
+
+  async function handleEditSave() {
+    if (!editingId || !editInput.trim()) return;
+    await fetch(`/api/seniors/${id}/messages/${editingId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editInput.trim() }),
+    });
+    setEditingId(null);
+    setEditInput("");
     await fetchMessages();
   }
 
@@ -156,6 +173,7 @@ export default function ChatPage() {
       content: input.trim(),
       imageUrl: null,
       deleted: false,
+      editedAt: null,
       createdAt: new Date().toISOString(),
       user: { name: "あなた", id: myId },
     };
@@ -245,28 +263,67 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* Delete Modal */}
-      {deleteId && (
+      {/* Action Modal (Edit/Delete) */}
+      {actionMsg && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mb-4">
-            <p className="text-sm font-medium text-gray-900 mb-1 text-center">
-              メッセージを削除しますか？
+          <div className="bg-white rounded-2xl w-full max-w-sm mb-4 overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-50">
+              <p className="text-xs text-gray-400 text-center truncate">
+                {actionMsg.content || "画像"}
+              </p>
+            </div>
+            {!actionMsg.imageUrl && (
+              <button
+                onClick={handleEditStart}
+                className="w-full py-3.5 text-sm font-medium text-indigo-600 border-b border-gray-50 hover:bg-gray-50"
+              >
+                ✏️ 編集する
+              </button>
+            )}
+            <button
+              onClick={handleDelete}
+              className="w-full py-3.5 text-sm font-medium text-red-500 border-b border-gray-50 hover:bg-gray-50"
+            >
+              🗑️ 削除する
+            </button>
+            <button
+              onClick={() => setActionMsg(null)}
+              className="w-full py-3.5 text-sm text-gray-400 hover:bg-gray-50"
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editingId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm mb-4 p-4">
+            <p className="text-sm font-medium text-gray-900 mb-3">
+              メッセージを編集
             </p>
-            <p className="text-xs text-gray-400 text-center mb-4">
-              この操作は取り消せません
-            </p>
+            <textarea
+              value={editInput}
+              onChange={(e) => setEditInput(e.target.value)}
+              rows={3}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none mb-3"
+            />
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setDeleteId(null)}
+                onClick={() => {
+                  setEditingId(null);
+                  setEditInput("");
+                }}
                 className="py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600"
               >
                 キャンセル
               </button>
               <button
-                onClick={handleDelete}
-                className="py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium"
+                onClick={handleEditSave}
+                className="py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium"
               >
-                削除する
+                保存する
               </button>
             </div>
           </div>
@@ -336,18 +393,23 @@ export default function ChatPage() {
                       )}
                       <div className="flex items-end gap-1.5">
                         {isMe && (
-                          <p className="text-xs text-gray-300 mb-0.5">
-                            {isTemp
-                              ? "送信中..."
-                              : new Date(msg.createdAt).toLocaleTimeString(
-                                  "ja-JP",
-                                  {
-                                    timeZone: "Asia/Tokyo",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  },
-                                )}
-                          </p>
+                          <div className="flex flex-col items-end gap-0.5">
+                            {msg.editedAt && !msg.deleted && (
+                              <p className="text-xs text-gray-300">編集済み</p>
+                            )}
+                            <p className="text-xs text-gray-300 mb-0.5">
+                              {isTemp
+                                ? "送信中..."
+                                : new Date(msg.createdAt).toLocaleTimeString(
+                                    "ja-JP",
+                                    {
+                                      timeZone: "Asia/Tokyo",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
+                            </p>
+                          </div>
                         )}
                         <div
                           className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed cursor-pointer select-none ${
@@ -355,14 +417,10 @@ export default function ChatPage() {
                               ? `bg-indigo-600 text-white rounded-tr-sm ${isTemp ? "opacity-70" : ""}`
                               : "bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm"
                           }`}
-                          onMouseDown={() =>
-                            !msg.deleted && handlePressStart(msg.id, isMe)
-                          }
+                          onMouseDown={() => handlePressStart(msg, isMe)}
                           onMouseUp={handlePressEnd}
                           onMouseLeave={handlePressEnd}
-                          onTouchStart={() =>
-                            !msg.deleted && handlePressStart(msg.id, isMe)
-                          }
+                          onTouchStart={() => handlePressStart(msg, isMe)}
                           onTouchEnd={handlePressEnd}
                         >
                           {msg.deleted ? (
@@ -386,16 +444,21 @@ export default function ChatPage() {
                           )}
                         </div>
                         {!isMe && (
-                          <p className="text-xs text-gray-300 mb-0.5">
-                            {new Date(msg.createdAt).toLocaleTimeString(
-                              "ja-JP",
-                              {
-                                timeZone: "Asia/Tokyo",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              },
+                          <div className="flex flex-col gap-0.5">
+                            {msg.editedAt && !msg.deleted && (
+                              <p className="text-xs text-gray-300">編集済み</p>
                             )}
-                          </p>
+                            <p className="text-xs text-gray-300 mb-0.5">
+                              {new Date(msg.createdAt).toLocaleTimeString(
+                                "ja-JP",
+                                {
+                                  timeZone: "Asia/Tokyo",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>

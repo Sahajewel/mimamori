@@ -7,6 +7,7 @@ model Message {
     content   String
     imageUrl  String?
     createdAt DateTime  @default(now())
+    editedAt  DateTime?
     deletedAt DateTime?
 
     @@index([seniorId])
