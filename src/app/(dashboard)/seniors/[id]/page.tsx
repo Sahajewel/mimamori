@@ -115,8 +115,17 @@ export default async function SeniorDetailPage({
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-xl">
-                {senior.name.charAt(0)}
+              <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium overflow-hidden">
+                {senior.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={senior.photoUrl}
+                    alt={senior.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  senior.name.charAt(0).toUpperCase()
+                )}
               </div>
               <div>
                 <h1 className="text-xl font-medium text-gray-900">

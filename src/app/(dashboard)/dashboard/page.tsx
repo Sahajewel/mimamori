@@ -162,8 +162,17 @@ export default async function DashboardPage() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-base">
-                        {senior.name.charAt(0)}
+                      <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium overflow-hidden">
+                        {senior.photoUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={senior.photoUrl}
+                            alt={senior.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          senior.name.charAt(0).toUpperCase()
+                        )}
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">
