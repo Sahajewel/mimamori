@@ -61,7 +61,7 @@ export default async function SeniorDetailPage({
           },
           careNotes: {
             orderBy: { createdAt: "desc" },
-            take: 3,
+            take: 4,
             include: { user: { select: { name: true } } },
           },
         },
@@ -439,7 +439,7 @@ export default async function SeniorDetailPage({
                   href={`/seniors/${id}/notes`}
                   className="block text-center text-sm text-indigo-600 hover:underline mt-3"
                 >
-                  もっと見る ({senior.careNotes.length - 3}件) →
+                  もっと見る
                 </Link>
               )}
             </>
