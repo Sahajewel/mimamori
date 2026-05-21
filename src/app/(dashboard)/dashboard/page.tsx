@@ -50,27 +50,24 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-base">♡</span>
             </div>
             <p className="font-semibold text-gray-900 text-base">Mimamori</p>
-          </div>
+          </Link>
           <div className="flex items-center gap-3">
-            <p className="text-sm text-gray-500 hidden sm:block">
-              {session.user.name}さん
-            </p>
+            <p className="text-sm text-gray-500">{session.user.name}さん</p>
             <LogoutButton />
           </div>
         </div>
       </nav>
 
       <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
-
         {/* Greeting */}
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">
