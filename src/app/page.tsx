@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FeedbackSection } from "./components/FeedbackSection";
 
 export default function HomePage() {
   return (
@@ -186,7 +187,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
+      <FeedbackSection></FeedbackSection>
       {/* CTA */}
       <section className="text-center px-4 py-14 bg-indigo-600">
         <p className="text-2xl font-medium text-white mb-2">
