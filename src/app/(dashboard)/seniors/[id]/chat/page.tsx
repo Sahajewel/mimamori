@@ -119,8 +119,14 @@ export default function ChatPage() {
     return () => clearInterval(interval);
   }, [id]);
 
+  const prevMessageCount = useRef(0);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // শুধু নতুন message আসলে scroll করো
+    if (messages.length > prevMessageCount.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevMessageCount.current = messages.length;
   }, [messages]);
 
   function handlePressStart(msg: Message, isMe: boolean) {
