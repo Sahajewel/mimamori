@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { BackButton } from "@/app/components/BackButton";
+import { DeleteCheckInButton } from "@/app/components/DeleteCheckInButton";
 
 const PER_PAGE = 10;
 
@@ -42,7 +43,7 @@ export default async function CheckInsPage({
     skip: (currentPage - 1) * PER_PAGE,
     take: PER_PAGE,
     include: {
-      user: { select: { name: true } },
+      user: { select: { name: true, id: true } },
     },
   });
 
@@ -65,16 +66,16 @@ export default async function CheckInsPage({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-gray-900">
               チェックイン履歴
             </h1>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-base text-gray-400 mt-1">
               {senior?.name}さん · 全{total}件
             </p>
           </div>
           <Link
             href={`/seniors/${id}/checkin`}
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+            className="px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
           >
             ＋ 追加
           </Link>
@@ -84,8 +85,8 @@ export default async function CheckInsPage({
         <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-6">
           {checkIns.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-3xl mb-3">✓</p>
-              <p className="text-sm text-gray-400">
+              <p className="text-4xl mb-3">✓</p>
+              <p className="text-base text-gray-400">
                 まだチェックインがありません
               </p>
             </div>
@@ -96,13 +97,13 @@ export default async function CheckInsPage({
                   key={checkIn.id}
                   className="flex items-start justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start gap-3">
-                    <span className="text-xs text-gray-300 w-5 mt-0.5">
+                  <div className="flex items-start gap-3 flex-1">
+                    <span className="text-sm text-gray-300 w-6 mt-0.5">
                       {(currentPage - 1) * PER_PAGE + index + 1}
                     </span>
-                    <div>
+                    <div className="flex-1">
                       <span
-                        className={`text-sm font-semibold ${
+                        className={`text-base font-semibold ${
                           checkIn.status === "OK"
                             ? "text-green-500"
                             : checkIn.status === "CONCERN"
@@ -117,43 +118,52 @@ export default async function CheckInsPage({
                             : "🚨 緊急"}
                       </span>
                       {checkIn.note && (
-                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
                           {checkIn.note}
                         </p>
                       )}
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <p className="text-sm text-gray-400 font-medium">
+                          {checkIn.user.name}
+                        </p>
+                        <p className="text-xs text-gray-300">·</p>
+                        <p className="text-sm text-gray-300">
+                          {new Date(checkIn.createdAt).toLocaleDateString(
+                            "ja-JP",
+                            {
+                              timeZone: "Asia/Tokyo",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}{" "}
+                          {new Date(checkIn.createdAt).toLocaleTimeString(
+                            "ja-JP",
+                            {
+                              timeZone: "Asia/Tokyo",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0 ml-4">
-                    <p className="text-xs text-gray-400 font-medium">
-                      {checkIn.user.name}
-                    </p>
-                    <p className="text-xs text-gray-300 mt-0.5">
-                      {new Date(checkIn.createdAt).toLocaleDateString("ja-JP", {
-                        timeZone: "Asia/Tokyo",
-                        month: "short",
-                        day: "numeric",
-                      })}{" "}
-                      {new Date(checkIn.createdAt).toLocaleTimeString("ja-JP", {
-                        timeZone: "Asia/Tokyo",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
+
+                  {/* Delete button */}
+                  <DeleteCheckInButton checkInId={checkIn.id} seniorId={id} />
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Pagination — smart */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between gap-2">
-            {/* Prev */}
             {currentPage > 1 ? (
               <Link
                 href={`/seniors/${id}/checkins?page=${currentPage - 1}`}
-                className="px-4 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 ← 前へ
               </Link>
@@ -161,16 +171,14 @@ export default async function CheckInsPage({
               <div />
             )}
 
-            {/* Page indicator */}
             <p className="text-sm text-gray-400">
               {currentPage} / {totalPages} ページ
             </p>
 
-            {/* Next */}
             {currentPage < totalPages ? (
               <Link
                 href={`/seniors/${id}/checkins?page=${currentPage + 1}`}
-                className="px-4 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 次へ →
               </Link>
