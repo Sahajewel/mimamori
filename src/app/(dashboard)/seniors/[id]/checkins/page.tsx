@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/app/components/BackButton";
 
 const PER_PAGE = 10;
 
@@ -48,45 +49,60 @@ export default async function CheckInsPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <nav className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center gap-3">
-        <Link
-          href={`/seniors/${id}`}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          ← 戻る
-        </Link>
-        <p className="font-medium text-gray-900">Mimamori</p>
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <BackButton />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
+            <p className="font-semibold text-gray-900">チェックイン履歴</p>
+          </div>
+        </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-xl md:text-2xl font-medium text-gray-900">
-            チェックイン履歴
-          </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            {senior?.name}さん · 全{total}件
-          </p>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">
+              チェックイン履歴
+            </h1>
+            <p className="text-sm text-gray-400 mt-1">
+              {senior?.name}さん · 全{total}件
+            </p>
+          </div>
+          <Link
+            href={`/seniors/${id}/checkin`}
+            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            ＋ 追加
+          </Link>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
+        {/* List */}
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-6">
           {checkIns.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">
-              まだチェックインがありません
-            </p>
+            <div className="text-center py-12">
+              <p className="text-3xl mb-3">✓</p>
+              <p className="text-sm text-gray-400">
+                まだチェックインがありません
+              </p>
+            </div>
           ) : (
-            <div className="space-y-3">
-              {checkIns.map((checkIn: (typeof checkIns)[0], index: number) => (
+            <div className="divide-y divide-gray-50">
+              {checkIns.map((checkIn, index) => (
                 <div
                   key={checkIn.id}
-                  className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0"
+                  className="flex items-start justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-300 w-6">
+                  <div className="flex items-start gap-3">
+                    <span className="text-xs text-gray-300 w-5 mt-0.5">
                       {(currentPage - 1) * PER_PAGE + index + 1}
                     </span>
                     <div>
                       <span
-                        className={`text-sm font-medium ${
+                        className={`text-sm font-semibold ${
                           checkIn.status === "OK"
                             ? "text-green-500"
                             : checkIn.status === "CONCERN"
@@ -101,17 +117,21 @@ export default async function CheckInsPage({
                             : "🚨 緊急"}
                       </span>
                       {checkIn.note && (
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
                           {checkIn.note}
                         </p>
                       )}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-400">{checkIn.user.name}</p>
-                    <p className="text-xs text-gray-300">
+                  <div className="text-right flex-shrink-0 ml-4">
+                    <p className="text-xs text-gray-400 font-medium">
+                      {checkIn.user.name}
+                    </p>
+                    <p className="text-xs text-gray-300 mt-0.5">
                       {new Date(checkIn.createdAt).toLocaleDateString("ja-JP", {
                         timeZone: "Asia/Tokyo",
+                        month: "short",
+                        day: "numeric",
                       })}{" "}
                       {new Date(checkIn.createdAt).toLocaleTimeString("ja-JP", {
                         timeZone: "Asia/Tokyo",
@@ -126,41 +146,36 @@ export default async function CheckInsPage({
           )}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination — smart */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            {currentPage > 1 && (
+          <div className="flex items-center justify-between gap-2">
+            {/* Prev */}
+            {currentPage > 1 ? (
               <Link
                 href={`/seniors/${id}/checkins?page=${currentPage - 1}`}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 ← 前へ
               </Link>
+            ) : (
+              <div />
             )}
 
-            <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Link
-                  key={p}
-                  href={`/seniors/${id}/checkins?page=${p}`}
-                  className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg transition-colors ${
-                    p === currentPage
-                      ? "bg-indigo-600 text-white"
-                      : "border border-gray-200 hover:bg-gray-50 text-gray-600"
-                  }`}
-                >
-                  {p}
-                </Link>
-              ))}
-            </div>
+            {/* Page indicator */}
+            <p className="text-sm text-gray-400">
+              {currentPage} / {totalPages} ページ
+            </p>
 
-            {currentPage < totalPages && (
+            {/* Next */}
+            {currentPage < totalPages ? (
               <Link
                 href={`/seniors/${id}/checkins?page=${currentPage + 1}`}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 次へ →
               </Link>
+            ) : (
+              <div />
             )}
           </div>
         )}
