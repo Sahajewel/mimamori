@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LogoutButton } from "@/app/components/LogoutButton";
-import { BottomNav } from "@/app/components/BottomNav";
+import { SideNav } from "@/app/components/SideNav";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -167,7 +167,7 @@ export default async function SettingsPage() {
       </div>
 
       {/* Bottom Nav */}
-      <BottomNav />
+      <SideNav />
     </div>
   );
 }
