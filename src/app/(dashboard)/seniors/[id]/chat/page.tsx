@@ -338,7 +338,7 @@ export default function ChatPage() {
       )}
 
       {/* Navbar */}
-      <nav className="bg-white   border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0 pl-16">
+      <nav className="bg-white   max-w-4xl mx-auto flex items-center justify-between   border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0 pl-14">
         <div>
           <BackButton></BackButton>
         </div>
