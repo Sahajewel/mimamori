@@ -4,12 +4,19 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { BackButton } from "@/app/components/BackButton";
 
+const PER_PAGE = 10;
+
 export default async function MedicineHistoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { id } = await params;
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
+
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -28,6 +35,16 @@ export default async function MedicineHistoryPage({
   );
   today.setHours(0, 0, 0, 0);
 
+  const total = await prisma.medicine.count({
+    where: {
+      seniorId: id,
+      ongoing: false,
+      endDate: { lte: today },
+    },
+  });
+
+  const totalPages = Math.ceil(total / PER_PAGE);
+
   const medicines = await prisma.medicine.findMany({
     where: {
       seniorId: id,
@@ -35,6 +52,8 @@ export default async function MedicineHistoryPage({
       endDate: { lte: today },
     },
     orderBy: { endDate: "desc" },
+    skip: (currentPage - 1) * PER_PAGE,
+    take: PER_PAGE,
   });
 
   return (
@@ -57,7 +76,7 @@ export default async function MedicineHistoryPage({
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">服薬履歴</h1>
           <p className="text-base text-gray-400 mt-1">
-            {senior?.name}さんの過去のお薬一覧
+            {senior?.name}さん · 全{total}件
           </p>
         </div>
 
@@ -72,61 +91,100 @@ export default async function MedicineHistoryPage({
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-            {/* Table header */}
-            <div className="grid grid-cols-4 gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-              <span className="text-sm font-semibold text-gray-500">薬名</span>
-              <span className="text-sm font-semibold text-gray-500">
-                開始日
-              </span>
-              <span className="text-sm font-semibold text-gray-500">
-                終了日
-              </span>
-              <span className="text-sm font-semibold text-gray-500">日数</span>
-            </div>
+          <>
+            <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-6">
+              {/* Table header */}
+              <div className="grid grid-cols-4 gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                <span className="text-sm font-semibold text-gray-500">
+                  薬名
+                </span>
+                <span className="text-sm font-semibold text-gray-500">
+                  開始日
+                </span>
+                <span className="text-sm font-semibold text-gray-500">
+                  終了日
+                </span>
+                <span className="text-sm font-semibold text-gray-500">
+                  日数
+                </span>
+              </div>
 
-            {/* Table rows */}
-            <div className="divide-y divide-gray-50">
-              {medicines.map((medicine) => {
-                const start = new Date(medicine.startDate).toLocaleDateString(
-                  "ja-JP",
-                  { timeZone: "Asia/Tokyo", month: "short", day: "numeric" },
-                );
-                const end = medicine.endDate
-                  ? new Date(medicine.endDate).toLocaleDateString("ja-JP", {
-                      timeZone: "Asia/Tokyo",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "-";
-                const days = medicine.duration ? `${medicine.duration}日` : "-";
+              {/* Table rows */}
+              <div className="divide-y divide-gray-50">
+                {medicines.map((medicine) => {
+                  const start = new Date(medicine.startDate).toLocaleDateString(
+                    "ja-JP",
+                    { timeZone: "Asia/Tokyo", month: "short", day: "numeric" },
+                  );
+                  const end = medicine.endDate
+                    ? new Date(medicine.endDate).toLocaleDateString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "-";
+                  const days = medicine.duration
+                    ? `${medicine.duration}日`
+                    : "-";
 
-                return (
-                  <Link
-                    key={medicine.id}
-                    href={`/seniors/${id}/medicines/${medicine.id}`}
-                    className="grid grid-cols-4 gap-2 px-5 py-4 items-center hover:bg-gray-50 transition-colors active:scale-[0.99]"
-                  >
-                    <div>
-                      <p className="text-base font-semibold text-gray-900">
-                        {medicine.name}
-                      </p>
-                      {medicine.dosage && (
-                        <p className="text-sm text-gray-400">
-                          {medicine.dosage}
+                  return (
+                    <Link
+                      key={medicine.id}
+                      href={`/seniors/${id}/medicines/${medicine.id}`}
+                      className="grid grid-cols-4 gap-2 px-5 py-4 items-center hover:bg-gray-50 transition-colors active:scale-[0.99]"
+                    >
+                      <div>
+                        <p className="text-base font-semibold text-gray-900">
+                          {medicine.name}
                         </p>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-600">{start}</span>
-                    <span className="text-sm text-gray-600">{end}</span>
-                    <span className="text-sm text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full text-center font-medium">
-                      {days}
-                    </span>
-                  </Link>
-                );
-              })}
+                        {medicine.dosage && (
+                          <p className="text-sm text-gray-400">
+                            {medicine.dosage}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-sm text-gray-600">{start}</span>
+                      <span className="text-sm text-gray-600">{end}</span>
+                      <span className="text-sm text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full text-center font-medium">
+                        {days}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between gap-2">
+                {currentPage > 1 ? (
+                  <Link
+                    href={`/seniors/${id}/medicines?page=${currentPage - 1}`}
+                    className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                  >
+                    ← 前へ
+                  </Link>
+                ) : (
+                  <div />
+                )}
+
+                <p className="text-sm text-gray-400">
+                  {currentPage} / {totalPages} ページ
+                </p>
+
+                {currentPage < totalPages ? (
+                  <Link
+                    href={`/seniors/${id}/medicines?page=${currentPage + 1}`}
+                    className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                  >
+                    次へ →
+                  </Link>
+                ) : (
+                  <div />
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -2,36 +2,17 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/app/components/BackButton";
+import { CareNoteActions } from "@/app/components/CareNoteActions";
 
 const PER_PAGE = 10;
-
-interface CareNotesPageParams {
-  id: string;
-}
-
-interface CareNotesPageSearchParams {
-  page?: string;
-}
-
-interface Senior {
-  name: string;
-}
-
-interface CareNoteWithUser {
-  id: string;
-  content: string;
-  createdAt: Date;
-  user: {
-    name: string;
-  };
-}
 
 export default async function CareNotesPage({
   params,
   searchParams,
 }: {
-  params: Promise<CareNotesPageParams>;
-  searchParams: Promise<CareNotesPageSearchParams>;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { id } = await params;
   const { page } = await searchParams;
@@ -45,7 +26,7 @@ export default async function CareNotesPage({
   });
   if (!member) notFound();
 
-  const senior: Senior | null = await prisma.senior.findUnique({
+  const senior = await prisma.senior.findUnique({
     where: { id },
     select: { name: true },
   });
@@ -56,75 +37,83 @@ export default async function CareNotesPage({
 
   const totalPages = Math.ceil(total / PER_PAGE);
 
-  const notes: CareNoteWithUser[] = await prisma.careNote.findMany({
+  const notes = await prisma.careNote.findMany({
     where: { seniorId: id },
     orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * PER_PAGE,
     take: PER_PAGE,
     include: {
-      user: { select: { name: true } },
+      user: { select: { name: true, id: true } },
     },
   });
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center gap-3">
-        <Link
-          href={`/seniors/${id}`}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          ← 戻る
-        </Link>
-        <p className="font-medium text-gray-900">Mimamori</p>
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <BackButton />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
+            <p className="font-semibold text-gray-900">ケアノート</p>
+          </div>
+        </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-medium text-gray-900">
-              ケアノート
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">
+            <h1 className="text-2xl font-semibold text-gray-900">ケアノート</h1>
+            <p className="text-base text-gray-400 mt-1">
               {senior?.name}さん · 全{total}件
             </p>
           </div>
           <Link
             href={`/seniors/${id}/notes/new`}
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            className="px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
           >
             ＋ 追加
           </Link>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6">
+        {/* List */}
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-6">
           {notes.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">
-              まだノートがありません
-            </p>
+            <div className="text-center py-12">
+              <p className="text-4xl mb-3">📝</p>
+              <p className="text-base text-gray-400">まだノートがありません</p>
+            </div>
           ) : (
-            <div className="space-y-3">
+            <div className="divide-y divide-gray-50">
               {notes.map((note, index) => (
                 <div
                   key={note.id}
-                  className="py-3 border-b border-gray-50 last:border-0"
+                  className="px-5 py-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="text-xs text-gray-300 mt-1 w-6 flex-shrink-0">
+                    <span className="text-sm text-gray-300 w-6 mt-0.5 flex-shrink-0">
                       {(currentPage - 1) * PER_PAGE + index + 1}
                     </span>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-700 mb-1">
+                      <p className="text-base text-gray-800 leading-relaxed mb-2">
                         {note.content}
                       </p>
                       <div className="flex items-center gap-2">
-                        <p className="text-xs text-gray-400">
+                        <p className="text-sm text-gray-400 font-medium">
                           {note.user.name}
                         </p>
                         <p className="text-xs text-gray-300">·</p>
-                        <p className="text-xs text-gray-300">
+                        <p className="text-sm text-gray-300">
                           {new Date(note.createdAt).toLocaleDateString(
                             "ja-JP",
-                            { timeZone: "Asia/Tokyo" },
+                            {
+                              timeZone: "Asia/Tokyo",
+                              month: "short",
+                              day: "numeric",
+                            },
                           )}{" "}
                           {new Date(note.createdAt).toLocaleTimeString(
                             "ja-JP",
@@ -136,6 +125,12 @@ export default async function CareNotesPage({
                           )}
                         </p>
                       </div>
+                      <CareNoteActions
+                        noteId={note.id}
+                        seniorId={id}
+                        content={note.content}
+                        isOwner={note.user.id === session.user.id}
+                      />
                     </div>
                   </div>
                 </div>
@@ -146,37 +141,31 @@ export default async function CareNotesPage({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            {currentPage > 1 && (
+          <div className="flex items-center justify-between gap-2">
+            {currentPage > 1 ? (
               <Link
                 href={`/seniors/${id}/notes?page=${currentPage - 1}`}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 ← 前へ
               </Link>
+            ) : (
+              <div />
             )}
-            <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Link
-                  key={p}
-                  href={`/seniors/${id}/notes?page=${p}`}
-                  className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg transition-colors ${
-                    p === currentPage
-                      ? "bg-indigo-600 text-white"
-                      : "border border-gray-200 hover:bg-gray-50 text-gray-600"
-                  }`}
-                >
-                  {p}
-                </Link>
-              ))}
-            </div>
-            {currentPage < totalPages && (
+
+            <p className="text-sm text-gray-400">
+              {currentPage} / {totalPages} ページ
+            </p>
+
+            {currentPage < totalPages ? (
               <Link
                 href={`/seniors/${id}/notes?page=${currentPage + 1}`}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 次へ →
               </Link>
+            ) : (
+              <div />
             )}
           </div>
         )}
