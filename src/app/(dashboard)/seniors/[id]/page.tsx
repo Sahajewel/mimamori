@@ -70,7 +70,6 @@ export default async function SeniorDetailPage({
 
   if (!seniorMember) notFound();
 
-  const lastReadAt = seniorMember.lastReadAt;
   const { senior, role } = seniorMember;
 
   await prisma.seniorMember.update({
@@ -80,10 +79,6 @@ export default async function SeniorDetailPage({
     data: { lastReadAt: new Date() },
   });
 
-  const oneDayAgo = new Date();
-  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-
-  // Today CheckIn
   const todayJapan = new Date(
     new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
   );
@@ -117,11 +112,12 @@ export default async function SeniorDetailPage({
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <BackButton />
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center ">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
                 <span className="text-white text-sm">♡</span>
               </div>
-              <p className="font-semibold text-gray-900 hidden sm:block ">
+              <p className="font-semibold text-gray-900 hidden sm:block">
                 Mimamori
               </p>
             </div>
@@ -148,8 +144,8 @@ export default async function SeniorDetailPage({
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* Senior header */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-5 shadow-sm">
-          <BackButton />
-          <div className="flex items-center gap-4 mb-4">
+          {/* Profile */}
+          <div className="flex items-center gap-4 mb-5">
             <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-2xl overflow-hidden flex-shrink-0">
               {senior.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -162,7 +158,7 @@ export default async function SeniorDetailPage({
                 senior.name.charAt(0).toUpperCase()
               )}
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-xl font-semibold text-gray-900">
                 {senior.name}
               </h1>
@@ -170,6 +166,8 @@ export default async function SeniorDetailPage({
                 <p className="text-sm text-gray-400">{senior.age}歳</p>
               )}
             </div>
+            {/* Chat button */}
+            <ChatButton seniorId={id} />
           </div>
 
           {senior.notes && (
@@ -178,7 +176,7 @@ export default async function SeniorDetailPage({
             </p>
           )}
 
-          {/* Status */}
+          {/* Today status */}
           <div className="bg-gray-50 rounded-xl p-4 space-y-2 mb-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-400">今日の体調</span>
@@ -208,33 +206,6 @@ export default async function SeniorDetailPage({
                 <span className="text-sm text-gray-500">{lastSeenText}</span>
               </div>
             )}
-            {todayCheckIn && (
-              <Link
-                href={`/seniors/${id}/checkin`}
-                className="text-xs text-indigo-500 hover:underline block pt-1"
-              >
-                体調を更新する →
-              </Link>
-            )}
-          </div>
-
-          {/* Quick actions */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <Link
-              href={`/seniors/${id}/checkin`}
-              className="bg-indigo-600 text-white rounded-xl p-3 text-center hover:bg-indigo-700 transition-colors active:scale-95"
-            >
-              <p className="text-xl mb-1">✓</p>
-              <p className="text-xs font-medium">チェックイン</p>
-            </Link>
-            <ChatButton seniorId={id} />
-            <Link
-              href={`/seniors/${id}/notes/new`}
-              className="bg-white border border-gray-100 rounded-xl p-3 text-center hover:border-indigo-200 transition-colors active:scale-95"
-            >
-              <p className="text-xl mb-1">📝</p>
-              <p className="text-xs font-medium text-gray-700">ケアノート</p>
-            </Link>
           </div>
 
           {/* Quick link */}
