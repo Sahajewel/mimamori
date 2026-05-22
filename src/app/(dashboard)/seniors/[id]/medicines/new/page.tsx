@@ -2,6 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
+import { BackButton } from "@/app/components/BackButton";
 
 const frequencyOptions = [
   { value: "1日1回", label: "1日1回" },
@@ -42,7 +43,6 @@ export default function NewMedicinePage() {
   const [frequency, setFrequency] = useState("");
   const [customFrequency, setCustomFrequency] = useState("");
   const [times, setTimes] = useState<string[]>([]);
-
   const [ongoing, setOngoing] = useState(true);
   const [duration, setDuration] = useState("");
   const [startDate, setStartDate] = useState(
@@ -135,259 +135,248 @@ export default function NewMedicinePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
-      <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <button
-          onClick={() => router.back()}
-          className="text-sm text-gray-400 hover:text-gray-600 mb-4 block transition-colors"
-        >
-          ← 戻る
-        </button>
-
-        <h1 className="text-xl md:text-2xl font-medium text-gray-900 mb-1">
-          お薬を追加
-        </h1>
-        <p className="text-sm text-gray-400 mb-6">
-          服用しているお薬の情報を入力してください
-        </p>
-
-        <div className="space-y-6">
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              お薬の名前 <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="例：アスピリン、降圧剤"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
+    <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <BackButton />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
+            <p className="font-semibold text-gray-900">お薬を追加</p>
           </div>
+        </div>
+      </nav>
 
-          {/* Dosage */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              用量
-            </label>
-            <input
-              type="text"
-              value={dosage}
-              onChange={(e) => setDosage(e.target.value)}
-              placeholder="例：100mg、1錠"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
+      <div className="max-w-lg mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-4">
+          <h1 className="text-2xl font-semibold text-gray-900 mb-1">
+            お薬を追加
+          </h1>
+          <p className="text-base text-gray-400 mb-6">
+            服用しているお薬の情報を入力してください
+          </p>
 
-          {/* Frequency */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              服用頻度 <span className="text-red-400">*</span>
-            </label>
-            <div className="grid grid-cols-3 gap-2 mb-2">
-              {frequencyOptions.map((opt) => (
+          <div className="space-y-6">
+            {/* Name */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                お薬の名前 <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="例：アスピリン、降圧剤"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+
+            {/* Dosage */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                用量
+                <span className="text-sm text-gray-400 ml-2">任意</span>
+              </label>
+              <input
+                type="text"
+                value={dosage}
+                onChange={(e) => setDosage(e.target.value)}
+                placeholder="例：100mg、1錠"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
+
+            {/* Frequency */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                服用頻度 <span className="text-red-400">*</span>
+              </label>
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                {frequencyOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setFrequency(opt.value)}
+                    className={`py-3 text-sm font-semibold rounded-xl border-2 transition-all ${
+                      frequency === opt.value
+                        ? "bg-indigo-600 text-white border-indigo-600"
+                        : "border-gray-200 text-gray-600 hover:border-indigo-300"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
                 <button
-                  key={opt.value}
-                  onClick={() => setFrequency(opt.value)}
-                  className={`py-2.5 text-sm rounded-lg border-2 transition-all font-medium ${
-                    frequency === opt.value
+                  onClick={() => setFrequency("カスタム")}
+                  className={`py-3 text-sm font-semibold rounded-xl border-2 transition-all ${
+                    frequency === "カスタム"
                       ? "bg-indigo-600 text-white border-indigo-600"
                       : "border-gray-200 text-gray-600 hover:border-indigo-300"
                   }`}
                 >
-                  {opt.label}
+                  カスタム
                 </button>
-              ))}
-              <button
-                onClick={() => setFrequency("カスタム")}
-                className={`py-2.5 text-sm rounded-lg border-2 transition-all font-medium ${
-                  frequency === "カスタム"
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "border-gray-200 text-gray-600 hover:border-indigo-300"
-                }`}
-              >
-                カスタム
-              </button>
+              </div>
+              {frequency === "カスタム" && (
+                <input
+                  type="text"
+                  value={customFrequency}
+                  onChange={(e) => setCustomFrequency(e.target.value)}
+                  placeholder="例：1日5回、隔日"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+              )}
             </div>
-            {frequency === "カスタム" && (
-              <input
-                type="text"
-                value={customFrequency}
-                onChange={(e) => setCustomFrequency(e.target.value)}
-                placeholder="例：1日5回、隔日"
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            )}
-          </div>
 
-          {/* Timing */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              服用タイミング <span className="text-red-400">*</span>
-              <span className="text-xs text-gray-400 ml-2">複数選択可</span>
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {timeOptions.map((opt) => (
+            {/* Timing */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                服用タイミング <span className="text-red-400">*</span>
+                <span className="text-sm text-gray-400 ml-2">複数選択可</span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {timeOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => toggleTime(opt.value)}
+                    className={`py-3 text-sm font-semibold rounded-xl border-2 transition-all ${
+                      times.includes(opt.value)
+                        ? "bg-green-600 text-white border-green-600"
+                        : "border-gray-200 text-gray-600 hover:border-green-300"
+                    }`}
+                  >
+                    {times.includes(opt.value) ? "✓ " : ""}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Duration */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                服用期間 <span className="text-red-400">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <button
-                  key={opt.value}
-                  onClick={() => toggleTime(opt.value)}
-                  className={`py-2.5 text-sm rounded-lg border-2 transition-all font-medium ${
-                    times.includes(opt.value)
-                      ? "bg-green-600 text-white border-green-600"
-                      : "border-gray-200 text-gray-600 hover:border-green-300"
+                  onClick={() => setOngoing(true)}
+                  className={`py-4 text-sm rounded-xl border-2 transition-all text-left px-4 ${
+                    ongoing
+                      ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                      : "border-gray-200 text-gray-600"
                   }`}
                 >
-                  {times.includes(opt.value) ? "✓ " : ""}
-                  {opt.label}
+                  <p className="font-semibold text-base">継続中</p>
+                  <p className="text-sm opacity-70 mt-0.5">終わりなし</p>
                 </button>
-              ))}
-            </div>
-
-            {/* Selected custom timings */}
-            {times.filter((t) => !timeOptions.find((o) => o.value === t))
-              .length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {times
-                  .filter((t) => !timeOptions.find((o) => o.value === t))
-                  .map((t) => (
-                    <span
-                      key={t}
-                      className="flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2 py-1 rounded-full"
-                    >
-                      {t}
-                      <button
-                        onClick={() =>
-                          setTimes((prev) => prev.filter((x) => x !== t))
-                        }
-                        className="text-green-400 hover:text-green-600"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
+                <button
+                  onClick={() => setOngoing(false)}
+                  className={`py-4 text-sm rounded-xl border-2 transition-all text-left px-4 ${
+                    !ongoing
+                      ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                      : "border-gray-200 text-gray-600"
+                  }`}
+                >
+                  <p className="font-semibold text-base">期間を指定</p>
+                  <p className="text-sm opacity-70 mt-0.5">日数を入力</p>
+                </button>
               </div>
-            )}
-          </div>
 
-          {/* Duration */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              服用期間 <span className="text-red-400">*</span>
-            </label>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <button
-                onClick={() => setOngoing(true)}
-                className={`py-3 text-sm rounded-xl border-2 transition-all text-left px-4 ${
-                  ongoing
-                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
-                    : "border-gray-200 text-gray-600"
-                }`}
-              >
-                <p className="font-medium">継続中</p>
-                <p className="text-xs opacity-70">終わりなし</p>
-              </button>
-              <button
-                onClick={() => setOngoing(false)}
-                className={`py-3 text-sm rounded-xl border-2 transition-all text-left px-4 ${
-                  !ongoing
-                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
-                    : "border-gray-200 text-gray-600"
-                }`}
-              >
-                <p className="font-medium">期間を指定</p>
-                <p className="text-xs opacity-70">日数を入力</p>
-              </button>
-            </div>
-
-            {!ongoing && (
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">
-                    開始日
-                  </label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">
-                    服用日数
-                  </label>
-                  <div className="flex items-center gap-2">
+              {!ongoing && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1.5">
+                      開始日
+                    </label>
                     <input
-                      type="number"
-                      value={duration}
-                      onChange={(e) => setDuration(e.target.value)}
-                      placeholder="例：15"
-                      min={1}
-                      className="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     />
-                    <span className="text-sm text-gray-500">日間</span>
                   </div>
-                  <div className="flex gap-2 mt-2">
-                    {[7, 14, 15, 30].map((d) => (
-                      <button
-                        key={d}
-                        onClick={() => setDuration(String(d))}
-                        className={`px-3 py-1 text-xs rounded-lg border transition-all ${
-                          duration === String(d)
-                            ? "bg-indigo-600 text-white border-indigo-600"
-                            : "border-gray-200 text-gray-500 hover:border-indigo-300"
-                        }`}
-                      >
-                        {d}日
-                      </button>
-                    ))}
+                  <div>
+                    <label className="block text-sm text-gray-500 mb-1.5">
+                      服用日数
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        placeholder="例：15"
+                        min={1}
+                        className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                      />
+                      <span className="text-base text-gray-500">日間</span>
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      {[7, 14, 15, 30].map((d) => (
+                        <button
+                          key={d}
+                          onClick={() => setDuration(String(d))}
+                          className={`px-4 py-2 text-sm font-medium rounded-xl border transition-all ${
+                            duration === String(d)
+                              ? "bg-indigo-600 text-white border-indigo-600"
+                              : "border-gray-200 text-gray-500 hover:border-indigo-300"
+                          }`}
+                        >
+                          {d}日
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* Doctor notes */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                医師からの指示・メモ
+                <span className="text-sm text-gray-400 ml-2">任意</span>
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                placeholder="例：食後30分以内に服用、副作用に注意"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+              />
+            </div>
+
+            {/* Preview */}
+            {getPreview() && (
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+                <p className="text-sm text-indigo-400 mb-1">プレビュー</p>
+                <p className="text-base text-indigo-700 font-medium">
+                  {getPreview()}
+                </p>
               </div>
             )}
-          </div>
 
-          {/* Doctor notes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              医師からの指示・メモ
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              placeholder="例：食後30分以内に服用、副作用に注意"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
-            />
-          </div>
+            {error && (
+              <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                <p className="text-base text-red-600">{error}</p>
+              </div>
+            )}
 
-          {/* Preview */}
-          {getPreview() && (
-            <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
-              <p className="text-xs text-indigo-400 mb-1">プレビュー</p>
-              <p className="text-sm text-indigo-700 font-medium">
-                {getPreview()}
-              </p>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => router.back()}
+                className="flex-1 py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
+              >
+                {loading ? "保存中..." : "保存する"}
+              </button>
             </div>
-          )}
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
-
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={() => router.back()}
-              className="flex-1 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              キャンセル
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-            >
-              {loading ? "保存中..." : "保存する"}
-            </button>
           </div>
         </div>
       </div>

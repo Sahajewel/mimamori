@@ -2,8 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-
-const PER_PAGE = 10;
+import { BackButton } from "@/app/components/BackButton";
 
 type Reminder = { id: string; time: string };
 type Log = {
@@ -26,6 +25,7 @@ type Medicine = {
   endDate: string | null;
   duration: number | null;
   notes: string | null;
+  active: boolean;
   reminders: Reminder[];
 };
 
@@ -37,7 +37,15 @@ export default function MedicineDetailPage() {
 
   const [medicine, setMedicine] = useState<Medicine | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [showStop, setShowStop] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [stopping, setStopping] = useState(false);
+
+  // Edit state
+  const [editName, setEditName] = useState("");
+  const [editDosage, setEditDosage] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -52,6 +60,9 @@ export default function MedicineDetailPage() {
       if (!ignore) {
         setMedicine(medData);
         setLogs(logData);
+        setEditName(medData.name || "");
+        setEditDosage(medData.dosage || "");
+        setEditNotes(medData.notes || "");
       }
     }
 
@@ -61,10 +72,44 @@ export default function MedicineDetailPage() {
     };
   }, [id, medicineId]);
 
+  async function handleStop() {
+    setStopping(true);
+    await fetch(`/api/seniors/${id}/medicines/${medicineId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ active: false }),
+    });
+    router.push(`/seniors/${id}`);
+    router.refresh();
+  }
+
+  async function handleEdit() {
+    if (!editName.trim()) return;
+    setEditLoading(true);
+    await fetch(`/api/seniors/${id}/medicines/${medicineId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: editName,
+        dosage: editDosage || null,
+        notes: editNotes || null,
+      }),
+    });
+    setEditLoading(false);
+    setShowEdit(false);
+    // Reload
+    const res = await fetch(`/api/seniors/${id}/medicines/${medicineId}`);
+    const data = await res.json();
+    setMedicine(data);
+  }
+
   if (!medicine) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-sm text-gray-400">読み込み中...</p>
+        <div className="text-center">
+          <div className="w-10 h-10 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-base text-gray-400">読み込み中...</p>
+        </div>
       </div>
     );
   }
@@ -81,59 +126,159 @@ export default function MedicineDetailPage() {
   const takenCount = logs.filter((l) => l.status === "TAKEN").length;
   const missedCount = logs.filter((l) => l.status === "MISSED").length;
   const totalCount = logs.length;
-
   const recordedCount = logs.filter(
     (l) => l.status === "TAKEN" || l.status === "MISSED",
   ).length;
   const adherenceRate =
     recordedCount > 0 ? Math.round((takenCount / recordedCount) * 100) : 0;
 
-  const totalPages = Math.ceil(totalCount / PER_PAGE);
-  const paginatedLogs = logs.slice(
-    (currentPage - 1) * PER_PAGE,
-    currentPage * PER_PAGE,
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <button
-          onClick={() => router.back()}
-          className="text-sm text-gray-400 hover:text-gray-600 mb-6 block transition-colors"
-        >
-          ← 戻る
-        </button>
+      {/* Edit Modal */}
+      {showEdit && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm mb-4 p-5">
+            <p className="text-lg font-semibold text-gray-900 mb-4">
+              お薬を編集
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  お薬の名前 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  用量
+                </label>
+                <input
+                  type="text"
+                  value={editDosage}
+                  onChange={(e) => setEditDosage(e.target.value)}
+                  placeholder="例：100mg、1錠"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  医師からの指示
+                </label>
+                <textarea
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  rows={3}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-5">
+              <button
+                onClick={() => setShowEdit(false)}
+                className="py-3 border border-gray-200 rounded-xl text-base font-medium text-gray-600"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleEdit}
+                disabled={editLoading || !editName.trim()}
+                className="py-3 bg-indigo-600 text-white rounded-xl text-base font-semibold disabled:opacity-50"
+              >
+                {editLoading ? "保存中..." : "保存する"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {/* Stop Modal */}
+      {showStop && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm mb-4 p-5">
+            <p className="text-lg font-semibold text-gray-900 mb-2 text-center">
+              使用中止にしますか？
+            </p>
+            <p className="text-sm text-gray-400 text-center mb-5 leading-relaxed">
+              服薬履歴は保存されます
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setShowStop(false)}
+                className="py-3 border border-gray-200 rounded-xl text-base font-medium text-gray-600"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleStop}
+                disabled={stopping}
+                className="py-3 bg-red-500 text-white rounded-xl text-base font-semibold disabled:opacity-50"
+              >
+                {stopping ? "処理中..." : "中止する"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <BackButton />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+                <span className="text-white text-sm">♡</span>
+              </div>
+              <p className="font-semibold text-gray-900 hidden sm:block">
+                お薬詳細
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowEdit(true)}
+            className="text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+          >
+            ✏️ 編集
+          </button>
+        </div>
+      </nav>
+
+      <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Medicine info */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-2xl">
+        <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-4 shadow-sm">
+          <div className="flex items-center gap-4 mb-5">
+            <div className="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-3xl">
               💊
             </div>
             <div>
-              <h1 className="text-lg font-medium text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 {medicine.name}
               </h1>
               {medicine.dosage && (
-                <p className="text-sm text-gray-400">{medicine.dosage}</p>
+                <p className="text-base text-gray-400">{medicine.dosage}</p>
               )}
             </div>
           </div>
 
           <div className="space-y-3 border-t border-gray-50 pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">服用頻度</span>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-base text-gray-400">服用頻度</span>
+              <span className="text-base font-semibold text-gray-700">
                 {medicine.frequency}
               </span>
             </div>
             <div className="flex items-start justify-between">
-              <span className="text-sm text-gray-400">服用タイミング</span>
+              <span className="text-base text-gray-400">服用タイミング</span>
               <div className="flex flex-wrap gap-1 justify-end">
                 {medicine.reminders.map((r) => (
                   <span
                     key={r.id}
-                    className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full"
+                    className="text-sm bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-medium"
                   >
                     {r.time}
                   </span>
@@ -141,8 +286,8 @@ export default function MedicineDetailPage() {
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">服用期間</span>
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-base text-gray-400">服用期間</span>
+              <span className="text-base font-semibold text-gray-700">
                 {medicine.ongoing
                   ? "継続中"
                   : medicine.duration
@@ -151,43 +296,61 @@ export default function MedicineDetailPage() {
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">開始日</span>
-              <span className="text-sm text-gray-700">{startDate}</span>
+              <span className="text-base text-gray-400">開始日</span>
+              <span className="text-base text-gray-700">{startDate}</span>
             </div>
             {endDate && (
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">終了日</span>
-                <span className="text-sm text-gray-700">{endDate}</span>
+                <span className="text-base text-gray-400">終了日</span>
+                <span className="text-base text-gray-700">{endDate}</span>
               </div>
             )}
             {medicine.notes && (
               <div className="pt-2 border-t border-gray-50">
-                <p className="text-xs text-gray-400 mb-1">医師からの指示</p>
-                <p className="text-sm text-gray-600 bg-amber-50 rounded-lg p-3">
+                <p className="text-sm text-gray-400 mb-2">医師からの指示</p>
+                <p className="text-base text-gray-600 bg-amber-50 rounded-xl p-4 leading-relaxed">
                   {medicine.notes}
                 </p>
               </div>
             )}
           </div>
+
+          {/* Stop button */}
+          {medicine.active && (
+            <div className="mt-5 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => setShowStop(true)}
+                className="text-sm text-red-400 hover:text-red-600 transition-colors"
+              >
+                🚫 この薬を使用中止にする
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Stats */}
         {totalCount > 0 && (
           <div className="grid grid-cols-4 gap-3 mb-4">
-            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
-              <p className="text-xl font-medium text-green-500">{takenCount}</p>
-              <p className="text-xs text-gray-400 mt-0.5">飲んだ</p>
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-green-500">
+                {takenCount}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">飲んだ</p>
             </div>
-            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
-              <p className="text-xl font-medium text-red-400">{missedCount}</p>
-              <p className="text-xs text-gray-400 mt-0.5">飲めなかった</p>
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-red-400">
+                {missedCount}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">飲めなかった</p>
             </div>
-            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center">
-              <p className="text-xl font-medium text-gray-500">{totalCount}</p>
-              <p className="text-xs text-gray-400 mt-0.5">合計</p>
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-gray-500">
+                {totalCount}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">合計</p>
             </div>
             <div
-              className={`border rounded-xl p-3 text-center ${
+              className={`border rounded-xl p-3 text-center shadow-sm ${
                 adherenceRate >= 80
                   ? "bg-green-50 border-green-100"
                   : adherenceRate >= 60
@@ -196,7 +359,7 @@ export default function MedicineDetailPage() {
               }`}
             >
               <p
-                className={`text-xl font-medium ${
+                className={`text-2xl font-semibold ${
                   adherenceRate >= 80
                     ? "text-green-500"
                     : adherenceRate >= 60
@@ -206,18 +369,18 @@ export default function MedicineDetailPage() {
               >
                 {adherenceRate}%
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">服薬率</p>
+              <p className="text-sm text-gray-400 mt-1">服薬率</p>
             </div>
           </div>
         )}
 
-        {/* Log history - Table */}
-        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden mb-4">
-          <div className="px-6 py-4 border-b border-gray-50">
-            <h2 className="text-base font-medium text-gray-900">
+        {/* Log history */}
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+          <div className="px-5 py-4 border-b border-gray-50">
+            <h2 className="text-lg font-semibold text-gray-900">
               服薬履歴
               {totalCount > 0 && (
-                <span className="text-xs text-gray-400 ml-2">
+                <span className="text-sm text-gray-400 ml-2 font-normal">
                   全{totalCount}件
                 </span>
               )}
@@ -225,12 +388,13 @@ export default function MedicineDetailPage() {
           </div>
 
           {logs.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">
-              まだ記録がありません
-            </p>
+            <div className="text-center py-10">
+              <p className="text-3xl mb-2">💊</p>
+              <p className="text-base text-gray-400">まだ記録がありません</p>
+            </div>
           ) : (
             <>
-              <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-gray-50 text-xs text-gray-400 font-medium">
+              <div className="grid grid-cols-4 gap-2 px-5 py-3 bg-gray-50 text-sm text-gray-400 font-medium">
                 <span>日付</span>
                 <span>タイミング</span>
                 <span>状態</span>
@@ -238,25 +402,25 @@ export default function MedicineDetailPage() {
               </div>
 
               <div className="divide-y divide-gray-50">
-                {paginatedLogs.map((log) => (
+                {logs.map((log) => (
                   <div
                     key={log.id}
-                    className="grid grid-cols-4 gap-2 px-4 py-3 items-center"
+                    className="grid grid-cols-4 gap-2 px-5 py-3 items-center"
                   >
-                    <div>
-                      <p className="text-xs text-gray-700">
-                        {new Date(log.date).toLocaleDateString("ja-JP", {
-                          timeZone: "Asia/Tokyo",
-                        })}
-                      </p>
-                    </div>
+                    <p className="text-sm text-gray-700">
+                      {new Date(log.date).toLocaleDateString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
 
-                    <span className="text-xs bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full text-center">
+                    <span className="text-sm bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full text-center">
                       {log.reminderTime}
                     </span>
 
                     <span
-                      className={`text-xs font-medium ${
+                      className={`text-sm font-medium ${
                         log.status === "TAKEN"
                           ? "text-green-500"
                           : log.status === "MISSED"
@@ -275,7 +439,7 @@ export default function MedicineDetailPage() {
                             : "− 記録なし"}
                     </span>
 
-                    <span className="text-xs text-gray-500">
+                    <span className="text-sm text-gray-500">
                       {log.userName || "-"}
                     </span>
                   </div>
@@ -284,43 +448,6 @@ export default function MedicineDetailPage() {
             </>
           )}
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            {currentPage > 1 && (
-              <button
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                ← 前へ
-              </button>
-            )}
-            <div className="flex gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setCurrentPage(p)}
-                  className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg transition-colors ${
-                    p === currentPage
-                      ? "bg-indigo-600 text-white"
-                      : "border border-gray-200 hover:bg-gray-50 text-gray-600"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                次へ →
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

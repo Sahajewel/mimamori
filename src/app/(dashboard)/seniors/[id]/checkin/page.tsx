@@ -86,10 +86,10 @@ export default function CheckInPage() {
       <div className="flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <div className="mb-6">
-            <h1 className="text-xl md:text-2xl font-medium text-gray-900">
+            <h1 className="text-2xl  font-semibold text-gray-900">
               チェックイン
             </h1>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-base text-gray-400 mt-1">
               今日の状態を教えてください
             </p>
           </div>
@@ -105,17 +105,17 @@ export default function CheckInPage() {
                     : option.color + " border"
                 }`}
               >
-                <span className="text-2xl">{option.icon}</span>
+                <span className="text-3xl">{option.icon}</span>
                 <div>
-                  <p className="font-medium text-sm">{option.label}</p>
-                  <p className="text-xs opacity-70">{option.desc}</p>
+                  <p className="font-medium text-base">{option.label}</p>
+                  <p className="text-sm opacity-70">{option.desc}</p>
                 </div>
               </button>
             ))}
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-base font-medium text-gray-700 mb-1.5">
               メモ（任意）
             </label>
             <textarea
@@ -132,14 +132,14 @@ export default function CheckInPage() {
           <div className="flex gap-3">
             <button
               onClick={() => router.back()}
-              className="flex-1 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 py-2.5 border border-gray-200 text-gray-600 text-base font-medium rounded-lg hover:bg-gray-50 transition-colors"
             >
               キャンセル
             </button>
             <button
               onClick={handleSubmit}
               disabled={loading || !selected}
-              className="flex-1 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              className="flex-1 py-2.5 bg-indigo-600 text-white text-base font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
             >
               {loading ? "送信中..." : "送信する"}
             </button>

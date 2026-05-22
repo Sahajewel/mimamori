@@ -43,3 +43,47 @@ export async function GET(
     );
   }
 }
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string; medicineId: string }> },
+) {
+  try {
+    const { id, medicineId } = await params;
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "ログインが必要です" },
+        { status: 401 },
+      );
+    }
+
+    const member = await prisma.seniorMember.findFirst({
+      where: { seniorId: id, userId: session.user.id },
+    });
+    if (!member) {
+      return NextResponse.json(
+        { error: "アクセス権限がありません" },
+        { status: 403 },
+      );
+    }
+
+    const body = await req.json();
+
+    const medicine = await prisma.medicine.update({
+      where: { id: medicineId },
+      data: {
+        ...(body.active !== undefined && { active: body.active }),
+        ...(body.name && { name: body.name }),
+        ...(body.dosage !== undefined && { dosage: body.dosage }),
+        ...(body.notes !== undefined && { notes: body.notes }),
+      },
+    });
+
+    return NextResponse.json(medicine);
+  } catch {
+    return NextResponse.json(
+      { error: "エラーが発生しました" },
+      { status: 500 },
+    );
+  }
+}
