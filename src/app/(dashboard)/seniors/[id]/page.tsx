@@ -117,7 +117,6 @@ export default async function SeniorDetailPage({
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <BackButton />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
                 <span className="text-white text-sm">♡</span>
@@ -149,6 +148,7 @@ export default async function SeniorDetailPage({
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* Senior header */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-5 shadow-sm">
+          <BackButton />
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-2xl overflow-hidden flex-shrink-0">
               {senior.photoUrl ? (
