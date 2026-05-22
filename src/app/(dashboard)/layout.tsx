@@ -1,4 +1,4 @@
-import { BottomNav } from "@/app/components/BottomNav";
+import { SideNav } from "@/app/components/SideNav";
 
 export default function DashboardLayout({
   children,
@@ -6,11 +6,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      {children}
-      <BottomNav />
-      {/* Bottom padding so content not hidden behind nav */}
-      <div className="h-20" />
+    <div className="min-h-screen bg-gray-50">
+      <SideNav />
+      {/* Desktop-এ left margin, Mobile-এ bottom padding */}
+      <div className="md:ml-16 pb-20 md:pb-0">{children}</div>
     </div>
   );
 }
