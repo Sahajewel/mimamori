@@ -4,6 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { BackButton } from "@/app/components/BackButton";
 
+const PER_PAGE = 15;
+
 type Reminder = { id: string; time: string };
 type Log = {
   id: string;
@@ -37,11 +39,10 @@ export default function MedicineDetailPage() {
 
   const [medicine, setMedicine] = useState<Medicine | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [showStop, setShowStop] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [stopping, setStopping] = useState(false);
-
-  // Edit state
   const [editName, setEditName] = useState("");
   const [editDosage, setEditDosage] = useState("");
   const [editNotes, setEditNotes] = useState("");
@@ -97,7 +98,6 @@ export default function MedicineDetailPage() {
     });
     setEditLoading(false);
     setShowEdit(false);
-    // Reload
     const res = await fetch(`/api/seniors/${id}/medicines/${medicineId}`);
     const data = await res.json();
     setMedicine(data);
@@ -131,6 +131,12 @@ export default function MedicineDetailPage() {
   ).length;
   const adherenceRate =
     recordedCount > 0 ? Math.round((takenCount / recordedCount) * 100) : 0;
+
+  const totalPages = Math.ceil(totalCount / PER_PAGE);
+  const paginatedLogs = logs.slice(
+    (currentPage - 1) * PER_PAGE,
+    currentPage * PER_PAGE,
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -402,7 +408,7 @@ export default function MedicineDetailPage() {
               </div>
 
               <div className="divide-y divide-gray-50">
-                {logs.map((log) => (
+                {paginatedLogs.map((log) => (
                   <div
                     key={log.id}
                     className="grid grid-cols-4 gap-2 px-5 py-3 items-center"
@@ -414,11 +420,9 @@ export default function MedicineDetailPage() {
                         day: "numeric",
                       })}
                     </p>
-
                     <span className="text-sm bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-full text-center">
                       {log.reminderTime}
                     </span>
-
                     <span
                       className={`text-sm font-medium ${
                         log.status === "TAKEN"
@@ -438,13 +442,43 @@ export default function MedicineDetailPage() {
                             ? "− スキップ"
                             : "− 記録なし"}
                     </span>
-
                     <span className="text-sm text-gray-500">
                       {log.userName || "-"}
                     </span>
                   </div>
                 ))}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between px-5 py-4 border-t border-gray-50">
+                  {currentPage > 1 ? (
+                    <button
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      ← 前へ
+                    </button>
+                  ) : (
+                    <div />
+                  )}
+
+                  <p className="text-sm text-gray-400">
+                    {currentPage} / {totalPages} ページ
+                  </p>
+
+                  {currentPage < totalPages ? (
+                    <button
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                    >
+                      次へ →
+                    </button>
+                  ) : (
+                    <div />
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>
