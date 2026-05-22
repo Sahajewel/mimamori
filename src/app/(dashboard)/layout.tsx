@@ -6,9 +6,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50">
       <SideNav />
-      <div className="flex-1 ml-16 transition-all duration-300">{children}</div>
+      {/* Content সরবে না, full width */}
+      {children}
     </div>
   );
 }
