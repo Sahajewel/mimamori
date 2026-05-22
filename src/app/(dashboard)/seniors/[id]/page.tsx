@@ -6,6 +6,7 @@ import { QuickLinkButton } from "@/app/components/QuickLinkButton";
 import { ChatButton } from "@/app/components/ChatButton";
 import { SeniorTabs } from "@/app/components/SeniorTabs";
 import { BackButton } from "@/app/components/BackButton";
+import { DeleteSeniorButton } from "@/app/components/DeleteSeniorButton";
 
 export default async function SeniorDetailPage({
   params,
@@ -146,7 +147,7 @@ export default async function SeniorDetailPage({
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-5 shadow-sm">
           {/* Profile */}
           <div className="flex items-center gap-4 mb-5">
-            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-2xl overflow-hidden flex-shrink-0">
+            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-3xl overflow-hidden flex-shrink-0">
               {senior.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -159,30 +160,29 @@ export default async function SeniorDetailPage({
               )}
             </div>
             <div className="flex-1">
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 {senior.name}
               </h1>
               {senior.age && (
-                <p className="text-sm text-gray-400">{senior.age}歳</p>
+                <p className="text-base text-gray-400">{senior.age}歳</p>
               )}
             </div>
-            {/* Chat button */}
             <ChatButton seniorId={id} />
           </div>
 
           {senior.notes && (
-            <p className="text-sm text-gray-500 bg-gray-50 rounded-xl p-3 mb-4">
+            <p className="text-base text-gray-500 bg-gray-50 rounded-xl p-4 mb-4">
               {senior.notes}
             </p>
           )}
 
           {/* Today status */}
-          <div className="bg-gray-50 rounded-xl p-4 space-y-2 mb-4">
+          <div className="bg-gray-50 rounded-xl p-4 space-y-3 mb-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">今日の体調</span>
+              <span className="text-base text-gray-400">今日の体調</span>
               {todayCheckIn ? (
                 <span
-                  className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${
+                  className={`text-base font-semibold px-3 py-1 rounded-full ${
                     todayCheckIn.status === "OK"
                       ? "bg-green-50 text-green-600"
                       : todayCheckIn.status === "CONCERN"
@@ -197,13 +197,13 @@ export default async function SeniorDetailPage({
                       : "🚨 緊急"}
                 </span>
               ) : (
-                <span className="text-sm text-gray-300">未確認</span>
+                <span className="text-base text-gray-300">未確認</span>
               )}
             </div>
             {lastSeenText && (
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">最終確認</span>
-                <span className="text-sm text-gray-500">{lastSeenText}</span>
+                <span className="text-base text-gray-400">最終確認</span>
+                <span className="text-base text-gray-500">{lastSeenText}</span>
               </div>
             )}
           </div>
@@ -211,6 +211,13 @@ export default async function SeniorDetailPage({
           {/* Quick link */}
           {role === "OWNER" && (
             <QuickLinkButton seniorId={id} seniorName={senior.name} />
+          )}
+
+          {/* Delete Senior */}
+          {role === "OWNER" && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <DeleteSeniorButton seniorId={id} seniorName={senior.name} />
+            </div>
           )}
         </div>
 

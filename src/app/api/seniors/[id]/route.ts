@@ -101,3 +101,35 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "ログインが必要です" },
+        { status: 401 },
+      );
+    }
+
+    const member = await prisma.seniorMember.findFirst({
+      where: { seniorId: id, userId: session.user.id, role: "OWNER" },
+    });
+    if (!member) {
+      return NextResponse.json({ error: "削除できません" }, { status: 403 });
+    }
+
+    await prisma.senior.delete({ where: { id } });
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json(
+      { error: "エラーが発生しました" },
+      { status: 500 },
+    );
+  }
+}
