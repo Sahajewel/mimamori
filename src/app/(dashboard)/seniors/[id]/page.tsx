@@ -118,7 +118,7 @@ export default async function SeniorDetailPage({
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center sm:pl-16">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center  sm:block">
                 <span className="text-white text-sm">♡</span>
               </div>
               <p className="font-semibold text-gray-900 hidden sm:block ">
@@ -128,6 +128,9 @@ export default async function SeniorDetailPage({
           </div>
           {role === "OWNER" && (
             <div className="flex gap-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center sm:pl-16">
+                <span className="text-white text-sm">♡</span>
+              </div>
               <Link
                 href={`/seniors/${id}/invite`}
                 className="text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
