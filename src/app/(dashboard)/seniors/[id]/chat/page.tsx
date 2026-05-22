@@ -6,6 +6,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { BackButton } from "@/app/components/BackButton";
 
 type Message = {
   id: string;
@@ -337,13 +338,10 @@ export default function ChatPage() {
       )}
 
       {/* Navbar */}
-      <nav className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
-        <button
-          onClick={() => router.back()}
-          className="text-gray-400 hover:text-gray-600 text-lg"
-        >
-          ←
-        </button>
+      <nav className="bg-white  justify-center border-b border-gray-100 px-4 py-3 flex items-center gap-3 shrink-0">
+        <div>
+          <BackButton></BackButton>
+        </div>
         <div className="flex items-center gap-2 flex-1">
           <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-sm">
             {seniorName.charAt(0) || "♡"}

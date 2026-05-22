@@ -10,8 +10,7 @@ export function BackButton() {
       onClick={() => router.back()}
       className="flex items-center gap-1.5 text-indigo-600  text-sm hover:underline px-3 py-1.5 text-center"
     >
-      <span className="text-lg">←</span>
-      <span>戻る</span>
+      <span>← 戻る</span>
     </button>
   );
 }
