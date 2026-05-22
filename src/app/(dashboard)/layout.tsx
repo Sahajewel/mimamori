@@ -6,10 +6,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       <SideNav />
-      {/* Desktop-এ left margin, Mobile-এ bottom padding */}
-      <div className="md:ml-16 pb-20 md:pb-0">{children}</div>
+      <div className="flex-1 ml-16 transition-all duration-300">{children}</div>
     </div>
   );
 }

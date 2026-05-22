@@ -1,5 +1,4 @@
 import { LogoutButton } from "@/app/components/LogoutButton";
-import { NotificationButton } from "@/app/components/NotificationButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -54,7 +53,7 @@ export default async function DashboardPage() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-base">♡</span>
             </div>
@@ -154,6 +153,7 @@ export default async function DashboardPage() {
                 <Link
                   key={senior.id}
                   href={`/seniors/${senior.id}`}
+                  prefetch={true}
                   className={`group bg-white rounded-2xl p-6 shadow-sm border-2 transition-all active:scale-95 cursor-pointer ${
                     isEmergency
                       ? "border-red-200 hover:border-red-400 hover:shadow-red-100"
