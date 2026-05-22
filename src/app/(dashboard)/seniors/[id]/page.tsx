@@ -118,10 +118,10 @@ export default async function SeniorDetailPage({
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center sm:pl-16">
                 <span className="text-white text-sm">♡</span>
               </div>
-              <p className="font-semibold text-gray-900 hidden sm:block">
+              <p className="font-semibold text-gray-900 hidden sm:block ">
                 Mimamori
               </p>
             </div>
