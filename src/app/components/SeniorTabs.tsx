@@ -140,12 +140,14 @@ export function SeniorTabs({
                   </div>
                 </div>
               ))}
-              <Link
-                href={`/seniors/${seniorId}/checkins`}
-                className="text-sm text-indigo-600 hover:underline px-3 py-1.5"
-              >
-                もっと見る →
-              </Link>
+              <div className="text-center">
+                <Link
+                  href={`/seniors/${seniorId}/checkins`}
+                  className="text-sm text-indigo-600 hover:underline px-3 py-1.5 text-center"
+                >
+                  もっと見る →
+                </Link>
+              </div>
             </div>
           )}
         </div>
