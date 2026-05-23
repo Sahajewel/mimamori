@@ -408,7 +408,7 @@ export default async function HomePage() {
             <p className="text-base font-semibold text-gray-900">Mimamori</p>
           </div>
           <p className="text-sm text-gray-400">Developed by Saha Jewel Kumar</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/privacy"
               className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
