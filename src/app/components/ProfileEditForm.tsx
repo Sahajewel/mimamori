@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 function Spinner() {
   return (
@@ -35,6 +36,7 @@ type Props = {
 };
 
 export function ProfileEditForm({ initialName, initialImage }: Props) {
+  const { update } = useSession();
   const router = useRouter();
   const [name, setName] = useState(initialName);
   const [image, setImage] = useState<string | null>(initialImage);
@@ -46,6 +48,7 @@ export function ProfileEditForm({ initialName, initialImage }: Props) {
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
+
     if (!file) return;
     setUploading(true);
     const formData = new FormData();
@@ -71,7 +74,10 @@ export function ProfileEditForm({ initialName, initialImage }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: name.trim(), image }),
     });
+
     if (res.ok) {
+      const data = await res.json();
+      await update({ name: data.name, image: data.image }); // ← session update
       setSuccess(true);
       setTimeout(() => {
         router.push("/settings");

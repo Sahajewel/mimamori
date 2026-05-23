@@ -11,17 +11,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
+
+      // profile update হলে token refresh করো
+      if (trigger === "update" && session) {
+        token.name = session.name;
+        token.image = session.image;
+      }
+
+      // DB থেকে সবসময় fresh name আর image নাও
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { name: true, image: true },
+        });
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.image = dbUser.image;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.name = token.name as string;
+        session.user.image = (token.image as string) ?? null;
       }
       return session;
     },
