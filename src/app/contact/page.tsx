@@ -1,19 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ContactFeedbackForm } from "../components/ContactFeedbackForm";
+import { BackButton } from "../components/BackButton";
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-100 px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <Link
-            href="/"
-            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
-          >
-            <span className="text-lg">←</span>
-            <span>戻る</span>
-          </Link>
+          <BackButton></BackButton>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm">♡</span>
