@@ -67,6 +67,88 @@ function isSameDay(a: string, b: string) {
   );
 }
 
+// Skeleton loader
+function ChatSkeleton() {
+  return (
+    <div className="flex flex-col bg-gray-50" style={{ height: "100dvh" }}>
+      {/* Navbar skeleton */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-3 flex gap-3 shrink-0 pl-16 items-center">
+        <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse" />
+        <div className="w-9 h-9 bg-gray-200 rounded-full animate-pulse" />
+        <div className="flex flex-col gap-1.5">
+          <div className="w-36 h-3.5 bg-gray-200 rounded-full animate-pulse" />
+          <div className="w-20 h-3 bg-gray-100 rounded-full animate-pulse" />
+        </div>
+      </nav>
+
+      {/* Messages skeleton */}
+      <div className="flex-1 overflow-hidden px-4 py-4 max-w-2xl mx-auto w-full space-y-4">
+        {/* Date separator */}
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-gray-100" />
+          <div className="w-12 h-5 bg-gray-100 rounded-full animate-pulse" />
+          <div className="flex-1 h-px bg-gray-100" />
+        </div>
+
+        {/* Other person messages */}
+        <div className="flex justify-start">
+          <div className="flex flex-col items-start gap-1 max-w-[70%]">
+            <div className="w-16 h-3 bg-gray-200 rounded-full animate-pulse ml-1" />
+            <div className="w-48 h-10 bg-white border border-gray-100 rounded-2xl rounded-tl-sm animate-pulse shadow-sm" />
+          </div>
+        </div>
+
+        <div className="flex justify-start">
+          <div className="w-36 h-9 bg-white border border-gray-100 rounded-2xl rounded-tl-sm animate-pulse shadow-sm" />
+        </div>
+
+        {/* My messages */}
+        <div className="flex justify-end">
+          <div className="flex items-end gap-1.5">
+            <div className="w-12 h-3 bg-gray-100 rounded-full animate-pulse" />
+            <div className="w-52 h-10 bg-indigo-200 rounded-2xl rounded-tr-sm animate-pulse" />
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <div className="flex items-end gap-1.5">
+            <div className="w-10 h-3 bg-gray-100 rounded-full animate-pulse" />
+            <div className="w-40 h-9 bg-indigo-200 rounded-2xl rounded-tr-sm animate-pulse" />
+          </div>
+        </div>
+
+        <div className="flex justify-start">
+          <div className="w-44 h-9 bg-white border border-gray-100 rounded-2xl rounded-tl-sm animate-pulse shadow-sm" />
+        </div>
+
+        <div className="flex justify-end">
+          <div className="flex items-end gap-1.5">
+            <div className="w-10 h-3 bg-gray-100 rounded-full animate-pulse" />
+            <div className="w-56 h-10 bg-indigo-200 rounded-2xl rounded-tr-sm animate-pulse" />
+          </div>
+        </div>
+
+        <div className="flex justify-start">
+          <div className="flex flex-col items-start gap-1 max-w-[70%]">
+            <div className="w-16 h-3 bg-gray-200 rounded-full animate-pulse ml-1" />
+            <div className="w-32 h-9 bg-white border border-gray-100 rounded-2xl rounded-tl-sm animate-pulse shadow-sm" />
+          </div>
+        </div>
+      </div>
+
+      {/* Input skeleton */}
+      <div className="bg-white border-t border-gray-100 px-3 py-2 shrink-0">
+        <div className="max-w-2xl mx-auto flex items-end gap-2">
+          <div className="w-9 h-9 bg-gray-100 rounded-full animate-pulse" />
+          <div className="w-9 h-9 bg-gray-100 rounded-full animate-pulse" />
+          <div className="flex-1 h-10 bg-gray-100 rounded-2xl animate-pulse" />
+          <div className="w-9 h-9 bg-indigo-200 rounded-full animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ChatPage() {
   const params = useParams();
   const router = useRouter();
@@ -75,6 +157,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [myId, setMyId] = useState("");
   const [seniorName, setSeniorName] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
@@ -98,32 +181,35 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    fetch("/api/auth/session")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.user?.id) setMyId(d.user.id);
-      });
-
-    fetch(`/api/seniors/${id}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.name) setSeniorName(d.name);
-      });
-
-    // Mark as read
-    fetch(`/api/seniors/${id}/messages/unread`, { method: "POST" });
-  }, [id]);
-
-  useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
+    async function init() {
+      await Promise.all([
+        fetch("/api/auth/session")
+          .then((r) => r.json())
+          .then((d) => {
+            if (d?.user?.id) setMyId(d.user.id);
+          }),
+        fetch(`/api/seniors/${id}`)
+          .then((r) => r.json())
+          .then((d) => {
+            if (d?.name) setSeniorName(d.name);
+          }),
+        fetch(`/api/seniors/${id}/messages/unread`, { method: "POST" }),
+        fetchMessages(),
+      ]);
+      setInitialLoading(false);
+    }
+    init();
   }, [id]);
 
   const prevMessageCount = useRef(0);
 
   useEffect(() => {
-    // শুধু নতুন message আসলে scroll করো
+    if (initialLoading) return;
+    const interval = setInterval(fetchMessages, 5000);
+    return () => clearInterval(interval);
+  }, [id, initialLoading]);
+
+  useEffect(() => {
     if (messages.length > prevMessageCount.current) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }
@@ -138,9 +224,7 @@ export default function ChatPage() {
   }
 
   function handlePressEnd() {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
   }
 
   async function handleDelete() {
@@ -194,9 +278,7 @@ export default function ChatPage() {
       body: JSON.stringify({ content: sentContent }),
     });
 
-    if (res.ok) {
-      await fetchMessages();
-    }
+    if (res.ok) await fetchMessages();
     setLoading(false);
     inputRef.current?.focus();
   }
@@ -204,16 +286,10 @@ export default function ChatPage() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setImageUploading(true);
     const formData = new FormData();
     formData.append("file", file);
-
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
+    const res = await fetch("/api/upload", { method: "POST", body: formData });
     if (res.ok) {
       const { url } = await res.json();
       const msgRes = await fetch(`/api/seniors/${id}/messages`, {
@@ -233,6 +309,9 @@ export default function ChatPage() {
       await handleSend();
     }
   }
+
+  // Skeleton দেখাও যতক্ষণ data না আসে
+  if (initialLoading) return <ChatSkeleton />;
 
   return (
     <div className="flex flex-col bg-gray-50" style={{ height: "100dvh" }}>
@@ -270,7 +349,7 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* Action Modal (Edit/Delete) */}
+      {/* Action Modal */}
       {actionMsg && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm mb-4 overflow-hidden">
@@ -338,8 +417,7 @@ export default function ChatPage() {
       )}
 
       {/* Navbar */}
-
-      <nav className="bg-white max-w-3xl mx-auto   border-b border-gray-100 px-4 py-3 flex  gap-3 shrink-0 pl-16 items-center justify-between">
+      <nav className="bg-white max-w-3xl mx-auto border-b border-gray-100 px-4 py-3 flex gap-3 shrink-0 pl-16 items-center justify-between">
         <BackButton />
         <div className="flex items-center gap-2 flex-1">
           <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-sm">
