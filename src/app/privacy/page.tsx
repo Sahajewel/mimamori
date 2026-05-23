@@ -7,7 +7,7 @@ export default function PrivacyPage() {
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors text-sm font-medium"
+            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
           >
             <span className="text-lg">←</span>
             <span>戻る</span>
