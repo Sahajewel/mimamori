@@ -6,6 +6,7 @@ import { SeniorTabs } from "@/app/components/SeniorTabs";
 import { BackButton } from "@/app/components/BackButton";
 import { DeleteSeniorButton } from "@/app/components/DeleteSeniorButton";
 import { NavActions } from "@/app/components/NavActions";
+import { ChatButton } from "@/app/components/ChatButton";
 
 export default async function SeniorDetailPage({
   params,
@@ -151,6 +152,7 @@ export default async function SeniorDetailPage({
                 <p className="text-base text-gray-400">{senior.age}歳</p>
               )}
             </div>
+            <ChatButton seniorId={id} />
           </div>
 
           {senior.notes && (

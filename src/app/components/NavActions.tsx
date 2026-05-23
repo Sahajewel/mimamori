@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
 
 function Spinner() {
   return (
@@ -34,53 +34,31 @@ type Props = {
 };
 
 export function NavActions({ seniorId, role }: Props) {
-  const [pendingHref, setPendingHref] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [clickedHref, setClickedHref] = useState<string | null>(null);
 
-  const navigate = (href: string) => {
-    setPendingHref(href);
-    startTransition(() => {
-      router.push(href);
-    });
-  };
-
-  const chatHref = `/seniors/${seniorId}/chat`;
   const inviteHref = `/seniors/${seniorId}/invite`;
   const editHref = `/seniors/${seniorId}/edit`;
 
+  if (role !== "OWNER") return null;
+
   return (
     <div className="flex items-center gap-2">
-      {/* 💬 Chat button — সবসময় দেখাবে */}
-      <button
-        onClick={() => navigate(chatHref)}
-        disabled={isPending}
-        className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 hover:bg-gray-50 disabled:opacity-60 transition-colors text-gray-500"
+      <Link
+        href={inviteHref}
+        onClick={() => setClickedHref(inviteHref)}
+        className="flex items-center gap-1.5 text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
       >
-        {pendingHref === chatHref && isPending ? <Spinner /> : "💬"}
-      </button>
-
-      {/* OWNER only */}
-      {role === "OWNER" && (
-        <>
-          <button
-            onClick={() => navigate(inviteHref)}
-            disabled={isPending}
-            className="flex items-center gap-1.5 text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 disabled:opacity-60 transition-colors"
-          >
-            {pendingHref === inviteHref && isPending ? <Spinner /> : null}
-            招待する
-          </button>
-          <button
-            onClick={() => navigate(editHref)}
-            disabled={isPending}
-            className="flex items-center gap-1.5 text-sm text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 disabled:opacity-60 transition-colors"
-          >
-            {pendingHref === editHref && isPending ? <Spinner /> : null}
-            編集
-          </button>
-        </>
-      )}
+        {clickedHref === inviteHref ? <Spinner /> : null}
+        招待する
+      </Link>
+      <Link
+        href={editHref}
+        onClick={() => setClickedHref(editHref)}
+        className="flex items-center gap-1.5 text-sm text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        {clickedHref === editHref ? <Spinner /> : null}
+        編集
+      </Link>
     </div>
   );
 }
