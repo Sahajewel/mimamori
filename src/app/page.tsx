@@ -3,6 +3,7 @@ import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { LogoutButton } from "./components/LogoutButton";
+import { DashboardButton } from "./components/DashboardButton";
 
 export default async function HomePage() {
   const session = await auth();
@@ -69,12 +70,7 @@ export default async function HomePage() {
           <div className="flex items-center gap-2">
             {session?.user?.id ? (
               <div className="flex items-center gap-2">
-                <Link
-                  href="/dashboard"
-                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-                >
-                  ダッシュボード →
-                </Link>
+                <DashboardButton></DashboardButton>
                 <LogoutButton />
               </div>
             ) : (

@@ -1,4 +1,5 @@
 import { DashboardClient } from "@/app/components/DashboardClient ";
+import { DashboardLogo } from "@/app/components/DashboardLogo";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -53,12 +54,7 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-gray-50 pb-24">
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
-              <span className="text-white text-base">♡</span>
-            </div>
-            <p className="font-semibold text-gray-900 text-base">Mimamori</p>
-          </Link>
+          <DashboardLogo></DashboardLogo>
           <div className="flex items-center gap-3">
             <p className="text-sm text-gray-500 hidden sm:block">
               {session.user.name}さん
