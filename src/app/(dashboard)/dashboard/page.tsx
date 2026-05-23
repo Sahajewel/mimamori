@@ -1,3 +1,4 @@
+import { DashboardClient } from "@/app/components/DashboardClient ";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -162,123 +163,26 @@ export default async function DashboardPage() {
                         : "border-gray-100 hover:border-indigo-200 hover:shadow-indigo-100"
                   } hover:shadow-lg`}
                 >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xl overflow-hidden flex-shrink-0 shadow-sm">
-                        {senior.photoUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={senior.photoUrl}
-                            alt={senior.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          senior.name.charAt(0).toUpperCase()
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
-                          {senior.name}
-                        </p>
-                        {senior.age && (
-                          <p className="text-sm text-gray-400">
-                            {senior.age}歳
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      {role === "OWNER" && (
-                        <span className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-medium">
-                          管理者
-                        </span>
-                      )}
-                      <span className="text-indigo-400 text-lg group-hover:translate-x-1 transition-transform">
-                        →
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div className="space-y-3 bg-gray-50 rounded-xl p-4">
-                    {/* CheckIn */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500">今日の体調</span>
-                      <div className="flex items-center gap-2">
-                        {lastCheckIn ? (
-                          <>
-                            <span
-                              className={`text-sm font-semibold ${
-                                lastCheckIn.status === "OK"
-                                  ? "text-green-500"
-                                  : lastCheckIn.status === "CONCERN"
-                                    ? "text-amber-500"
-                                    : "text-red-500"
-                              }`}
-                            >
-                              {lastCheckIn.status === "OK"
-                                ? "✓ 良好"
-                                : lastCheckIn.status === "CONCERN"
-                                  ? "⚠ 要確認"
-                                  : "🚨 緊急"}
-                            </span>
-                            {lastCheckInTime && (
-                              <span className="text-xs text-gray-300">
-                                {lastCheckInTime}
-                              </span>
-                            )}
-                          </>
-                        ) : (
-                          <span className="text-sm text-gray-300">未確認</span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Medicine */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500">今日のお薬</span>
-                      {totalReminders > 0 ? (
-                        <span
-                          className={`text-sm font-semibold ${
-                            takenToday === totalReminders
-                              ? "text-green-500"
-                              : takenToday > 0
-                                ? "text-amber-500"
-                                : "text-gray-400"
-                          }`}
-                        >
-                          {takenToday === totalReminders
-                            ? "✓ 完了"
-                            : `${takenToday}/${totalReminders} 服用済み`}
-                        </span>
-                      ) : (
-                        <span className="text-sm text-gray-400">
-                          {senior.medicines.length > 0
-                            ? `${senior.medicines.length}種類`
-                            : "登録なし"}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Emergency alert */}
-                  {isEmergency && (
-                    <div className="mt-3 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-                      <p className="text-sm text-red-600 font-semibold">
-                        🚨 緊急状態です。すぐに確認してください！
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Concern alert */}
-                  {isConcern && (
-                    <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
-                      <p className="text-sm text-amber-600 font-medium">
-                        ⚠ 様子を確認してください
-                      </p>
-                    </div>
-                  )}
+                  <DashboardClient
+                    seniorMembers={seniorMembers.map((m) => ({
+                      role: m.role,
+                      senior: {
+                        id: m.senior.id,
+                        name: m.senior.name,
+                        age: m.senior.age,
+                        photoUrl: m.senior.photoUrl,
+                        checkIns: m.senior.checkIns.map((c) => ({
+                          status: c.status,
+                          createdAt: c.createdAt.toISOString(),
+                        })),
+                        medicines: m.senior.medicines.map((med) => ({
+                          reminders: med.reminders.map((r) => ({ id: r.id })),
+                          logs: med.logs.map((l) => ({ status: l.status })),
+                        })),
+                      },
+                    }))}
+                    now={now.toISOString()}
+                  />
                 </Link>
               );
             })}
