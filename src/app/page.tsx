@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function HomePage() {
+  const session = await auth();
+  if (session?.user?.id) redirect("/dashboard"); // ← logged in থাকলে dashboard এ
+
   // Dynamic testimonials
   const testimonials = await prisma.feedback.findMany({
     where: {
@@ -13,7 +18,6 @@ export default async function HomePage() {
     take: 6,
   });
 
-  // Static fallback যদি কোনো feedback না থাকে
   const staticTestimonials = [
     {
       text: "母が一人暮らしで心配でしたが、毎日チェックインが届くので安心できるようになりました。",
@@ -45,6 +49,7 @@ export default async function HomePage() {
           rating: t.rating,
         }))
       : staticTestimonials;
+
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       {/* Navbar */}
@@ -80,11 +85,11 @@ export default async function HomePage() {
         </div>
       </nav>
 
+      {/* 以下全部 same */}
       {/* Hero */}
       <section className="relative flex flex-col items-center text-center px-4 py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-white pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
-
         <div className="relative z-10">
           <span className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-medium px-4 py-2 rounded-full mb-8">
             🇯🇵 日本の高齢者ケアのために作られました
@@ -95,9 +100,7 @@ export default async function HomePage() {
             <span className="text-indigo-600">いつも一緒に。</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed mb-10">
-            離れて暮らすご家族の毎日の様子を、
-            家族みんなで安心して見守るプラットフォーム。
-            ログイン不要で簡単に記録できます。
+            離れて暮らすご家族の毎日の様子を、家族みんなで安心して見守るプラットフォーム。ログイン不要で簡単に記録できます。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
             <Link
@@ -233,9 +236,7 @@ export default async function HomePage() {
             かんたん記録
           </h2>
           <p className="text-base text-gray-500 max-w-md mx-auto mb-10 leading-relaxed">
-            QRコードを印刷してご本人に渡すだけ。
-            スマホのカメラで読み取り、ボタンを押すだけで体調とお薬を記録できます。
-            アカウント登録も不要です。
+            QRコードを印刷してご本人に渡すだけ。スマホのカメラで読み取り、ボタンを押すだけで体調とお薬を記録できます。アカウント登録も不要です。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             {["📱 カメラで読み取る", "👆 ボタンを押す", "✓ 家族に届く"].map(
@@ -361,8 +362,7 @@ export default async function HomePage() {
             今日から始めてみませんか？
           </p>
           <p className="text-base text-indigo-200 mb-10 max-w-md mx-auto">
-            登録は無料。クレジットカードも不要。
-            大切なご家族を、みんなで見守りましょう。
+            登録は無料。クレジットカードも不要。大切なご家族を、みんなで見守りましょう。
           </p>
           <Link
             href="/register"
