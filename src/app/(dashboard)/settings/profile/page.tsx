@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BackButton } from "@/app/components/BackButton";
 import { ProfileEditForm } from "@/app/components/ProfileEditForm";
+import Link from "next/link";
 
 export default async function ProfileEditPage() {
   const session = await auth();
@@ -19,7 +20,13 @@ export default async function ProfileEditPage() {
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <BackButton />
+          <Link
+            href={`/settings`}
+            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
+          >
+            <span className="text-lg">←</span>
+            <span>戻る</span>
+          </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm">♡</span>

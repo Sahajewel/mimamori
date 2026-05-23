@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BackButton } from "@/app/components/BackButton";
+import Link from "next/link";
 
 export default function NewSeniorPage() {
   const router = useRouter();
@@ -44,7 +45,13 @@ export default function NewSeniorPage() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <BackButton />
+          <Link
+            href={`/dashboard`}
+            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
+          >
+            <span className="text-lg">←</span>
+            <span>戻る</span>
+          </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm">♡</span>
