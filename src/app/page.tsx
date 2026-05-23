@@ -409,25 +409,25 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/privacy"
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-sm text-gray-400 hover:underline transition-colors"
             >
               プライバシーポリシー
             </Link>
             <Link
               href="/terms"
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-sm text-gray-400 hover:underline transition-colors"
             >
               利用規約
             </Link>
             <Link
               href="/about"
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-sm text-gray-400 hover:underline transition-colors"
             >
               Mimamoriについて
             </Link>
             <Link
               href="/contact"
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-sm text-gray-400 hover:underline transition-colors"
             >
               お問い合わせ
             </Link>

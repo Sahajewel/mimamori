@@ -128,7 +128,7 @@ export default async function SettingsPage() {
           <div className="divide-y divide-gray-50">
             <Link
               href="/privacy"
-              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-lg">
@@ -142,7 +142,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/terms"
-              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center text-lg">
@@ -154,7 +154,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/about"
-              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">
@@ -168,7 +168,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/contact"
-              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-lg">
