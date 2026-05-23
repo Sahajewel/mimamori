@@ -51,7 +51,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
           <Link href="/" className="flex items-center gap-2.5">
@@ -68,7 +67,6 @@ export default async function DashboardPage() {
       </nav>
 
       <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
-        {/* Greeting */}
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">
             {getGreeting()}、{session.user.name}さん 👋
