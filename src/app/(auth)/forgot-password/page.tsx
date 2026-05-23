@@ -33,75 +33,92 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <div className="mb-8 text-center">
-          <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <span className="text-indigo-600 text-lg">♡</span>
-          </div>
-          <h1 className="text-xl font-medium text-gray-900">
-            パスワードをお忘れですか？
-          </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            登録したメールアドレスを入力してください
-          </p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-4">
+        <div className="max-w-md mx-auto flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
+            <p className="font-semibold text-gray-900">Mimamori</p>
+          </Link>
         </div>
+      </nav>
 
-        {sent ? (
-          <div className="text-center">
-            <div className="bg-green-50 border border-green-100 rounded-xl p-6 mb-6">
-              <p className="text-2xl mb-2">📧</p>
-              <p className="text-sm font-medium text-green-700 mb-1">
-                メールを送信しました
-              </p>
-              <p className="text-xs text-green-500">
-                {email}にリセットリンクを送りました。 メールをご確認ください。
-              </p>
-            </div>
-            <Link
-              href="/login"
-              className="text-sm text-indigo-600 hover:underline"
-            >
-              ← ログインに戻る
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                メールアドレス
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="例：tanaka@example.com"
-                required
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3">
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-            >
-              {loading ? "送信中..." : "リセットリンクを送る"}
-            </button>
-
-            <p className="text-center text-sm text-gray-400">
-              <Link href="/login" className="text-indigo-600 hover:underline">
-                ← ログインに戻る
-              </Link>
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              パスワードをお忘れですか？
+            </h1>
+            <p className="text-base text-gray-400 mt-1">
+              登録したメールアドレスを入力してください
             </p>
-          </form>
-        )}
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            {sent ? (
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">📧</span>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                  メールを送信しました
+                </h2>
+                <p className="text-base text-gray-400 mb-6 leading-relaxed">
+                  <span className="font-medium text-gray-700">{email}</span>{" "}
+                  にリセットリンクを送りました。メールをご確認ください。
+                </p>
+                <Link
+                  href="/login"
+                  className="text-base text-indigo-600 font-medium hover:underline"
+                >
+                  ← ログインに戻る
+                </Link>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">
+                    メールアドレス
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="例：tanaka@example.com"
+                    required
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                  />
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                    <p className="text-base text-red-600">{error}</p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
+                >
+                  {loading ? "送信中..." : "リセットリンクを送る →"}
+                </button>
+
+                <div className="text-center">
+                  <Link
+                    href="/login"
+                    className="text-base text-indigo-600 font-medium hover:underline"
+                  >
+                    ← ログインに戻る
+                  </Link>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
