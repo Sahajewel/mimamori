@@ -8,7 +8,7 @@ export default function AboutPage() {
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors text-sm font-medium"
+            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
           >
             <span className="text-lg">←</span>
             <span>戻る</span>
@@ -75,7 +75,7 @@ export default function AboutPage() {
             👨‍💻 開発者
           </h2>
           <div className="flex items-center gap-5 mb-5">
-            <div className="w-20 h-20 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
+            <div className="w-20 h-20 relative  rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
               {/* ここに画像URLを入れてください */}
               <Image
                 src="https://res.cloudinary.com/dqsgq6z74/image/upload/v1779533948/profile_lwdnjm.png"

@@ -8,7 +8,7 @@ export default function ContactPage() {
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors text-sm font-medium"
+            className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
           >
             <span className="text-lg">←</span>
             <span>戻る</span>
@@ -36,7 +36,7 @@ export default function ContactPage() {
         {/* Developer card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
+            <div className="w-16 relative  h-16 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
               <Image
                 src="https://res.cloudinary.com/dqsgq6z74/image/upload/v1779533948/profile_lwdnjm.png"
                 alt="Saha Jewel Kumar"
