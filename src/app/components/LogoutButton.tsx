@@ -1,12 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 export function LogoutButton() {
-  const router = useRouter();
-
   async function handleLogout() {
     await fetch("/api/auth/signout", { method: "POST" });
+    // session clear হওয়ার জন্য একটু wait করো
+    await new Promise((resolve) => setTimeout(resolve, 300));
     window.location.href = "/";
   }
 

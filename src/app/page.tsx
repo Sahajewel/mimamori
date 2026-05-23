@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function HomePage() {
-  const session = await auth();
-  if (session?.user?.id) redirect("/dashboard"); // ← logged in থাকলে dashboard এ
+  // ← logged in থাকলে dashboard এ
 
   // Dynamic testimonials
   const testimonials = await prisma.feedback.findMany({
