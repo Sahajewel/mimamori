@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { SideNav } from "@/app/components/SideNav";
 import { BackButton } from "@/app/components/BackButton";
+import Image from "next/image";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -28,16 +29,40 @@ export default async function SettingsPage() {
 
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Profile hero */}
-        <div className="bg-indigo-600 rounded-2xl p-6 mb-6 shadow-sm flex items-center gap-5">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl flex-shrink-0">
-            {session.user.name?.charAt(0)}
+        {/* Profile hero */}
+        <div className="bg-indigo-600 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl flex-shrink-0 overflow-hidden">
+              {session.user.image ? (
+                <div className="relative w-20 h-20">
+                  <Image
+                    src={session.user.image}
+                    alt="profile"
+                    fill
+                    className="object-cover rounded-full"
+                  />
+                </div>
+              ) : (
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl">
+                  {session.user.name?.charAt(0)}
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="text-xl font-bold text-white">
+                {session.user.name}
+              </p>
+              <p className="text-base text-indigo-200 mt-0.5">
+                {session.user.email}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-xl font-bold text-white">{session.user.name}</p>
-            <p className="text-base text-indigo-200 mt-0.5">
-              {session.user.email}
-            </p>
-          </div>
+          <Link
+            href="/settings/profile"
+            className="text-sm text-white/80 border border-white/30 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+          >
+            編集
+          </Link>
         </div>
 
         {/* Account */}
@@ -150,7 +175,12 @@ export default async function SettingsPage() {
                 </span>
                 <p className="text-base font-medium text-gray-800">開発者</p>
               </div>
-              <span className="text-base text-gray-400">Saha Jewel Kumar</span>
+              <Link
+                href="https://sahajewelkumar.vercel.app"
+                className="text-base text-gray-400 cursor-pointer"
+              >
+                Saha Jewel Kumar
+              </Link>
             </div>
           </div>
         </div>
