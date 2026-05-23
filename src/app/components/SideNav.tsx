@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Spinner() {
   return (
@@ -38,7 +38,10 @@ export function SideNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [clickedHref, setClickedHref] = useState<string | null>(null);
-
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setClickedHref(null);
+  }, [pathname]);
   return (
     <>
       <button
