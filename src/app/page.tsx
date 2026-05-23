@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { LogoutButton } from "./components/LogoutButton";
 
 export default async function HomePage() {
   const session = await auth();
@@ -114,12 +115,15 @@ export default async function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
             {session?.user?.id ? (
-              <Link
-                href="/dashboard"
-                className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
-              >
-                ダッシュボードへ →
-              </Link>
+              <div>
+                <Link
+                  href="/dashboard"
+                  className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
+                >
+                  ダッシュボードへ →
+                </Link>
+                <LogoutButton></LogoutButton>
+              </div>
             ) : (
               <>
                 <Link
