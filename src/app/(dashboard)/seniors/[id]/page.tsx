@@ -1,12 +1,11 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
 import { QuickLinkButton } from "@/app/components/QuickLinkButton";
-import { ChatButton } from "@/app/components/ChatButton";
 import { SeniorTabs } from "@/app/components/SeniorTabs";
 import { BackButton } from "@/app/components/BackButton";
 import { DeleteSeniorButton } from "@/app/components/DeleteSeniorButton";
+import { NavActions } from "@/app/components/NavActions";
 
 export default async function SeniorDetailPage({
   params,
@@ -123,22 +122,7 @@ export default async function SeniorDetailPage({
               </p>
             </div>
           </div>
-          {role === "OWNER" && (
-            <div className="flex gap-2">
-              <Link
-                href={`/seniors/${id}/invite`}
-                className="text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
-              >
-                招待する
-              </Link>
-              <Link
-                href={`/seniors/${id}/edit`}
-                className="text-sm text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                編集
-              </Link>
-            </div>
-          )}
+          {role === "OWNER" && <NavActions seniorId={id} role={role} />}
         </div>
       </nav>
 
@@ -167,7 +151,6 @@ export default async function SeniorDetailPage({
                 <p className="text-base text-gray-400">{senior.age}歳</p>
               )}
             </div>
-            <ChatButton seniorId={id} />
           </div>
 
           {senior.notes && (
