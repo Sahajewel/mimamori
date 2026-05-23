@@ -152,6 +152,34 @@ export default async function SettingsPage() {
               </div>
               <span className="text-gray-300 text-lg">→</span>
             </Link>
+            <Link
+              href="/about"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">
+                  ♡
+                </span>
+                <p className="text-base font-medium text-gray-800">
+                  Mimamoriについて
+                </p>
+              </div>
+              <span className="text-gray-300 text-lg">→</span>
+            </Link>
+            <Link
+              href="/contact"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-lg">
+                  ✉️
+                </span>
+                <p className="text-base font-medium text-gray-800">
+                  お問い合わせ
+                </p>
+              </div>
+              <span className="text-gray-300 text-lg">→</span>
+            </Link>
           </div>
         </div>
 

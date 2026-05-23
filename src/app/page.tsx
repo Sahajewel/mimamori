@@ -421,6 +421,18 @@ export default async function HomePage() {
             >
               利用規約
             </Link>
+            <Link
+              href="/about"
+              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Mimamoriについて
+            </Link>
+            <Link
+              href="/contact"
+              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              お問い合わせ
+            </Link>
             <p className="text-sm text-gray-400">© 2026 Mimamori</p>
           </div>
         </div>
