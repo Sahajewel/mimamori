@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { BackButton } from "@/app/components/BackButton";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -173,12 +174,11 @@ export default function ResetPasswordPage() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4">
         <div className="max-w-md mx-auto flex items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-sm">♡</span>
-            </div>
+          <BackButton></BackButton>
+          <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+            <span className="text-white text-sm">♡</span>
             <p className="font-semibold text-gray-900">Mimamori</p>
-          </Link>
+          </div>
         </div>
       </nav>
 
