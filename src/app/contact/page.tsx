@@ -37,12 +37,13 @@ export default function ContactPage() {
         {/* Developer card */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 relative  h-16 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
+            <div className="relative w-20 h-20 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
               <Image
                 src="https://res.cloudinary.com/dqsgq6z74/image/upload/v1779533948/profile_lwdnjm.png"
                 alt="Saha Jewel Kumar"
-                fill
-                className="object-cover"
+                width={80}
+                height={80}
+                className="object-cover w-full h-full"
               />
             </div>
             <div>
