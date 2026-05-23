@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ContactFeedbackForm } from "../components/ContactFeedbackForm";
 
 export default function ContactPage() {
   return (
@@ -142,20 +143,7 @@ export default function ContactPage() {
         </div>
 
         {/* Feedback link */}
-        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 text-center">
-          <p className="text-base font-medium text-indigo-900 mb-1">
-            サービスへのご意見・ご要望は
-          </p>
-          <p className="text-sm text-indigo-500 mb-4">
-            フィードバックフォームからお気軽にどうぞ
-          </p>
-          <Link
-            href="/#feedback"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-base font-medium rounded-xl hover:bg-indigo-700 transition-colors"
-          >
-            📝 フィードバックを送る
-          </Link>
-        </div>
+        <ContactFeedbackForm />
 
         <p className="text-center text-sm text-gray-300">
           © 2026 Mimamori — ご家族をつなぐ
