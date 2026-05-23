@@ -20,24 +20,19 @@ export default function InvitePage() {
       setError("メールアドレスを入力してください");
       return;
     }
-
     setLoading(true);
     setError("");
-
     const res = await fetch(`/api/seniors/${id}/invitations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, role }),
     });
-
     const data = await res.json();
-
     if (!res.ok) {
       setError(data.error || "エラーが発生しました");
       setLoading(false);
       return;
     }
-
     setInviteUrl(data.inviteUrl);
     setLoading(false);
   }
@@ -49,7 +44,6 @@ export default function InvitePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <BackButton />
@@ -67,17 +61,17 @@ export default function InvitePage() {
           {!inviteUrl ? (
             <>
               <div className="mb-6">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-semibold text-gray-900">
                   家族を招待する
                 </h1>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-base text-gray-400 mt-1">
                   招待リンクをメールで送ってください
                 </p>
               </div>
 
               <div className="space-y-5 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">
                     メールアドレス <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -85,12 +79,12 @@ export default function InvitePage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="例：hanako@example.com"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-base font-medium text-gray-700 mb-2">
                     権限
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -102,10 +96,10 @@ export default function InvitePage() {
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-base font-semibold text-gray-900">
                         編集者
                       </p>
-                      <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                      <p className="text-sm text-gray-400 mt-1 leading-relaxed">
                         チェックイン・ノート・お薬を追加できる
                       </p>
                     </button>
@@ -117,10 +111,10 @@ export default function InvitePage() {
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-base font-semibold text-gray-900">
                         閲覧者
                       </p>
-                      <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                      <p className="text-sm text-gray-400 mt-1 leading-relaxed">
                         情報を見るだけ
                       </p>
                     </button>
@@ -130,21 +124,21 @@ export default function InvitePage() {
 
               {error && (
                 <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 mb-4">
-                  <p className="text-sm text-red-600">{error}</p>
+                  <p className="text-base text-red-600">{error}</p>
                 </div>
               )}
 
               <div className="flex gap-3">
                 <button
                   onClick={() => router.back()}
-                  className="flex-1 py-3 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   キャンセル
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading || !email.trim()}
-                  className="flex-1 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
+                  className="flex-1 py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
                 >
                   {loading ? "作成中..." : "招待リンクを作成"}
                 </button>
@@ -156,33 +150,32 @@ export default function InvitePage() {
                 <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-3xl">✓</span>
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">
                   招待リンクを作成しました！
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-base text-gray-400">
                   このリンクは7日間有効です
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-xl p-4 mb-5">
-                <p className="text-xs text-gray-400 mb-2 font-medium">
+                <p className="text-sm text-gray-400 mb-2 font-medium">
                   招待リンク
                 </p>
-                <p className="text-sm text-gray-700 break-all leading-relaxed">
+                <p className="text-base text-gray-700 break-all leading-relaxed">
                   {inviteUrl}
                 </p>
               </div>
 
               <button
                 onClick={copyToClipboard}
-                className="w-full py-3 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors mb-3 shadow-sm"
+                className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-colors mb-3 shadow-sm"
               >
                 📋 リンクをコピー
               </button>
-
               <button
                 onClick={() => router.push(`/seniors/${id}`)}
-                className="w-full py-3 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                className="w-full py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors"
               >
                 ← 戻る
               </button>
