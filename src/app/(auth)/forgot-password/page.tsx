@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BackButton } from "@/app/components/BackButton";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -37,12 +36,13 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4">
-        <BackButton></BackButton>
-        <div className="max-w-md mx-auto flex items-center pl-3">
-          <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-            <span className="text-white text-sm">♡</span>
+        <div className="max-w-md mx-auto flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
             <p className="font-semibold text-gray-900">Mimamori</p>
-          </div>
+          </Link>
         </div>
       </nav>
 
