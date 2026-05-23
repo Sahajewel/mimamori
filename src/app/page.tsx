@@ -68,18 +68,16 @@ export default async function HomePage() {
           </div>
           <div className="flex items-center gap-2">
             {session?.user?.id ? (
-              // logged in হলে
-              <div>
+              <div className="flex items-center gap-2">
                 <Link
                   href="/dashboard"
                   className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
                 >
                   ダッシュボード →
                 </Link>
-                <LogoutButton></LogoutButton>
+                <LogoutButton />
               </div>
             ) : (
-              // logged out হলে
               <>
                 <Link
                   href="/login"
