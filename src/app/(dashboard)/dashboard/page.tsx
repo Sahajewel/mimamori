@@ -84,110 +84,26 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">
-            見守り中のご家族
-          </h2>
-          <Link
-            href="/seniors/new"
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-          >
-            ＋ 追加
-          </Link>
-        </div>
-
-        {/* Empty state */}
-        {seniorMembers.length === 0 && (
-          <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center shadow-sm">
-            <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">
-              ♡
-            </div>
-            <p className="text-lg font-semibold text-gray-900 mb-2">
-              まだご家族を登録していません
-            </p>
-            <p className="text-base text-gray-400 mb-6">
-              見守りたい家族を追加してください
-            </p>
-            <Link
-              href="/seniors/new"
-              className="px-6 py-3 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors"
-            >
-              ＋ 家族を追加する
-            </Link>
-          </div>
-        )}
-
-        {/* Senior cards */}
-        {seniorMembers.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {seniorMembers.map((member) => {
-              const senior = member.senior;
-              const role = member.role;
-              const lastCheckIn = senior.checkIns[0];
-
-              const totalReminders = senior.medicines.flatMap(
-                (m) => m.reminders,
-              ).length;
-              const takenToday = senior.medicines.flatMap((m) =>
-                m.logs.filter((l) => l.status === "TAKEN"),
-              ).length;
-
-              const lastCheckInTime = lastCheckIn
-                ? (() => {
-                    const diff = Math.floor(
-                      (now.getTime() -
-                        new Date(lastCheckIn.createdAt).getTime()) /
-                        1000 /
-                        60,
-                    );
-                    if (diff < 60) return `${diff}分前`;
-                    if (diff < 1440) return `${Math.floor(diff / 60)}時間前`;
-                    return `${Math.floor(diff / 1440)}日前`;
-                  })()
-                : null;
-
-              const isEmergency = lastCheckIn?.status === "EMERGENCY";
-              const isConcern = lastCheckIn?.status === "CONCERN";
-
-              return (
-                <Link
-                  key={senior.id}
-                  href={`/seniors/${senior.id}`}
-                  prefetch={true}
-                  className={`group bg-white rounded-2xl p-6 shadow-sm border-2 transition-all active:scale-95 cursor-pointer ${
-                    isEmergency
-                      ? "border-red-200 hover:border-red-400 hover:shadow-red-100"
-                      : isConcern
-                        ? "border-amber-200 hover:border-amber-400 hover:shadow-amber-100"
-                        : "border-gray-100 hover:border-indigo-200 hover:shadow-indigo-100"
-                  } hover:shadow-lg`}
-                >
-                  <DashboardClient
-                    seniorMembers={seniorMembers.map((m) => ({
-                      role: m.role,
-                      senior: {
-                        id: m.senior.id,
-                        name: m.senior.name,
-                        age: m.senior.age,
-                        photoUrl: m.senior.photoUrl,
-                        checkIns: m.senior.checkIns.map((c) => ({
-                          status: c.status,
-                          createdAt: c.createdAt.toISOString(),
-                        })),
-                        medicines: m.senior.medicines.map((med) => ({
-                          reminders: med.reminders.map((r) => ({ id: r.id })),
-                          logs: med.logs.map((l) => ({ status: l.status })),
-                        })),
-                      },
-                    }))}
-                    now={now.toISOString()}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-        )}
+        <DashboardClient
+          seniorMembers={seniorMembers.map((m) => ({
+            role: m.role,
+            senior: {
+              id: m.senior.id,
+              name: m.senior.name,
+              age: m.senior.age,
+              photoUrl: m.senior.photoUrl,
+              checkIns: m.senior.checkIns.map((c) => ({
+                status: c.status,
+                createdAt: c.createdAt.toISOString(),
+              })),
+              medicines: m.senior.medicines.map((med) => ({
+                reminders: med.reminders.map((r) => ({ id: r.id })),
+                logs: med.logs.map((l) => ({ status: l.status })),
+              })),
+            },
+          }))}
+          now={now.toISOString()}
+        />
       </div>
     </div>
   );
