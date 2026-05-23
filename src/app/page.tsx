@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export default async function HomePage() {
-  // ← logged in থাকলে dashboard এ
-
+  const session = await auth();
   // Dynamic testimonials
   const testimonials = await prisma.feedback.findMany({
     where: {
@@ -66,18 +66,31 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              ログイン
-            </Link>
-            <Link
-              href="/register"
-              className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              無料で始める
-            </Link>
+            {session?.user?.id ? (
+              // logged in হলে
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+              >
+                ダッシュボード →
+              </Link>
+            ) : (
+              // logged out হলে
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  ログイン
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                >
+                  無料で始める
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -100,18 +113,29 @@ export default async function HomePage() {
             離れて暮らすご家族の毎日の様子を、家族みんなで安心して見守るプラットフォーム。ログイン不要で簡単に記録できます。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
-            <Link
-              href="/register"
-              className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
-            >
-              無料で始める →
-            </Link>
-            <Link
-              href="/login"
-              className="flex-1 px-8 py-4 border border-gray-200 text-gray-700 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors text-center"
-            >
-              ログイン
-            </Link>
+            {session?.user?.id ? (
+              <Link
+                href="/dashboard"
+                className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
+              >
+                ダッシュボードへ →
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
+                >
+                  無料で始める →
+                </Link>
+                <Link
+                  href="/login"
+                  className="flex-1 px-8 py-4 border border-gray-200 text-gray-700 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors text-center"
+                >
+                  ログイン
+                </Link>
+              </>
+            )}
           </div>
           <p className="text-sm text-gray-400 mt-4">
             クレジットカード不要 · 完全無料
