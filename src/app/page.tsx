@@ -58,7 +58,7 @@ export default async function HomePage() {
               <span className="text-white text-base">♡</span>
             </div>
             <div>
-              <p className="font-semibold text-gray-900 text-base leading-none">
+              <p className="font-semibold text-gray-900 text-base leading-none hidden sm:block">
                 Mimamori
               </p>
               <p className="text-sm text-gray-400 mt-0.5 hidden sm:block">

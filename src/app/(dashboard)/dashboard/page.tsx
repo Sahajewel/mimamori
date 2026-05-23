@@ -60,7 +60,9 @@ export default async function DashboardPage() {
             <p className="font-semibold text-gray-900 text-base">Mimamori</p>
           </Link>
           <div className="flex items-center gap-3">
-            <p className="text-sm text-gray-500">{session.user.name}さん</p>
+            <p className="text-sm text-gray-500 hidden sm:block">
+              {session.user.name}さん
+            </p>
             <LogoutButton />
           </div>
         </div>
