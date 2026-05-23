@@ -69,12 +69,15 @@ export default async function HomePage() {
           <div className="flex items-center gap-2">
             {session?.user?.id ? (
               // logged in হলে
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-              >
-                ダッシュボード →
-              </Link>
+              <div>
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                >
+                  ダッシュボード →
+                </Link>
+                <LogoutButton></LogoutButton>
+              </div>
             ) : (
               // logged out হলে
               <>
@@ -115,15 +118,12 @@ export default async function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
             {session?.user?.id ? (
-              <div>
-                <Link
-                  href="/dashboard"
-                  className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
-                >
-                  ダッシュボードへ →
-                </Link>
-                <LogoutButton></LogoutButton>
-              </div>
+              <Link
+                href="/dashboard"
+                className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
+              >
+                ダッシュボードへ →
+              </Link>
             ) : (
               <>
                 <Link

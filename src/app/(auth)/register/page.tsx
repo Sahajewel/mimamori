@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 type FieldErrors = {
   name?: string;
@@ -79,132 +80,168 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <div className="mb-8 text-center">
-          <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <span className="text-indigo-600 text-lg">♡</span>
-          </div>
-          <h1 className="text-xl md:text-2xl font-medium text-gray-900">
-            新規登録
-          </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            アカウントを作成してください
-          </p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Navbar */}
+      <nav className="bg-white border-b border-gray-100 px-4 py-4">
+        <div className="max-w-md mx-auto flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-sm">♡</span>
+            </div>
+            <p className="font-semibold text-gray-900">Mimamori</p>
+          </Link>
         </div>
+      </nav>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              お名前 <span className="text-red-400">*</span>
-            </label>
-            <input
-              name="name"
-              type="text"
-              placeholder="例：田中 花子"
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
-                errors.name ? "border-red-300" : "border-gray-200"
-              }`}
-            />
-            {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name}</p>
-            )}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              アカウントを作成
+            </h1>
+            <p className="text-base text-gray-400 mt-1">
+              無料で始めましょう。クレジットカード不要。
+            </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              メールアドレス <span className="text-red-400">*</span>
-            </label>
-            <input
-              name="email"
-              type="email"
-              placeholder="例：hanako@example.com"
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent ${
-                errors.email ? "border-red-300" : "border-gray-200"
-              }`}
-            />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-            )}
-          </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Name */}
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">
+                  お名前 <span className="text-red-400">*</span>
+                </label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="例：田中 花子"
+                  className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-colors ${
+                    errors.name ? "border-red-300 bg-red-50" : "border-gray-200"
+                  }`}
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1.5">{errors.name}</p>
+                )}
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              パスワード <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="8文字以上、大文字・数字を含む"
-                autoComplete="new-password"
-                className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent pr-12 ${
-                  errors.password ? "border-red-300" : "border-gray-200"
-                }`}
-              />
+              {/* Email */}
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">
+                  メールアドレス <span className="text-red-400">*</span>
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="例：hanako@example.com"
+                  className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-colors ${
+                    errors.email
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-200"
+                  }`}
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1.5">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">
+                  パスワード <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="8文字以上、大文字・数字を含む"
+                    autoComplete="new-password"
+                    className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent pr-16 transition-colors ${
+                      errors.password
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-200"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-600 font-medium"
+                  >
+                    {showPassword ? "非表示" : "表示"}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-1.5">
+                    {errors.password}
+                  </p>
+                )}
+                {!errors.password && (
+                  <p className="text-sm text-gray-400 mt-1.5">
+                    8文字以上・大文字・数字を含めてください
+                  </p>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">
+                  パスワード確認 <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    name="confirmPassword"
+                    type={showConfirm ? "text" : "password"}
+                    placeholder="パスワードを再入力"
+                    autoComplete="new-password"
+                    className={`w-full border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent pr-16 transition-colors ${
+                      errors.confirmPassword
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-200"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-600 font-medium"
+                  >
+                    {showConfirm ? "非表示" : "表示"}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500 mt-1.5">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+
+              {serverError && (
+                <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                  <p className="text-base text-red-600">{serverError}</p>
+                </div>
+              )}
+
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-medium"
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
               >
-                {showPassword ? "非表示" : "表示"}
+                {loading ? "登録中..." : "無料で登録する →"}
               </button>
-            </div>
-            {errors.password && (
-              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-            )}
-          </div>
+            </form>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              パスワード確認 <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <input
-                name="confirmPassword"
-                type={showConfirm ? "text" : "password"}
-                placeholder="パスワードを再入力"
-                autoComplete="new-password"
-                className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent pr-12 ${
-                  errors.confirmPassword ? "border-red-300" : "border-gray-200"
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-medium"
-              >
-                {showConfirm ? "非表示" : "表示"}
-              </button>
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.confirmPassword}
+            <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+              <p className="text-base text-gray-400">
+                すでにアカウントをお持ちの方は{" "}
+                <Link
+                  href="/login"
+                  className="text-indigo-600 font-medium hover:underline"
+                >
+                  ログイン
+                </Link>
               </p>
-            )}
-          </div>
-
-          {serverError && (
-            <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3">
-              <p className="text-sm text-red-600">{serverError}</p>
             </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? "登録中..." : "登録する"}
-          </button>
-        </form>
-
-        <p className="text-center text-sm mt-6 text-gray-400">
-          すでにアカウントをお持ちの方は{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
-            ログイン
-          </a>
-        </p>
+          </div>
+        </div>
       </div>
     </div>
   );
