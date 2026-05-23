@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 type CheckIn = {
   id: string;
@@ -35,6 +35,31 @@ type Props = {
   careNotesTotal: number;
 };
 
+function Spinner() {
+  return (
+    <svg
+      className="animate-spin h-3.5 w-3.5"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8H4z"
+      />
+    </svg>
+  );
+}
+
 export function SeniorTabs({
   seniorId,
   checkIns,
@@ -46,6 +71,16 @@ export function SeniorTabs({
   const [activeTab, setActiveTab] = useState<"checkin" | "medicine" | "note">(
     "checkin",
   );
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const navigate = (href: string) => {
+    setPendingHref(href);
+    startTransition(() => {
+      router.push(href);
+    });
+  };
 
   const tabs = [
     { key: "checkin", label: "チェックイン", icon: "✓" },
@@ -73,8 +108,6 @@ export function SeniorTabs({
         ))}
       </div>
 
-      {/* Tab content */}
-
       {/* CheckIn tab */}
       {activeTab === "checkin" && (
         <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -82,14 +115,18 @@ export function SeniorTabs({
             <h2 className="text-base font-semibold text-gray-900">
               チェックイン履歴
             </h2>
-            <div className="flex gap-2">
-              <Link
-                href={`/seniors/${seniorId}/checkin`}
-                className="text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
-              >
-                ＋ 追加
-              </Link>
-            </div>
+            <button
+              onClick={() => navigate(`/seniors/${seniorId}/checkin`)}
+              disabled={isPending}
+              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              {pendingHref === `/seniors/${seniorId}/checkin` && isPending ? (
+                <Spinner />
+              ) : (
+                "＋"
+              )}
+              追加
+            </button>
           </div>
           {checkIns.length === 0 ? (
             <div className="text-center py-8">
@@ -141,12 +178,15 @@ export function SeniorTabs({
                 </div>
               ))}
               <div className="text-center">
-                <Link
-                  href={`/seniors/${seniorId}/checkins`}
-                  className="text-sm text-indigo-600 hover:underline px-3 py-1.5 text-center"
+                <button
+                  onClick={() => navigate(`/seniors/${seniorId}/checkins`)}
+                  disabled={isPending}
+                  className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:underline disabled:opacity-60 px-3 py-1.5"
                 >
+                  {pendingHref === `/seniors/${seniorId}/checkins` &&
+                    isPending && <Spinner />}
                   もっと見る →
-                </Link>
+                </button>
               </div>
             </div>
           )}
@@ -158,12 +198,19 @@ export function SeniorTabs({
         <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-gray-900">お薬一覧</h2>
-            <Link
-              href={`/seniors/${seniorId}/medicines/new`}
-              className="text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+            <button
+              onClick={() => navigate(`/seniors/${seniorId}/medicines/new`)}
+              disabled={isPending}
+              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 px-3 py-1.5 rounded-lg transition-colors"
             >
-              ＋ 追加
-            </Link>
+              {pendingHref === `/seniors/${seniorId}/medicines/new` &&
+              isPending ? (
+                <Spinner />
+              ) : (
+                "＋"
+              )}
+              追加
+            </button>
           </div>
           {medicines.length === 0 ? (
             <div className="text-center py-8">
@@ -181,14 +228,16 @@ export function SeniorTabs({
                 const recorded = medicine.logs.length;
                 const rate =
                   recorded > 0 ? Math.round((taken / recorded) * 100) : null;
+                const href = `/seniors/${seniorId}/medicines/${medicine.id}`;
 
                 return (
-                  <Link
+                  <button
                     key={medicine.id}
-                    href={`/seniors/${seniorId}/medicines/${medicine.id}`}
-                    className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-xl px-3 transition-colors"
+                    onClick={() => navigate(href)}
+                    disabled={isPending}
+                    className="w-full flex items-center justify-between py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-xl px-3 transition-colors disabled:opacity-60"
                   >
-                    <div>
+                    <div className="text-left">
                       <p className="text-sm font-semibold text-gray-900">
                         {medicine.name}
                       </p>
@@ -198,34 +247,44 @@ export function SeniorTabs({
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      {rate !== null && recorded > 0 && (
-                        <span
-                          className={`text-xs font-semibold ${
-                            rate >= 80
-                              ? "text-green-500"
-                              : rate >= 60
-                                ? "text-amber-500"
-                                : "text-red-400"
-                          }`}
-                        >
-                          {rate}%
-                        </span>
+                      {pendingHref === href && isPending ? (
+                        <Spinner />
+                      ) : (
+                        <>
+                          {rate !== null && recorded > 0 && (
+                            <span
+                              className={`text-xs font-semibold ${
+                                rate >= 80
+                                  ? "text-green-500"
+                                  : rate >= 60
+                                    ? "text-amber-500"
+                                    : "text-red-400"
+                              }`}
+                            >
+                              {rate}%
+                            </span>
+                          )}
+                          <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full font-medium">
+                            服用中
+                          </span>
+                        </>
                       )}
-                      <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full font-medium">
-                        服用中
-                      </span>
                     </div>
-                  </Link>
+                  </button>
                 );
               })}
             </div>
           )}
-          <Link
-            href={`/seniors/${seniorId}/medicines`}
-            className="block text-center text-sm text-indigo-600 hover:underline mt-4"
+          <button
+            onClick={() => navigate(`/seniors/${seniorId}/medicines`)}
+            disabled={isPending}
+            className="flex items-center justify-center gap-1.5 w-full text-sm text-indigo-600 hover:underline disabled:opacity-60 mt-4"
           >
+            {pendingHref === `/seniors/${seniorId}/medicines` && isPending && (
+              <Spinner />
+            )}
             服薬履歴を見る →
-          </Link>
+          </button>
         </div>
       )}
 
@@ -236,12 +295,18 @@ export function SeniorTabs({
             <h2 className="text-base font-semibold text-gray-900">
               ケアノート
             </h2>
-            <Link
-              href={`/seniors/${seniorId}/notes/new`}
-              className="text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+            <button
+              onClick={() => navigate(`/seniors/${seniorId}/notes/new`)}
+              disabled={isPending}
+              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 px-3 py-1.5 rounded-lg transition-colors"
             >
-              ＋ 追加
-            </Link>
+              {pendingHref === `/seniors/${seniorId}/notes/new` && isPending ? (
+                <Spinner />
+              ) : (
+                "＋"
+              )}
+              追加
+            </button>
           </div>
           {careNotes.length === 0 ? (
             <div className="text-center py-8">
@@ -275,12 +340,15 @@ export function SeniorTabs({
                 ))}
               </div>
               {careNotesTotal >= 3 && (
-                <Link
-                  href={`/seniors/${seniorId}/notes`}
-                  className="block text-center text-sm text-indigo-600 hover:underline mt-3"
+                <button
+                  onClick={() => navigate(`/seniors/${seniorId}/notes`)}
+                  disabled={isPending}
+                  className="flex items-center justify-center gap-1.5 w-full text-sm text-indigo-600 hover:underline disabled:opacity-60 mt-3"
                 >
+                  {pendingHref === `/seniors/${seniorId}/notes` &&
+                    isPending && <Spinner />}
                   もっと見る →
-                </Link>
+                </button>
               )}
             </>
           )}
