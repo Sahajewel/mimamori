@@ -115,7 +115,7 @@ export default async function SeniorDetailPage({
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
-              href={`/seniors/${id}`}
+              href={`/dashboard`}
               className="flex items-center gap-1.5 text-indigo-600 hover:underline transition-colors text-sm font-medium"
             >
               <span className="text-lg">←</span>
