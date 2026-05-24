@@ -31,12 +31,15 @@ function getFrequencyCount(freq: string): number {
   if (freq === "1日3回") return 3;
   if (freq === "週1回") return 1;
   if (freq === "必要時") return 0;
-  // custom frequency এ 1日X回 pattern check করো
+  // 1日X回 pattern
   const match = freq.match(/1日(\d+)回/);
   if (match) return parseInt(match[1]);
   // 週X回 pattern
   const weekMatch = freq.match(/週(\d+)回/);
   if (weekMatch) return parseInt(weekMatch[1]);
+  // শুধু number দিলে — যেমন "6"
+  const numMatch = freq.match(/^(\d+)$/);
+  if (numMatch) return parseInt(numMatch[1]);
   return 0;
 }
 
