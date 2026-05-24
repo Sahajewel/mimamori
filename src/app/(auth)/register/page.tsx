@@ -101,7 +101,7 @@ export default function RegisterPage() {
               アカウントを作成
             </h1>
             <p className="text-base text-gray-400 mt-1">
-              無料で始めましょう。クレジットカード不要。
+              アカウントを作成 今すぐ始めましょう。
             </p>
           </div>
 

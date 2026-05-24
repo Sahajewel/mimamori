@@ -31,8 +31,13 @@ function getFrequencyCount(freq: string): number {
   if (freq === "1日3回") return 3;
   if (freq === "週1回") return 1;
   if (freq === "必要時") return 0;
-  const match = freq.match(/(\d+)/);
-  return match ? parseInt(match[1]) : 0;
+  // custom frequency এ 1日X回 pattern check করো
+  const match = freq.match(/1日(\d+)回/);
+  if (match) return parseInt(match[1]);
+  // 週X回 pattern
+  const weekMatch = freq.match(/週(\d+)回/);
+  if (weekMatch) return parseInt(weekMatch[1]);
+  return 0;
 }
 
 export default function NewMedicinePage() {
