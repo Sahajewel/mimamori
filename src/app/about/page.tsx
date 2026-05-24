@@ -27,7 +27,7 @@ export default function AboutPage() {
           </div>
           <h1 className="text-2xl font-bold mb-3">Mimamoriについて</h1>
           <p className="text-base text-indigo-100 leading-relaxed">
-            Mimamoriは、離れて暮らすご家族の毎日を、家族みんなで安心して見守るためのプラットフォームです。毎日のチェックイン、お薬管理、緊急アラート、家族チャットなど、高齢者ケアに必要な機能をすべて一つのアプリに集めました。
+            テクノロジーの力で、離れた家族をつなぐ。高齢者が安心して暮らせる社会を作るために、シンプルで使いやすいツールを提供することが私たちの使命です。
           </p>
         </div>
 

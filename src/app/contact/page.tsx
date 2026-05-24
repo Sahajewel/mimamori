@@ -135,6 +135,28 @@ export default function ContactPage() {
                 →
               </span>
             </a>
+
+            {/* Portfolio */}
+
+            <a
+              href="https://sahajewelkumar.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
+            >
+              <span className="text-2xl">🌐</span>
+              <div className="flex-1">
+                <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
+                  Portfolio
+                </p>
+                <p className="text-sm text-gray-400">
+                  sahajewelkumar.vercel.app
+                </p>
+              </div>
+              <span className="text-gray-300 group-hover:text-indigo-400 transition-colors">
+                →
+              </span>
+            </a>
           </div>
         </div>
 

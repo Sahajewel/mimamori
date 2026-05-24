@@ -135,9 +135,7 @@ export default async function HomePage() {
               </>
             )}
           </div>
-          <p className="text-sm text-gray-400 mt-4">
-            クレジットカード不要 · 完全無料
-          </p>
+          <p className="text-sm text-gray-400 mt-4">今すぐ無料で始められます</p>
         </div>
       </section>
 
@@ -145,7 +143,7 @@ export default async function HomePage() {
       <section className="bg-indigo-600 px-4 py-12">
         <div className="max-w-3xl mx-auto grid grid-cols-3 gap-4 text-center">
           {[
-            { value: "無料", label: "ずっと無料で使える" },
+            { value: "無料", label: "今すぐ試せる" },
             { value: "24時間", label: "いつでも見守れる" },
             { value: "即時", label: "緊急通知が届く" },
           ].map((s) => (
@@ -198,7 +196,7 @@ export default async function HomePage() {
               color: "text-red-500",
               border: "border-red-100",
               title: "緊急アラート",
-              desc: "緊急時は家族全員のスマホに即時通知。音とともに届きます。",
+              desc: "緊急時は家族全員のスマホに即時プッシュ通知でお知らせします。",
             },
             {
               icon: "💬",
@@ -381,7 +379,7 @@ export default async function HomePage() {
             今日から始めてみませんか？
           </p>
           <p className="text-base text-indigo-200 mb-10 max-w-md mx-auto">
-            登録は無料。クレジットカードも不要。大切なご家族を、みんなで見守りましょう。
+            アカウント登録は簡単。大切なご家族を、みんなで見守りましょう。
           </p>
           <Link
             href="/register"
