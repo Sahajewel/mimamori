@@ -7,6 +7,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
+  throw new Error("test error");
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 

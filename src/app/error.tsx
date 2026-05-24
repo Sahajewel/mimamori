@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { BackButton } from "./components/BackButton";
 
 export default function Error({
   error,
@@ -33,12 +34,7 @@ export default function Error({
           >
             もう一度試す
           </button>
-          <Link
-            href="/"
-            className="px-6 py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            ← ホームに戻る
-          </Link>
+          <BackButton></BackButton>
         </div>
       </div>
     </div>
