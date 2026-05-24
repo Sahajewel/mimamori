@@ -32,7 +32,12 @@ export async function POST(
         { status: 403 },
       );
     }
-
+    if (member.role === "VIEWER") {
+      return NextResponse.json(
+        { error: "閲覧者はチェックインを追加できません" },
+        { status: 403 },
+      );
+    }
     const body = await req.json();
     const parsed = checkInSchema.safeParse(body);
     if (!parsed.success) {

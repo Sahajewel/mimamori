@@ -38,7 +38,12 @@ export async function POST(
         { status: 403 },
       );
     }
-
+    if (member.role === "VIEWER") {
+      return NextResponse.json(
+        { error: "閲覧者はお薬を追加できません" },
+        { status: 403 },
+      );
+    }
     const body = await req.json();
     const parsed = medicineSchema.safeParse(body);
     if (!parsed.success) {

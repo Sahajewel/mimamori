@@ -197,7 +197,7 @@ export default function ContactPage() {
               </span>
             </a>
             <a
-              href="https://www.facebook.com/mimamorihealth"
+              href="https://www.facebook.com/profile.php?id=61590281314501"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"

@@ -30,7 +30,12 @@ export async function POST(
         { status: 403 },
       );
     }
-
+    if (member.role === "VIEWER") {
+      return NextResponse.json(
+        { error: "閲覧者はノートを追加できません" },
+        { status: 403 },
+      );
+    }
     const body = await req.json();
     const parsed = careNoteSchema.safeParse(body);
     if (!parsed.success) {
