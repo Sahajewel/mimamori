@@ -54,7 +54,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
   const [clickedHref, setClickedHref] = useState<string | null>(null);
 
   const nowDate = new Date(now);
-
+  const isOwner = seniorMembers.some((m) => m.role === "OWNER");
   return (
     <>
       {/* Header */}
@@ -62,14 +62,16 @@ export function DashboardClient({ seniorMembers, now }: Props) {
         <h2 className="text-lg font-semibold text-gray-800">
           見守り中のご家族
         </h2>
-        <Link
-          href="/seniors/new"
-          onClick={() => setClickedHref("/seniors/new")}
-          className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          {clickedHref === "/seniors/new" ? <Spinner /> : "＋"}
-          追加
-        </Link>
+        {isOwner && (
+          <Link
+            href="/seniors/new"
+            onClick={() => setClickedHref("/seniors/new")}
+            className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            {clickedHref === "/seniors/new" ? <Spinner /> : "＋"}
+            追加
+          </Link>
+        )}
       </div>
 
       {/* Empty state */}

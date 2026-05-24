@@ -108,18 +108,20 @@ export function SeniorTabs({
             <h2 className="text-base font-semibold text-gray-900">
               チェックイン履歴
             </h2>
-            <Link
-              href={`/seniors/${seniorId}/checkin`}
-              onClick={() => click(`/seniors/${seniorId}/checkin`)}
-              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
-            >
-              {clickedHref === `/seniors/${seniorId}/checkin` ? (
-                <Spinner />
-              ) : (
-                "＋"
-              )}
-              追加
-            </Link>
+            {role !== "VIEWER" && (
+              <Link
+                href={`/seniors/${seniorId}/checkin`}
+                onClick={() => click(`/seniors/${seniorId}/checkin`)}
+                className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                {clickedHref === `/seniors/${seniorId}/checkin` ? (
+                  <Spinner />
+                ) : (
+                  "＋"
+                )}
+                追加
+              </Link>
+            )}
           </div>
           {checkIns.length === 0 ? (
             <div className="text-center py-8">
@@ -192,18 +194,20 @@ export function SeniorTabs({
         <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-gray-900">お薬一覧</h2>
-            <Link
-              href={`/seniors/${seniorId}/medicines/new`}
-              onClick={() => click(`/seniors/${seniorId}/medicines/new`)}
-              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
-            >
-              {clickedHref === `/seniors/${seniorId}/medicines/new` ? (
-                <Spinner />
-              ) : (
-                "＋"
-              )}
-              追加
-            </Link>
+            {role !== "VIEWER" && (
+              <Link
+                href={`/seniors/${seniorId}/medicines/new`}
+                onClick={() => click(`/seniors/${seniorId}/medicines/new`)}
+                className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                {clickedHref === `/seniors/${seniorId}/medicines/new` ? (
+                  <Spinner />
+                ) : (
+                  "＋"
+                )}
+                追加
+              </Link>
+            )}
           </div>
           {medicines.length === 0 ? (
             <div className="text-center py-8">
@@ -286,18 +290,20 @@ export function SeniorTabs({
             <h2 className="text-base font-semibold text-gray-900">
               ケアノート
             </h2>
-            <Link
-              href={`/seniors/${seniorId}/notes/new`}
-              onClick={() => click(`/seniors/${seniorId}/notes/new`)}
-              className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
-            >
-              {clickedHref === `/seniors/${seniorId}/notes/new` ? (
-                <Spinner />
-              ) : (
-                "＋"
-              )}
-              追加
-            </Link>
+            {role !== "VIEWER" && (
+              <Link
+                href={`/seniors/${seniorId}/notes/new`}
+                onClick={() => click(`/seniors/${seniorId}/notes/new`)}
+                className="flex items-center gap-1.5 text-sm text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                {clickedHref === `/seniors/${seniorId}/notes/new` ? (
+                  <Spinner />
+                ) : (
+                  "＋"
+                )}
+                追加
+              </Link>
+            )}
           </div>
           {careNotes.length === 0 ? (
             <div className="text-center py-8">

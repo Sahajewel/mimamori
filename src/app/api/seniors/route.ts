@@ -57,6 +57,22 @@ export async function POST(req: Request) {
         { status: 401 },
       );
     }
+    const userRole = await prisma.seniorMember.findFirst({
+      where: {
+        userId: session.user.id,
+        role: { in: ["EDITOR", "VIEWER"] },
+      },
+    });
+    const isOwnerAnywhere = await prisma.seniorMember.findFirst({
+      where: { userId: session.user.id, role: "OWNER" },
+    });
+
+    if (userRole && !isOwnerAnywhere) {
+      return NextResponse.json(
+        { error: "新しい見守りを作成する権限がありません" },
+        { status: 403 },
+      );
+    }
 
     const body = await req.json();
     const parsed = seniorSchema.safeParse(body);
