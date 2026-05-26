@@ -3,7 +3,7 @@ import { DashboardLogo } from "@/app/components/DashboardLogo";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
