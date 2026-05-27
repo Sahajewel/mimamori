@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email: parsed.data.email },
         });
         if (!user) return null;
-
+        if (!user.emailVerified) return null;
         const passwordMatch = await bcrypt.compare(
           parsed.data.password,
           user.passwordHash,
