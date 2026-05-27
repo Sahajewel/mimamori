@@ -8,8 +8,8 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
 
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${verifyToken}`;
 
     await transporter.sendMail({
-      from: `"Mimamori" <${process.env.EMAIL_USER}>`,
+      from: `"Mimamori" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "【Mimamori】メールアドレスの確認",
       html: `
