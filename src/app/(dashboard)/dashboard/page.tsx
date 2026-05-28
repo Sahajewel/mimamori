@@ -82,7 +82,9 @@ export default async function DashboardPage() {
             })}
           </p>
         </div>
-        <NotificationButton></NotificationButton>
+        <div className="mb-2">
+          <NotificationButton></NotificationButton>
+        </div>
         <DashboardClient
           seniorMembers={seniorMembers.map((m) => ({
             role: m.role,
