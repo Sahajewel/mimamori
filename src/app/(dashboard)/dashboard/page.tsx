@@ -1,6 +1,7 @@
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
 import { LogoutButton } from "@/app/components/LogoutButton";
+import { NotificationButton } from "@/app/components/NotificationButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -79,7 +80,7 @@ export default async function DashboardPage() {
             })}
           </p>
         </div>
-
+        <NotificationButton></NotificationButton>
         <DashboardClient
           seniorMembers={seniorMembers.map((m) => ({
             role: m.role,
