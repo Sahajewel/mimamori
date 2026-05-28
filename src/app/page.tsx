@@ -54,7 +54,7 @@ export default async function HomePage() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 sm:block">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm  sm:block">
               <span className="text-white text-base hidden sm:block">♡</span>
             </div>
