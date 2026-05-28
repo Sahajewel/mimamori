@@ -16,7 +16,8 @@ export function DashboardButton() {
           : "bg-indigo-600 text-white hover:bg-indigo-700"
       }`}
     >
-      ダッシュボード →
+      <span className="hidden sm:inline">ダッシュボード →</span>
+      <span className="sm:hidden">ホーム</span>
     </Link>
   );
 }
