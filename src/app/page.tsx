@@ -54,7 +54,7 @@ export default async function HomePage() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5 ">
+          <div className="flex items-center gap-1.5 ">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-base  ">♡</span>
             </div>
@@ -116,7 +116,7 @@ export default async function HomePage() {
                 href="/dashboard"
                 className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
               >
-                ダッシュボードへ →
+                ダッシュボード
               </Link>
             ) : (
               <>
