@@ -30,7 +30,7 @@ function Spinner() {
 }
 
 const navItems = [
-  { href: "/dashboard", icon: "🏠", label: "ホーム" },
+  { href: "/dashboard", icon: "🏠", label: "ダッシュボード" },
   { href: "/settings", icon: "⚙️", label: "設定" },
 ];
 
