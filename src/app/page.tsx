@@ -56,7 +56,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5 ">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
-              <span className="text-white text-base hidden ">♡</span>
+              <span className="text-white text-base  ">♡</span>
             </div>
             <div>
               <p className="font-semibold text-gray-900 text-base leading-none  ">

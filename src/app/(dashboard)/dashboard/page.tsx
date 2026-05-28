@@ -1,3 +1,4 @@
+import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
 import { LogoutButton } from "@/app/components/LogoutButton";
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
           <DashboardLogo></DashboardLogo>
           <div className="flex items-center gap-3">
+            <DashboardButton></DashboardButton>
             <p className="text-sm text-gray-500 hidden sm:block">
               {session.user.name}さん
             </p>
