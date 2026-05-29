@@ -10,5 +10,7 @@ export const config = {
    * Next.js এর অভ্যন্তরীণ ফাইল (_next/static, _next/image, favicon.ico)
    * এবং api রুটগুলোকে বাদ দিয়ে বাকি সব রুটের জন্য মিডলওয়্যার রান হবে।
    */
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher:
+    "/((?!api|_next/static|_next/image|manifest.json|assets|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)",
 };
