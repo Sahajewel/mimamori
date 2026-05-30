@@ -16,6 +16,6 @@ model Senior {
     invitations Invitation[]
     messages    Message[]
 
-    @@index([id])
-    @@index([quickToken])
+    // @@index([id])
+    // @@index([quickToken])
 }

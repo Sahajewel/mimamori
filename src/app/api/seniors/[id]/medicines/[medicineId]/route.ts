@@ -26,8 +26,11 @@ export async function GET(
       );
     }
 
-    const medicine = await prisma.medicine.findUnique({
-      where: { id: medicineId },
+    // ── ফাঁক বন্ধ: ওষুধটা সত্যিই এই senior-এর কিনা যাচাই ──
+    // আগে শুধু medicineId দিয়ে খুঁজত — অন্য senior-এর ওষুধও আসতে পারত।
+    // এখন seniorId: id-ও মেলানো হচ্ছে, তাই এই senior-এর না হলে আসবেই না।
+    const medicine = await prisma.medicine.findFirst({
+      where: { id: medicineId, seniorId: id },
       include: { reminders: true },
     });
 
@@ -43,6 +46,7 @@ export async function GET(
     );
   }
 }
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string; medicineId: string }> },
@@ -67,6 +71,23 @@ export async function PATCH(
       );
     }
 
+    // VIEWER role বদলাতে পারবে না — create route-এর সাথে মিল রেখে যোগ করলাম
+    if (member.role === "VIEWER") {
+      return NextResponse.json(
+        { error: "閲覧者はお薬を編集できません" },
+        { status: 403 },
+      );
+    }
+
+    // ── ফাঁক বন্ধ: update করার আগে ওষুধটা এই senior-এর কিনা যাচাই ──
+    // আগে সরাসরি medicineId দিয়ে update করত, কোনো senior-চেক ছাড়াই।
+    const existing = await prisma.medicine.findFirst({
+      where: { id: medicineId, seniorId: id },
+    });
+    if (!existing) {
+      return NextResponse.json({ error: "見つかりません" }, { status: 404 });
+    }
+
     const body = await req.json();
 
     const medicine = await prisma.medicine.update({
@@ -80,7 +101,8 @@ export async function PATCH(
     });
 
     return NextResponse.json(medicine);
-  } catch {
+  } catch (error) {
+    console.error("Medicine PATCH failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

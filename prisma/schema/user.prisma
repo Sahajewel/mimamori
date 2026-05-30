@@ -20,7 +20,7 @@ model User {
     pushSubscriptions PushSubscription[]
     messages          Message[]
 
-    @@index([email])
+    // @@index([email])
     @@index([role])
 }
 

@@ -16,6 +16,6 @@ model Medicine {
     logs      MedicineLog[]
 
     @@index([seniorId])
-    @@index([active])
+    @@index([seniorId, active])
     @@index([endDate])
 }
