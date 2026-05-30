@@ -30,6 +30,7 @@ type Medicine = {
   notes: string | null;
   active: boolean;
   reminders: Reminder[];
+  currentUserRole?: string;
 };
 
 export default function MedicineDetailPage() {
@@ -246,12 +247,14 @@ export default function MedicineDetailPage() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setShowEdit(true)}
-            className="text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
-          >
-            ✏️ 編集
-          </button>
+          {medicine.currentUserRole !== "VIEWER" && (
+            <button
+              onClick={() => setShowEdit(true)}
+              className="text-sm text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
+            >
+              ✏️ 編集
+            </button>
+          )}
         </div>
       </nav>
 
@@ -323,12 +326,9 @@ export default function MedicineDetailPage() {
           </div>
 
           {/* Stop button */}
-          {medicine.active && (
+          {medicine.active && medicine.currentUserRole !== "VIEWER" && (
             <div className="mt-5 pt-4 border-t border-gray-100">
-              <button
-                onClick={() => setShowStop(true)}
-                className="text-sm text-red-400 hover:text-red-600 transition-colors"
-              >
+              <button onClick={() => setShowStop(true)}>
                 🚫 この薬を使用中止にする
               </button>
             </div>

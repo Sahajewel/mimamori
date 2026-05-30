@@ -27,8 +27,6 @@ export async function GET(
     }
 
     // ── ফাঁক বন্ধ: ওষুধটা সত্যিই এই senior-এর কিনা যাচাই ──
-    // আগে শুধু medicineId দিয়ে খুঁজত — অন্য senior-এর ওষুধও আসতে পারত।
-    // এখন seniorId: id-ও মেলানো হচ্ছে, তাই এই senior-এর না হলে আসবেই না।
     const medicine = await prisma.medicine.findFirst({
       where: { id: medicineId, seniorId: id },
       include: { reminders: true },
@@ -38,8 +36,11 @@ export async function GET(
       return NextResponse.json({ error: "見つかりません" }, { status: 404 });
     }
 
-    return NextResponse.json(medicine);
-  } catch {
+    // frontend-এ বাটন দেখানো/লুকানোর জন্য এই user-এর role-ও পাঠাচ্ছি।
+    // (এটা security না — security PATCH-এই আছে — এটা শুধু UX-এর জন্য)
+    return NextResponse.json({ ...medicine, currentUserRole: member.role });
+  } catch (error) {
+    console.error("Medicine GET failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },
@@ -71,7 +72,7 @@ export async function PATCH(
       );
     }
 
-    // VIEWER role বদলাতে পারবে না — create route-এর সাথে মিল রেখে যোগ করলাম
+    // VIEWER role বদলাতে পারবে না
     if (member.role === "VIEWER") {
       return NextResponse.json(
         { error: "閲覧者はお薬を編集できません" },
@@ -80,7 +81,6 @@ export async function PATCH(
     }
 
     // ── ফাঁক বন্ধ: update করার আগে ওষুধটা এই senior-এর কিনা যাচাই ──
-    // আগে সরাসরি medicineId দিয়ে update করত, কোনো senior-চেক ছাড়াই।
     const existing = await prisma.medicine.findFirst({
       where: { id: medicineId, seniorId: id },
     });
