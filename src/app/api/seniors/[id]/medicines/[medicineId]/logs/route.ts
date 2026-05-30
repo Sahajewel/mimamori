@@ -1,20 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
 
-const logSchema = z.object({
-  reminderId: z.string(),
-  status: z.enum(["TAKEN", "MISSED", "SKIPPED"]),
-  note: z.string().max(200).optional(),
-});
-
-export async function POST(
+export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string; medicineId: string }> },
 ) {
   try {
     const { id, medicineId } = await params;
+
+    // ── ফাঁক বন্ধ ৩: GET-এ আগে কোনো auth/member চেকই ছিল না! ──
+    // যে কেউ medicineId জানলেই পুরো history দেখে ফেলতে পারত।
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -33,44 +29,9 @@ export async function POST(
       );
     }
 
-    const body = await req.json();
-    const parsed = logSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.issues[0].message },
-        { status: 400 },
-      );
-    }
-
-    const log = await prisma.medicineLog.create({
-      data: {
-        medicineId,
-        reminderId: parsed.data.reminderId,
-        userId: session.user.id,
-        status: parsed.data.status,
-        note: parsed.data.note,
-        takenAt: parsed.data.status === "TAKEN" ? new Date() : null,
-      },
-    });
-
-    return NextResponse.json(log, { status: 201 });
-  } catch {
-    return NextResponse.json(
-      { error: "エラーが発生しました" },
-      { status: 500 },
-    );
-  }
-}
-
-export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ id: string; medicineId: string }> },
-) {
-  try {
-    const { medicineId } = await params;
-
-    const medicine = await prisma.medicine.findUnique({
-      where: { id: medicineId },
+    // ── medicine এই senior-এর কিনা যাচাই (findUnique → findFirst) ──
+    const medicine = await prisma.medicine.findFirst({
+      where: { id: medicineId, seniorId: id },
       include: {
         reminders: true,
         logs: {
@@ -87,7 +48,7 @@ export async function GET(
       return NextResponse.json({ error: "見つかりません" }, { status: 404 });
     }
 
-    // Start date থেকে আজまで প্রতিদিন generate করো
+    // Start date থেকে আজ পর্যন্ত প্রতিদিন generate করো
     const start = new Date(medicine.startDate);
     const end = medicine.endDate ? new Date(medicine.endDate) : new Date();
 
@@ -135,13 +96,14 @@ export async function GET(
       current.setDate(current.getDate() + 1);
     }
 
-    // 新しい順に並び替え
+    // নতুন আগে সাজাও
     allRecords.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
 
     return NextResponse.json(allRecords);
-  } catch {
+  } catch (error) {
+    console.error("MedicineLog GET failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

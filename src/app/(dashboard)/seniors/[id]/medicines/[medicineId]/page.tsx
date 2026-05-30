@@ -2,8 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { BackButton } from "@/app/components/BackButton";
-import Link from "next/link";
+
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
 
 const PER_PAGE = 15;

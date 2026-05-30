@@ -2,8 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
-import { BackButton } from "@/app/components/BackButton";
-import Link from "next/link";
+
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
 
 const frequencyOptions = [
