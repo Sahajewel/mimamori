@@ -1,4 +1,5 @@
 // invite korar route
+// jei email die invite pathano hosse tar route
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

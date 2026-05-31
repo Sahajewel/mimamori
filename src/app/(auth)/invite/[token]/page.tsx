@@ -1,3 +1,4 @@
+// link pathanor por user jokhon link open korbe tokhon ei page open hobe
 "use client";
 
 import { useRouter, useParams } from "next/navigation";

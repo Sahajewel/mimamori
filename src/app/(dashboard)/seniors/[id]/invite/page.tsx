@@ -1,3 +1,4 @@
+// invite pathanor form emial die
 import { InviteForm } from "@/app/components/Inviteform";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
