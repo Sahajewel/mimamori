@@ -69,6 +69,7 @@ export default async function CheckInsPage({
           total={total}
           currentPage={currentPage}
           totalPages={totalPages}
+          currentUserRole={member.role}
         />
       </div>
     </div>

@@ -26,12 +26,32 @@ export async function DELETE(
       );
     }
 
+    // ── ফাঁক বন্ধ ১: VIEWER মুছতে পারবে না ──
+    // POST-এ VIEWER আটকানো ছিল, কিন্তু DELETE-এ ছিল না।
+    if (member.role === "VIEWER") {
+      return NextResponse.json(
+        { error: "閲覧者は削除できません" },
+        { status: 403 },
+      );
+    }
+
+    // ── ফাঁক বন্ধ ২: checkin সত্যিই এই senior-এর কিনা যাচাই (IDOR) ──
+    // আগে সরাসরি checkInId দিয়ে delete করত — অন্য senior-এর checkin-ও
+    // মুছে ফেলা যেত। এখন seniorId-ও মেলাচ্ছি।
+    const existing = await prisma.checkIn.findFirst({
+      where: { id: checkInId, seniorId: id },
+    });
+    if (!existing) {
+      return NextResponse.json({ error: "見つかりません" }, { status: 404 });
+    }
+
     await prisma.checkIn.delete({
       where: { id: checkInId },
     });
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("CheckIn DELETE failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

@@ -51,7 +51,7 @@ export default async function SeniorsPage() {
                 href={`/seniors/${member.senior.id}`}
                 className="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-md transition-all active:scale-95"
               >
-                <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xl overflow-hidden flex-shrink-0">
+                <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xl overflow-hidden shrink-0">
                   {member.senior.photoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img

@@ -44,6 +44,7 @@ type Props = {
   total: number;
   currentPage: number;
   totalPages: number;
+  currentUserRole: string;
 };
 
 export function CheckInsClient({
@@ -53,6 +54,7 @@ export function CheckInsClient({
   total,
   currentPage,
   totalPages,
+  currentUserRole,
 }: Props) {
   const [clickedHref, setClickedHref] = useState<string | null>(null);
 
@@ -72,14 +74,16 @@ export function CheckInsClient({
             {seniorName}さん · 全{total}件
           </p>
         </div>
-        <Link
-          href={addHref}
-          onClick={() => setClickedHref(addHref)}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          {clickedHref === addHref ? <Spinner /> : "＋"}
-          追加
-        </Link>
+        {currentUserRole !== "VIEWER" && (
+          <Link
+            href={addHref}
+            onClick={() => setClickedHref(addHref)}
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            {clickedHref === addHref ? <Spinner /> : "＋"}
+            追加
+          </Link>
+        )}
       </div>
 
       {/* List */}
@@ -149,10 +153,12 @@ export function CheckInsClient({
                     </div>
                   </div>
                 </div>
-                <DeleteCheckInButton
-                  checkInId={checkIn.id}
-                  seniorId={seniorId}
-                />
+                {currentUserRole !== "VIEWER" && (
+                  <DeleteCheckInButton
+                    checkInId={checkIn.id}
+                    seniorId={seniorId}
+                  />
+                )}
               </div>
             ))}
           </div>

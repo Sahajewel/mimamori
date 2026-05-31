@@ -25,7 +25,7 @@ export function DeleteCheckInButton({ checkInId, seniorId }: Props) {
 
   if (confirm) {
     return (
-      <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+      <div className="flex items-center gap-2 ml-3 shrink-0">
         <button
           onClick={() => setConfirm(false)}
           className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1 rounded-lg border border-gray-200"
@@ -46,7 +46,7 @@ export function DeleteCheckInButton({ checkInId, seniorId }: Props) {
   return (
     <button
       onClick={() => setConfirm(true)}
-      className="ml-3 flex-shrink-0 text-gray-300 hover:text-red-400 transition-colors p-1"
+      className="ml-3 shrink-0 text-gray-300 hover:text-red-400 transition-colors p-1"
     >
       🗑️
     </button>
