@@ -14,7 +14,6 @@ model Invitation {
     createdAt DateTime         @default(now())
     expiresAt DateTime
 
-    @@index([token])
     @@index([email])
     @@index([seniorId])
 }

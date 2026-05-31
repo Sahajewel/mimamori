@@ -1,3 +1,4 @@
+// invite korar route
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -23,7 +24,7 @@ export async function POST(
       );
     }
 
-    // OWNER check
+    // OWNER check — শুধু OWNER invite করতে পারবে
     const member = await prisma.seniorMember.findFirst({
       where: {
         seniorId: id,
@@ -47,7 +48,7 @@ export async function POST(
       );
     }
 
-    const { email } = parsed.data;
+    const { email, role } = parsed.data;
 
     // already member check
     const existingUser = await prisma.user.findUnique({
@@ -69,10 +70,23 @@ export async function POST(
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7日後
 
-    // 既存のinvitation削除
-    await prisma.invitation.deleteMany({
-      where: { seniorId: id, email },
-    });
+    // আগের একই senior+email-এর invitation মুছে, তারপর নতুন তৈরি
+    // (দুটো একসাথে transaction-এ — যাতে মুছে গিয়ে create fail করলে পুরনোটাও ফিরে আসে)
+    await prisma.$transaction([
+      prisma.invitation.deleteMany({
+        where: { seniorId: id, email },
+      }),
+      prisma.invitation.create({
+        data: {
+          seniorId: id,
+          invitedBy: session.user.id,
+          email,
+          token,
+          role,
+          expiresAt,
+        },
+      }),
+    ]);
 
     const inviteUrl = `${process.env.NEXTAUTH_URL}/invite/${token}`;
 
@@ -84,7 +98,8 @@ export async function POST(
       },
       { status: 201 },
     );
-  } catch {
+  } catch (error) {
+    console.error("Invite POST failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },
