@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
+import { validateImageFile } from "@/lib/validations/Validateimagefile ";
 
 type Props = {
   initialName: string;
@@ -35,6 +36,14 @@ export function EditSeniorForm({
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // ── helper দিয়ে চেক (UX; backend-ও আটকায়) ──
+    const errorMsg = validateImageFile(file);
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
+    }
+
     setPhotoUploading(true);
     const formData = new FormData();
     formData.append("file", file);

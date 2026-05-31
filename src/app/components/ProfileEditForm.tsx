@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { validateImageFile } from "@/lib/validations/Validateimagefile ";
 
 function Spinner() {
   return (
@@ -46,8 +47,15 @@ export function ProfileEditForm({ initialName, initialImage }: Props) {
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-
     if (!file) return;
+
+    // ── helper দিয়ে চেক (UX; backend-ও আটকায়) ──
+    const errorMsg = validateImageFile(file);
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
+    }
+
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);

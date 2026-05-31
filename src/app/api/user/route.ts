@@ -1,6 +1,14 @@
+// user profile edit api route
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+// ── input validation: name আর image যাচাই ──
+const updateSchema = z.object({
+  name: z.string().min(1, "お名前を入力してください").max(50).optional(),
+  image: z.url().nullable().optional(),
+});
 
 export async function PATCH(req: Request) {
   try {
@@ -12,7 +20,16 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const { name, image } = await req.json();
+    const body = await req.json();
+    const parsed = updateSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0].message },
+        { status: 400 },
+      );
+    }
+
+    const { name, image } = parsed.data;
 
     const updated = await prisma.user.update({
       where: { id: session.user.id },
@@ -27,7 +44,8 @@ export async function PATCH(req: Request) {
       name: updated.name,
       image: updated.image,
     });
-  } catch {
+  } catch (error) {
+    console.error("User PATCH failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },
