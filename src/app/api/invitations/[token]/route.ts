@@ -42,6 +42,25 @@ export async function POST(
       );
     }
 
+    // ── ফাঁক বন্ধ: যে accept করছে, সে কি invited email-এর মালিক? ──
+    // আগে এই চেক ছিল না — অন্য email দিয়ে login করা যে কেউ token পেলেই
+    // member হয়ে যেতে পারত। এখন login user-এর email আর invited email
+    // মেলাচ্ছি। (session-এ email নাও থাকতে পারে, তাই DB থেকে আনছি)
+    const currentUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true },
+    });
+
+    if (
+      !currentUser ||
+      currentUser.email.toLowerCase() !== invitation.email.toLowerCase()
+    ) {
+      return NextResponse.json(
+        { error: "この招待は別のメールアドレス宛てです" },
+        { status: 403 },
+      );
+    }
+
     // already member check
     const existingMember = await prisma.seniorMember.findFirst({
       where: {
@@ -56,7 +75,7 @@ export async function POST(
       );
     }
 
-    // SeniorMember + invitation update
+    // SeniorMember + invitation update — একসাথে
     await prisma.$transaction([
       prisma.seniorMember.create({
         data: {
@@ -76,7 +95,8 @@ export async function POST(
       seniorId: invitation.seniorId,
       seniorName: invitation.senior.name,
     });
-  } catch {
+  } catch (error) {
+    console.error("Invite accept failed:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

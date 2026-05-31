@@ -50,28 +50,34 @@ export async function POST(
 
     const { email, role } = parsed.data;
 
-    // already member check
+    // ── নিয়ম ১: email-টা database-এ থাকতে হবে (existing, verified user) ──
+    // অজানা email-এ invite করা যাবে না।
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
-    if (existingUser) {
-      const existingMember = await prisma.seniorMember.findFirst({
-        where: { seniorId: id, userId: existingUser.id },
-      });
-      if (existingMember) {
-        return NextResponse.json(
-          { error: "すでにメンバーです" },
-          { status: 409 },
-        );
-      }
+    if (!existingUser) {
+      return NextResponse.json(
+        { error: "このメールアドレスのアカウントが見つかりません" },
+        { status: 404 },
+      );
+    }
+
+    // already member check
+    const existingMember = await prisma.seniorMember.findFirst({
+      where: { seniorId: id, userId: existingUser.id },
+    });
+    if (existingMember) {
+      return NextResponse.json(
+        { error: "すでにメンバーです" },
+        { status: 409 },
+      );
     }
 
     // token generate
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7日後
 
-    // আগের একই senior+email-এর invitation মুছে, তারপর নতুন তৈরি
-    // (দুটো একসাথে transaction-এ — যাতে মুছে গিয়ে create fail করলে পুরনোটাও ফিরে আসে)
+    // আগের একই senior+email-এর invitation মুছে, তারপর নতুন তৈরি (transaction)
     await prisma.$transaction([
       prisma.invitation.deleteMany({
         where: { seniorId: id, email },
