@@ -7,7 +7,7 @@ const updateSchema = z.object({
   name: z.string().min(1).max(50).optional(),
   age: z.number().min(1).max(120).optional(),
   notes: z.string().max(500).optional(),
-  photoUrl: z.string().optional(),
+  photoUrl: z.url().optional(),
 });
 
 export async function GET(

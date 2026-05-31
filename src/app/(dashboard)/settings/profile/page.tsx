@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { BackButton } from "@/app/components/BackButton";
+
 import { ProfileEditForm } from "@/app/components/ProfileEditForm";
 import Link from "next/link";
 
