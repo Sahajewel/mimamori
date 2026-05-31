@@ -10,7 +10,5 @@ model CheckIn {
     note      String?
     createdAt DateTime      @default(now())
 
-    @@index([seniorId])
-    @@index([status])
-    @@index([createdAt])
+    @@index([seniorId, status, createdAt])
 }

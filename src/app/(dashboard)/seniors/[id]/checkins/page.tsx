@@ -1,9 +1,9 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
+
 import { CheckInsClient } from "@/app/components/CheckInsClient";
-import { BackButton } from "@/app/components/BackButton";
+
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
 
 const PER_PAGE = 10;

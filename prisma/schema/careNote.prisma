@@ -9,6 +9,5 @@ model CareNote {
     content   String
     createdAt DateTime @default(now())
 
-    @@index([seniorId])
-    @@index([createdAt])
+    @@index([seniorId, createdAt])
 }

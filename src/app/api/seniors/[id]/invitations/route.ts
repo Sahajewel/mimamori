@@ -5,7 +5,7 @@ import { z } from "zod";
 import crypto from "crypto";
 
 const inviteSchema = z.object({
-  email: z.string().email("有効なメールアドレスを入力してください"),
+  email: z.email("有効なメールアドレスを入力してください"),
   role: z.enum(["EDITOR", "VIEWER"]).default("EDITOR"),
 });
 
@@ -47,7 +47,7 @@ export async function POST(
       );
     }
 
-    const { email, role } = parsed.data;
+    const { email } = parsed.data;
 
     // already member check
     const existingUser = await prisma.user.findUnique({
@@ -72,20 +72,6 @@ export async function POST(
     // 既存のinvitation削除
     await prisma.invitation.deleteMany({
       where: { seniorId: id, email },
-    });
-
-    const invitation = await prisma.invitation.create({
-      data: {
-        seniorId: id,
-        invitedBy: session.user.id,
-        email,
-        token,
-        role,
-        expiresAt,
-      },
-      include: {
-        senior: { select: { name: true } },
-      },
     });
 
     const inviteUrl = `${process.env.NEXTAUTH_URL}/invite/${token}`;
