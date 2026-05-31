@@ -7,7 +7,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; noteId: string }> },
 ) {
   try {
-    const { noteId } = await params;
+    const { id, noteId } = await params;
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -16,8 +16,8 @@ export async function DELETE(
       );
     }
 
-    const note = await prisma.careNote.findUnique({
-      where: { id: noteId },
+    const note = await prisma.careNote.findFirst({
+      where: { id: noteId, seniorId: id }, // ← seniorId যোগ
     });
 
     if (!note) {
@@ -44,7 +44,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; noteId: string }> },
 ) {
   try {
-    const { noteId } = await params;
+    const { id, noteId } = await params;
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -53,8 +53,8 @@ export async function PATCH(
       );
     }
 
-    const note = await prisma.careNote.findUnique({
-      where: { id: noteId },
+    const note = await prisma.careNote.findFirst({
+      where: { id: noteId, seniorId: id }, // ← seniorId যোগ
     });
 
     if (!note) {

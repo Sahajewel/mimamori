@@ -74,6 +74,7 @@ export default async function CareNotesPage({
           currentPage={currentPage}
           totalPages={totalPages}
           currentUserId={session.user.id}
+          currentUserRole={member.role}
         />
       </div>
     </div>

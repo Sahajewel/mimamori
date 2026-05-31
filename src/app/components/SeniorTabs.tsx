@@ -313,7 +313,7 @@ export function SeniorTabs({
           ) : (
             <>
               <div className="space-y-3">
-                {careNotes.slice(0, 3).map((note) => (
+                {careNotes.slice(0, 1).map((note) => (
                   <div
                     key={note.id}
                     className="py-3 border-b border-gray-50 last:border-0"

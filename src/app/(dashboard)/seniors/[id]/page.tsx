@@ -139,7 +139,7 @@ export default async function SeniorDetailPage({
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-5 shadow-sm">
           {/* Profile */}
           <div className="flex items-center gap-4 mb-5">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-3xl overflow-hidden flex-shrink-0">
+            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-3xl overflow-hidden shrink-0">
               {senior.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

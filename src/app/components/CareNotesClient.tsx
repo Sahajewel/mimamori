@@ -44,6 +44,7 @@ type Props = {
   currentPage: number;
   totalPages: number;
   currentUserId: string;
+  currentUserRole: string;
 };
 
 export function CareNotesClient({
@@ -54,6 +55,7 @@ export function CareNotesClient({
   currentPage,
   totalPages,
   currentUserId,
+  currentUserRole,
 }: Props) {
   const [clickedHref, setClickedHref] = useState<string | null>(null);
 
@@ -70,14 +72,16 @@ export function CareNotesClient({
             {seniorName}さん · 全{total}件
           </p>
         </div>
-        <Link
-          href={addHref}
-          onClick={() => setClickedHref(addHref)}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          {clickedHref === addHref ? <Spinner /> : "＋"}
-          追加
-        </Link>
+        {currentUserRole !== "VIEWER" && (
+          <Link
+            href={addHref}
+            onClick={() => setClickedHref(addHref)}
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            {clickedHref === addHref ? <Spinner /> : "＋"}
+            追加
+          </Link>
+        )}
       </div>
 
       <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm mb-6">
@@ -94,7 +98,7 @@ export function CareNotesClient({
                 className="px-5 py-4 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-start gap-3">
-                  <span className="text-sm text-gray-300 w-6 mt-0.5 flex-shrink-0">
+                  <span className="text-sm text-gray-300 w-6 mt-0.5 shrink-0">
                     {(currentPage - 1) * 10 + index + 1}
                   </span>
                   <div className="flex-1">
