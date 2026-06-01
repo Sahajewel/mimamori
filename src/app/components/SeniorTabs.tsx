@@ -7,6 +7,7 @@ type CheckIn = {
   id: string;
   status: string;
   note: string | null;
+  authorName: string | null;
   createdAt: string;
   user: { name: string };
 };
@@ -22,6 +23,7 @@ type Medicine = {
 type CareNote = {
   id: string;
   content: string;
+  authorName: string | null;
   createdAt: string;
   user: { name: string };
 };
@@ -158,7 +160,9 @@ export function SeniorTabs({
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-400">{checkIn.user.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {checkIn.authorName || "退会したユーザー"}
+                    </p>
                     <p className="text-xs text-gray-300">
                       {new Date(checkIn.createdAt).toLocaleDateString("ja-JP", {
                         timeZone: "Asia/Tokyo",
@@ -320,7 +324,9 @@ export function SeniorTabs({
                   >
                     <p className="text-sm text-gray-700 mb-2">{note.content}</p>
                     <div className="flex items-center gap-2">
-                      <p className="text-xs text-gray-400">{note.user.name}</p>
+                      <p className="text-xs text-gray-400">
+                        {note.authorName || "退会したユーザー"}
+                      </p>
                       <p className="text-xs text-gray-300">·</p>
                       <p className="text-xs text-gray-300">
                         {new Date(note.createdAt).toLocaleDateString("ja-JP", {

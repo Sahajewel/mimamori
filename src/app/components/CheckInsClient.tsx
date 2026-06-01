@@ -33,6 +33,7 @@ type CheckIn = {
   id: string;
   status: string;
   note: string | null;
+  authorName: string | null;
   createdAt: Date;
   user: { name: string; id: string };
 };
@@ -129,7 +130,7 @@ export function CheckInsClient({
                     )}
                     <div className="flex items-center gap-2 mt-1.5">
                       <p className="text-sm text-gray-400 font-medium">
-                        {checkIn.user.name}
+                        {checkIn.authorName || "退会したユーザー"}
                       </p>
                       <p className="text-xs text-gray-300">·</p>
                       <p className="text-sm text-gray-300">

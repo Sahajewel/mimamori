@@ -33,6 +33,7 @@ type Note = {
   id: string;
   content: string;
   createdAt: Date;
+  authorName: string | null;
   user: { name: string; id: string };
 };
 
@@ -107,7 +108,7 @@ export function CareNotesClient({
                     </p>
                     <div className="flex items-center gap-2">
                       <p className="text-sm text-gray-400 font-medium">
-                        {note.user.name}
+                        {note.authorName || "退会したユーザー"}
                       </p>
                       <p className="text-xs text-gray-300">·</p>
                       <p className="text-sm text-gray-300">
