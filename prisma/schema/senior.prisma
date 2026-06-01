@@ -1,21 +1,19 @@
-// ─── Senior ──────────────────────────────────────────
-
 model Senior {
-    id          String         @id @default(uuid())
-    name        String
-    age         Int?
-    notes       String?
-    quickToken  String?        @unique
-    photoUrl    String?
-    createdAt   DateTime       @default(now())
-    updatedAt   DateTime       @updatedAt
-    members     SeniorMember[]
-    checkIns    CheckIn[]
-    medicines   Medicine[]
-    careNotes   CareNote[]
-    invitations Invitation[]
-    messages    Message[]
+  id          String         @id @default(uuid())
+  name        String
+  age         Int?
+  notes       String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  quickToken  String?        @unique
+  photoUrl    String?
+  careNotes   CareNote[]
+  checkIns    CheckIn[]
+  invitations Invitation[]
+  medicines   Medicine[]
+  messages    Message[]
+  members     SeniorMember[]
 
-    // @@index([id])
-    // @@index([quickToken])
+  @@index([id])
+  @@index([quickToken])
 }

@@ -1,26 +1,24 @@
-// ─── Enums ───────────────────────────────────────────
-
 enum Role {
-    ADMIN
-    FAMILY
-    CAREGIVER
+  ADMIN
+  FAMILY
+  CAREGIVER
 }
 
 enum SeniorMemberRole {
-    OWNER // যে Senior বানিয়েছে
-    EDITOR // CheckIn, CareNote, Medicine করতে পারবে
-    VIEWER // শুধু দেখতে পারবে
+  OWNER
+  EDITOR
+  VIEWER
 }
 
 enum CheckInStatus {
-    OK
-    CONCERN
-    EMERGENCY
+  OK
+  CONCERN
+  EMERGENCY
 }
 
 enum MedicineStatus {
-    PENDING
-    TAKEN
-    MISSED
-    SKIPPED
+  PENDING
+  TAKEN
+  MISSED
+  SKIPPED
 }

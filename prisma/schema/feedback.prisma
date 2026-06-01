@@ -1,11 +1,10 @@
 model Feedback {
-    id             String  @id @default(uuid())
-    rating         Int
-    comment        String?
-    featureRequest String?
-    name           String?
-    email          String?
-    showOnLanding  Boolean @default(false)
-
-    createdAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  rating         Int
+  comment        String?
+  featureRequest String?
+  name           String?
+  email          String?
+  createdAt      DateTime @default(now())
+  showOnLanding  Boolean  @default(false)
 }

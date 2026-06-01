@@ -1,37 +1,35 @@
-// ─── User ────────────────────────────────────────────
-
 model User {
-    id                String             @id @default(uuid())
-    name              String
-    email             String             @unique
-    passwordHash      String
-    image             String?
-    role              Role               @default(FAMILY)
-    emailVerified     Boolean            @default(false)
-    verifyToken       String?
-    verifyExpires     DateTime?
-    createdAt         DateTime           @default(now())
-    updatedAt         DateTime           @updatedAt
-    seniorMembers     SeniorMember[]
-    checkIns          CheckIn[]
-    careNotes         CareNote[]
-    medicineLogs      MedicineLog[]
-    invitationsSent   Invitation[]
-    pushSubscriptions PushSubscription[]
-    messages          Message[]
+  id                String             @id @default(uuid())
+  name              String
+  email             String             @unique
+  passwordHash      String
+  role              Role               @default(FAMILY)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  image             String?
+  emailVerified     Boolean            @default(false)
+  verifyToken       String?
+  verifyExpires     DateTime?          @db.Timestamp(6)
+  careNotes         CareNote[]
+  checkIns          CheckIn[]
+  invitationsSent   Invitation[]
+  medicineLogs      MedicineLog[]
+  messages          Message[]
+  pushSubscriptions PushSubscription[]
+  seniorMembers     SeniorMember[]
 
-    // @@index([email])
-    @@index([role])
+  @@index([role])
+  @@index([email])
 }
 
 model PushSubscription {
-    id        String   @id @default(uuid())
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    endpoint  String   @unique
-    p256dh    String
-    auth      String
-    createdAt DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }

@@ -1,14 +1,14 @@
 // ─── CheckIn ─────────────────────────────────────────
-
 model CheckIn {
-    id        String        @id @default(uuid())
-    seniorId  String
-    senior    Senior        @relation(fields: [seniorId], references: [id], onDelete: Cascade)
-    userId    String
-    user      User          @relation(fields: [userId], references: [id])
-    status    CheckInStatus @default(OK)
-    note      String?
-    createdAt DateTime      @default(now())
+    id         String        @id @default(uuid())
+    seniorId   String
+    senior     Senior        @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    userId     String? // user hard-delete হলে null
+    user       User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+    authorName String? // user মুছলেও নাম থেকে যাবে
+    status     CheckInStatus @default(OK)
+    note       String?
+    createdAt  DateTime      @default(now())
 
     @@index([seniorId, status, createdAt])
 }

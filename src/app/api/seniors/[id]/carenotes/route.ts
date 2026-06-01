@@ -49,12 +49,14 @@ export async function POST(
       data: {
         seniorId: id,
         userId: session.user.id,
+        authorName: session.user.name,
         content: parsed.data.content,
       },
     });
 
     return NextResponse.json(careNote, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

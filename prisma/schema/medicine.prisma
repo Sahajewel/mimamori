@@ -1,21 +1,21 @@
 model Medicine {
-    id        String             @id @default(uuid())
-    seniorId  String
-    senior    Senior             @relation(fields: [seniorId], references: [id], onDelete: Cascade)
-    name      String
-    dosage    String?
-    frequency String
-    ongoing   Boolean            @default(true)
-    startDate DateTime           @default(now())
-    endDate   DateTime?
-    duration  Int?
-    notes     String?
-    active    Boolean            @default(true)
-    createdAt DateTime           @default(now())
-    reminders MedicineReminder[]
-    logs      MedicineLog[]
+  id        String             @id @default(uuid())
+  seniorId  String
+  name      String
+  dosage    String?
+  frequency String
+  active    Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  duration  Int?
+  endDate   DateTime?
+  notes     String?
+  ongoing   Boolean            @default(true)
+  startDate DateTime           @default(now())
+  senior    Senior             @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+  logs      MedicineLog[]
+  reminders MedicineReminder[]
 
-    @@index([seniorId])
-    @@index([seniorId, active])
-    @@index([endDate])
+  @@index([seniorId])
+  @@index([endDate])
+  @@index([active])
 }

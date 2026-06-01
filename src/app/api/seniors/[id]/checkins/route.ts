@@ -1,3 +1,4 @@
+// user check-in API route
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -56,6 +57,7 @@ export async function POST(
       data: {
         seniorId: id,
         userId: session.user.id,
+        authorName: session.user.name,
         status: parsed.data.status,
         note: parsed.data.note,
       },
@@ -82,7 +84,8 @@ export async function POST(
     }
 
     return NextResponse.json(checkIn, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("CheckIn POST failed from user:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },

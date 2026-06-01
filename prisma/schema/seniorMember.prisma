@@ -1,18 +1,14 @@
-// ─── SeniorMember ────────────────────────────────────
-// User আর Senior-এর bridge
-// একজন Senior-এর সাথে অনেক User connected থাকতে পারবে
-
 model SeniorMember {
-    id         String           @id @default(uuid())
-    seniorId   String
-    senior     Senior           @relation(fields: [seniorId], references: [id], onDelete: Cascade)
-    userId     String
-    user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role       SeniorMemberRole @default(VIEWER)
-    lastReadAt DateTime?
-    createdAt  DateTime         @default(now())
+  id         String           @id @default(uuid())
+  seniorId   String
+  userId     String
+  role       SeniorMemberRole @default(VIEWER)
+  createdAt  DateTime         @default(now())
+  lastReadAt DateTime?
+  senior     Senior           @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([seniorId, userId])
-    @@index([seniorId])
-    @@index([userId])
+  @@unique([seniorId, userId])
+  @@index([seniorId])
+  @@index([userId])
 }

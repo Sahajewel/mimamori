@@ -1,3 +1,4 @@
+// senior page api route
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { sendPushToSeniorMembers } from "@/lib/push";
@@ -152,6 +153,7 @@ export async function POST(
           medicineId: parsed.data.medicineId!,
           reminderId: parsed.data.reminderId!,
           userId: ownerId,
+          authorName: senior.name,
           status: parsed.data.status as "TAKEN" | "MISSED" | "SKIPPED",
           takenAt: parsed.data.status === "TAKEN" ? new Date() : null,
         },
@@ -159,7 +161,8 @@ export async function POST(
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("CheckIn POST failed from senior:", error);
     return NextResponse.json(
       { error: "エラーが発生しました" },
       { status: 500 },
