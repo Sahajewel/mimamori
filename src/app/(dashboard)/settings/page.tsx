@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { SideNav } from "@/app/components/SideNav";
-import { BackButton } from "@/app/components/BackButton";
+
 import Image from "next/image";
+import { AccountDeleteSection } from "@/app/components/Accountdeletesection";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -38,7 +39,7 @@ export default async function SettingsPage() {
         {/* Profile hero */}
         <div className="bg-indigo-600 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl flex-shrink-0 overflow-hidden">
+            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl shrink-0 overflow-hidden">
               {session.user.image ? (
                 <div className="relative w-20 h-20">
                   <Image
@@ -65,7 +66,7 @@ export default async function SettingsPage() {
           </div>
           <Link
             href="/settings/profile"
-            className="text-sm text-white/80 border border-white/30 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+            className="text-sm text-white/80 border border-white/30 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors shrink-0"
           >
             編集
           </Link>
@@ -228,7 +229,7 @@ export default async function SettingsPage() {
             <LogoutButton />
           </div>
         </div>
-
+        <AccountDeleteSection></AccountDeleteSection>
         <p className="text-center text-sm text-gray-300">
           © 2026 Mimamori — ご家族をつなぐ
         </p>
