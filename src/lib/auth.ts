@@ -29,15 +29,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { id: token.id as string },
           select: { name: true, image: true },
         });
-        if (dbUser) {
-          token.name = dbUser.name;
-          token.image = dbUser.image;
+
+        if (!dbUser) {
+          return null;
         }
+        token.name = dbUser.name;
+        token.image = dbUser.image;
       }
 
       return token;
     },
     async session({ session, token }) {
+      if (!token) return session;
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
