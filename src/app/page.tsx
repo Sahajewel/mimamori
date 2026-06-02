@@ -96,8 +96,8 @@ export default async function HomePage() {
       {/* 以下全部 same */}
       {/* Hero */}
       <section className="relative flex flex-col items-center text-center px-4 py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-white pointer-events-none" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-indigo-50/50 to-white pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-150 bg-indigo-100/30 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <span className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-medium px-4 py-2 rounded-full mb-8">
             🇯🇵 日本の高齢者ケアのために作られました
@@ -242,7 +242,7 @@ export default async function HomePage() {
       </section>
 
       {/* QR Feature */}
-      <section className="bg-gradient-to-r from-indigo-50 to-blue-50 px-4 py-16">
+      <section className="bg-linear-to-r from-indigo-50 to-blue-50 px-4 py-16">
         <div className="max-w-3xl mx-auto text-center">
           <span className="inline-flex items-center bg-white border border-indigo-100 text-indigo-600 text-sm font-medium px-4 py-2 rounded-full mb-6 shadow-sm">
             ✨ ログイン不要
@@ -324,7 +324,7 @@ export default async function HomePage() {
                   </p>
                 </div>
                 {i < 2 && (
-                  <span className="text-2xl text-gray-200 hidden sm:block flex-shrink-0">
+                  <span className="text-2xl text-gray-200 hidden sm:block shrink-0">
                     →
                   </span>
                 )}
@@ -371,7 +371,7 @@ export default async function HomePage() {
 
       {/* CTA */}
       <section className="relative text-center px-4 py-20 bg-indigo-600 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-700/30 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
