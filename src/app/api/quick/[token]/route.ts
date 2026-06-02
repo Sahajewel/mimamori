@@ -124,6 +124,7 @@ export async function POST(
         data: {
           seniorId: senior.id,
           userId: ownerId,
+          authorName: senior.name,
           status: parsed.data.status as "OK" | "CONCERN" | "EMERGENCY",
           note: parsed.data.note,
         },
