@@ -3,11 +3,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { BackButton } from "@/app/components/BackButton";
-import Link from "next/link";
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
 
 type Message = {
@@ -153,7 +151,7 @@ function ChatSkeleton() {
 
 export default function ChatPage() {
   const params = useParams();
-  const router = useRouter();
+
   const id = params.id as string;
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -207,8 +205,37 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (initialLoading) return;
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
+
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    // tab visible হলে polling চালু, লুকালে বন্ধ
+    function startPolling() {
+      if (interval) return; // অলরেডি চলছে
+      interval = setInterval(fetchMessages, 3000); // ৫ → ৩ সেকেন্ড
+    }
+    function stopPolling() {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    }
+
+    function handleVisibility() {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchMessages(); // ফিরে এলে সাথে সাথে একবার আনো
+        startPolling();
+      }
+    }
+
+    startPolling(); // শুরুতে চালু
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, [id, initialLoading]);
 
   useEffect(() => {
