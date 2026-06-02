@@ -149,7 +149,7 @@ function ChatSkeleton() {
   );
 }
 
-export function ChatClient() {
+export function ChatClientMember() {
   const params = useParams();
 
   const id = params.id as string;

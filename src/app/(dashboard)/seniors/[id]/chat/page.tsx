@@ -1,4 +1,4 @@
-import { ChatClient } from "@/app/components/chatClient";
+import { ChatClientMember } from "@/app/components/ChatClientMember";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
@@ -18,5 +18,5 @@ export default async function ChatPage({
   });
   if (!member) notFound();
 
-  return <ChatClient />;
+  return <ChatClientMember />;
 }
