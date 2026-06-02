@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { LogoutButton } from "./components/LogoutButton";
 import { DashboardButton } from "./components/DashboardButton";
+import { LandingNav } from "./components/Landingnav";
 
 export default async function HomePage() {
   const session = await auth();
@@ -52,46 +53,11 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-1.5 ">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
-              <span className="text-white text-base  ">♡</span>
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900 text-base leading-none  ">
-                Mimamori
-              </p>
-              <p className="text-sm text-gray-400 mt-0.5 hidden sm:block">
-                見守り — 家族をつなぐ
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {session?.user?.id ? (
-              <div className="flex items-center gap-2">
-                <DashboardButton></DashboardButton>
-                <LogoutButton />
-              </div>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  ログイン
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-                >
-                  無料で始める
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <LandingNav
+        isLoggedIn={!!session?.user?.id}
+        userName={session?.user?.name}
+        userImage={session?.user?.image}
+      />
 
       {/* 以下全部 same */}
       {/* Hero */}
