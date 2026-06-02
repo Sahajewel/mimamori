@@ -8,6 +8,7 @@ import { DeleteSeniorButton } from "@/app/components/DeleteSeniorButton";
 import { NavActions } from "@/app/components/NavActions";
 import { ChatButton } from "@/app/components/ChatButton";
 import Link from "next/link";
+import { MemberList } from "@/app/components/Memberlist";
 
 export default async function SeniorDetailPage({
   params,
@@ -23,6 +24,9 @@ export default async function SeniorDetailPage({
     include: {
       senior: {
         include: {
+          members: {
+            include: { user: { select: { name: true } } },
+          },
           checkIns: {
             orderBy: { createdAt: "desc" },
             take: 5,
@@ -212,7 +216,16 @@ export default async function SeniorDetailPage({
             </div>
           )}
         </div>
-
+        <MemberList
+          seniorId={id}
+          members={senior.members.map((m) => ({
+            userId: m.userId,
+            name: m.user.name,
+            role: m.role,
+          }))}
+          currentUserId={session.user.id}
+          currentUserRole={role}
+        />
         {/* Tabs */}
         <SeniorTabs
           seniorId={id}
