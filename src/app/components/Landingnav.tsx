@@ -41,7 +41,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors active:opacity-60"
           >
             {userImage ? (
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -68,13 +68,13 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               <Link
                 href="/dashboard"
                 onClick={() => setUserOpen(false)}
-                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors active:opacity-60"
               >
                 📊 ダッシュボード
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors"
+                className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors active:opacity-60"
               >
                 🚪 ログアウト
               </button>
@@ -88,7 +88,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 active:scale-95 transition-all shadow-sm"
+            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 active:scale-95 transition-all shadow-sm active:opacity-60"
           >
             ログイン
           </button>
@@ -98,7 +98,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               <Link
                 href="/login"
                 onClick={() => setUserOpen(false)}
-                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors active:opacity-60"
               >
                 ログインする
               </Link>
@@ -109,7 +109,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
                 <Link
                   href="/register"
                   onClick={() => setUserOpen(false)}
-                  className="block text-sm text-indigo-600 font-medium hover:underline"
+                  className="block text-sm text-indigo-600 font-medium hover:underline active:opacity-60"
                 >
                   新規登録はこちら →
                 </Link>
