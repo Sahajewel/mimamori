@@ -4,6 +4,7 @@ import "./globals.css";
 import { PushSubscriber } from "./components/PushSubscriber";
 import { LandingNav } from "./components/Landingnav";
 import { auth } from "@/lib/auth";
+import { Footer } from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +58,7 @@ export default async function RootLayout({
           userImage={session?.user?.image}
         />
         {children}
+        <Footer />
       </body>
     </html>
   );
