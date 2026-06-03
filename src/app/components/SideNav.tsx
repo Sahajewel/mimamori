@@ -1,8 +1,9 @@
 "use client";
-
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 
 function Spinner() {
   return (
@@ -38,10 +39,29 @@ export function SideNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [clickedHref, setClickedHref] = useState<string | null>(null);
+  // session fetch দিয়ে আনছি (অ্যাপে SessionProvider নাই)
+  const [user, setUser] = useState<{
+    name: string | null;
+    image: string | null;
+  } | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setClickedHref(null);
   }, [pathname]);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.user) {
+          setUser({ name: d.user.name, image: d.user.image });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       <button
@@ -63,6 +83,7 @@ export function SideNav() {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
+        {/* উপরে — logo */}
         <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-100">
           <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center flex-shrink-0 shadow-sm">
             <span className="text-white text-lg">♡</span>
@@ -76,11 +97,11 @@ export function SideNav() {
           </button>
         </div>
 
+        {/* মাঝে — nav link (home, settings) */}
         <div className="flex-1 py-4 space-y-1 px-3">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const isClicked = clickedHref === item.href;
-
             return (
               <Link
                 key={item.href}
@@ -105,10 +126,41 @@ export function SideNav() {
           })}
         </div>
 
-        <div className="px-5 py-4 border-t border-gray-100">
-          <p className="text-xs text-gray-300 text-center">
-            © 2026 Mimamori — ご家族をつなぐ
-          </p>
+        {/* নিচে — user (image/নাম) + logout */}
+        <div className="border-t border-gray-100 p-3">
+          {/* image থাকলে image, নাহলে নাম */}
+          <div className="flex items-center gap-3 px-2 py-3">
+            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold overflow-hidden shrink-0">
+              {user?.image ? (
+                <div className="relative w-10 h-10">
+                  <Image
+                    src={user.image}
+                    alt="profile"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                (user?.name?.charAt(0) ?? "♡")
+              )}
+            </div>
+            <p className="text-sm font-medium text-gray-800 truncate">
+              {user?.name ?? "..."}
+            </p>
+          </div>
+
+          {/* logout */}
+          <button
+            onClick={() => {
+              setLoggingOut(true);
+              signOut({ callbackUrl: "/" });
+            }}
+            disabled={loggingOut}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+          >
+            <span className="text-xl">{loggingOut ? <Spinner /> : "🚪"}</span>
+            <span className="text-base font-medium">ログアウト</span>
+          </button>
         </div>
       </aside>
     </>
