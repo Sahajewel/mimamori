@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -16,22 +16,6 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false); // hamburger (ছোট device)
   const [userOpen, setUserOpen] = useState(false); // user dropdown
-
-  const menuRef = useRef<HTMLDivElement>(null);
-  const userRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-      if (userRef.current && !userRef.current.contains(e.target as Node)) {
-        setUserOpen(false);
-      }
-    }
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
-  }, []);
 
   // dashboard এলাকায় (SideNav আছে) navbar দেখাব না
   const hideOn = ["/dashboard", "/settings", "/seniors"];
@@ -51,7 +35,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
   const userArea = (
     <>
       {isLoggedIn ? (
-        <div className="relative" ref={userRef}>
+        <div className="relative">
           <button
             onClick={() => {
               setUserOpen(!userOpen);
@@ -98,7 +82,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
           )}
         </div>
       ) : (
-        <div className="relative" ref={userRef}>
+        <div className="relative">
           <button
             onClick={() => {
               setUserOpen(!userOpen);
@@ -173,7 +157,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
         </div>
 
         {/* ছোট device — ডানে hamburger (বড় device-এ লুকানো) */}
-        <div className="relative lg:hidden" ref={menuRef}>
+        <div className="relative lg:hidden">
           <button
             onClick={() => {
               setMenuOpen(!menuOpen);
