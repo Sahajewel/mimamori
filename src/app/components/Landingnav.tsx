@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LogoutButton } from "./LogoutButton";
 
 type Props = {
   isLoggedIn: boolean;
@@ -30,8 +29,8 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
         setUserOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   // dashboard এলাকায় (SideNav আছে) navbar দেখাব না
@@ -93,7 +92,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors"
               >
-                <LogoutButton></LogoutButton>
+                🚪 ログアウト
               </button>
             </div>
           )}
