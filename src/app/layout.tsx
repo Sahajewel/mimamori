@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PushSubscriber } from "./components/PushSubscriber";
+import { LandingNav } from "./components/Landingnav";
+import { auth } from "@/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +31,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html
       lang="ja"
@@ -47,6 +50,11 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <PushSubscriber />
+        <LandingNav
+          isLoggedIn={!!session?.user?.id}
+          userName={session?.user?.name}
+          userImage={session?.user?.image}
+        />
         {children}
       </body>
     </html>

@@ -153,7 +153,21 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
           )}
 
           {/* ── Hamburger (☰) — link গুলো ── */}
-          <div className="relative" ref={menuRef}>
+          {/* বড় screen (lg+) → link সরাসরি, hamburger নাই */}
+          <div className="hidden lg:flex items-center gap-1">
+            {menuLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* মোবাইল + ট্যাবলেট (lg-এর নিচে) → hamburger ☰ */}
+          <div className="relative lg:hidden" ref={menuRef}>
             <button
               onClick={() => {
                 setMenuOpen(!menuOpen);

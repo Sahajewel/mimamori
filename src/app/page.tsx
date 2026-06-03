@@ -2,9 +2,6 @@ import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { LogoutButton } from "./components/LogoutButton";
-import { DashboardButton } from "./components/DashboardButton";
-import { LandingNav } from "./components/Landingnav";
 
 export default async function HomePage() {
   const session = await auth();
@@ -53,11 +50,6 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       {/* Navbar */}
-      <LandingNav
-        isLoggedIn={!!session?.user?.id}
-        userName={session?.user?.name}
-        userImage={session?.user?.image}
-      />
 
       {/* 以下全部 same */}
       {/* Hero */}
