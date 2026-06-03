@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BackButton } from "../components/BackButton";
 
 export default function GuidePage() {
   return (
@@ -6,25 +7,7 @@ export default function GuidePage() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-1.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm">
-              <span className="text-white text-base">♡</span>
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900 text-base leading-none">
-                Mimamori
-              </p>
-              <p className="text-sm text-gray-400 mt-0.5 hidden sm:block">
-                見守り — 家族をつなぐ
-              </p>
-            </div>
-          </Link>
-          <Link
-            href="/register"
-            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-          >
-            無料で始める
-          </Link>
+          <BackButton />
         </div>
       </nav>
 
@@ -309,22 +292,6 @@ export default function GuidePage() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-100 px-4 py-8 bg-white">
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-xs">♡</span>
-            </div>
-            <p className="text-base font-semibold text-gray-900">Mimamori</p>
-          </div>
-          <Link href="/" className="text-sm text-indigo-600 hover:underline">
-            ← トップページに戻る
-          </Link>
-          <p className="text-sm text-gray-400">© 2026 Mimamori</p>
-        </div>
-      </footer>
     </div>
   );
 }

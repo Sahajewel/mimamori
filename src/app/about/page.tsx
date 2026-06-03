@@ -8,14 +8,6 @@ export default function AboutPage() {
       <nav className="bg-white border-b border-gray-100 px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <BackButton></BackButton>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-sm">♡</span>
-            </div>
-            <p className="font-semibold text-gray-900 hidden sm:block">
-              Mimamori
-            </p>
-          </div>
         </div>
       </nav>
 
@@ -95,10 +87,6 @@ export default function AboutPage() {
             スケーラブルで高性能なWebアプリケーションの構築に情熱を注ぐフルスタック開発者。Mimamoriは、大切な家族をつなぐために心を込めて開発しました。
           </p>
         </div>
-
-        <p className="text-center text-sm text-gray-300">
-          © 2026 Mimamori — ご家族をつなぐ
-        </p>
       </div>
     </div>
   );

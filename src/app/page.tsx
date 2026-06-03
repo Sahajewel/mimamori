@@ -69,28 +69,12 @@ export default async function HomePage() {
             離れて暮らすご家族の毎日の様子を、家族みんなで安心して見守るプラットフォーム。ログイン不要で簡単に記録できます。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
-            {session?.user?.id ? (
-              <Link
-                href="/dashboard"
-                className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
-              >
-                ダッシュボード
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/register"
-                  className="flex-1 px-8 py-4 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 text-center"
-                >
+            {!session?.user?.id && (
+              <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
+                <Link href="/register" className="...">
                   無料で始める →
                 </Link>
-                <Link
-                  href="/login"
-                  className="flex-1 px-8 py-4 border border-gray-200 text-gray-700 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors text-center"
-                >
-                  ログイン
-                </Link>
-              </>
+              </div>
             )}
           </div>
           <p className="text-sm text-gray-400 mt-4">今すぐ無料で始められます</p>
@@ -328,65 +312,27 @@ export default async function HomePage() {
       <FeedbackSection />
 
       {/* CTA */}
-      <section className="relative text-center px-4 py-20 bg-indigo-600 overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-700/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10">
-          <p className="text-3xl md:text-4xl font-semibold text-white mb-4">
-            今日から始めてみませんか？
-          </p>
-          <p className="text-base text-indigo-200 mb-10 max-w-md mx-auto">
-            アカウント登録は簡単。大切なご家族を、みんなで見守りましょう。
-          </p>
-          <Link
-            href="/register"
-            className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
-          >
-            無料で始める →
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-100 px-4 py-8 bg-white">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-xs">♡</span>
-            </div>
-            <p className="text-base font-semibold text-gray-900">Mimamori</p>
+      {!session?.user?.id && (
+        <section className="relative text-center px-4 py-20 bg-indigo-600 overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-700/30 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <p className="text-3xl md:text-4xl font-semibold text-white mb-4">
+              今日から始めてみませんか？
+            </p>
+            <p className="text-base text-indigo-200 mb-10 max-w-md mx-auto">
+              アカウント登録は簡単。大切なご家族を、みんなで見守りましょう。
+            </p>
+            <Link
+              href="/register"
+              className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
+            >
+              無料で始める →
+            </Link>
           </div>
-          <p className="text-sm text-gray-400">Developed by Saha Jewel Kumar</p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/privacy"
-              className="text-sm text-gray-400 hover:underline transition-colors"
-            >
-              プライバシーポリシー
-            </Link>
-            <Link
-              href="/terms"
-              className="text-sm text-gray-400 hover:underline transition-colors"
-            >
-              利用規約
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm text-gray-400 hover:underline transition-colors"
-            >
-              Mimamoriについて
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm text-gray-400 hover:underline transition-colors"
-            >
-              お問い合わせ
-            </Link>
-            <p className="text-sm text-gray-400">© 2026 Mimamori</p>
-          </div>
-        </div>
-      </footer>
+        </section>
+      )}
     </div>
   );
 }
