@@ -59,6 +59,7 @@ export default async function DashboardPage() {
           <DashboardLogo></DashboardLogo>
           <div className="flex items-center gap-3">
             <DashboardButton></DashboardButton>
+
             <p className="text-sm text-gray-500 hidden sm:block">
               {session.user.name}さん
             </p>

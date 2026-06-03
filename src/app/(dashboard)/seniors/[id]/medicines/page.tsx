@@ -61,6 +61,7 @@ export default async function MedicineHistoryPage({
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <SeniorBackLink seniorId={id} />
+
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm">♡</span>
