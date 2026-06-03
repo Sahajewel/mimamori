@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import { SeniorBackLink } from "@/app/components/SeniorBackLink";
+import { Breadcrumb } from "./Breadcrumb";
 
 type Message = {
   id: string;
@@ -448,6 +449,13 @@ export function ChatClientMember() {
       {/* Navbar */}
       <nav className="bg-white max-w-3xl mx-auto border-b border-gray-100 px-4 py-3 flex gap-3 shrink-0 pl-16 items-center justify-between">
         <SeniorBackLink seniorId={id}></SeniorBackLink>
+        <Breadcrumb
+          items={[
+            { label: "ダッシュボード", href: "/dashboard" },
+            { label: `${seniorName}さん`, href: `/seniors/${id}` },
+            { label: "チャット" }, // ← current পেজ, href নাই
+          ]}
+        />
         <div className="flex items-center gap-2 flex-1">
           <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium text-sm">
             {seniorName.charAt(0) || "♡"}
