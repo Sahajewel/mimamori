@@ -37,11 +37,11 @@ export default async function SettingsPage() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Profile hero */}
         {/* Profile hero */}
-        <div className="bg-indigo-600 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between">
-          <div className="flex items-center gap-5">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl shrink-0 overflow-hidden">
+        <div className="bg-indigo-600 rounded-2xl p-6 mb-6 shadow-sm flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl shrink-0 overflow-hidden">
               {session.user.image ? (
-                <div className="relative w-20 h-20">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20">
                   <Image
                     src={session.user.image}
                     alt="profile"
@@ -50,23 +50,21 @@ export default async function SettingsPage() {
                   />
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-3xl">
-                  {session.user.name?.charAt(0)}
-                </div>
+                <span>{session.user.name?.charAt(0)}</span>
               )}
             </div>
-            <div>
-              <p className="text-xl font-bold text-white">
+            <div className="min-w-0">
+              <p className="text-xl font-bold text-white truncate">
                 {session.user.name}
               </p>
-              <p className="text-base text-indigo-200 mt-0.5">
+              <p className="text-sm text-indigo-200 mt-0.5 truncate">
                 {session.user.email}
               </p>
             </div>
           </div>
           <Link
             href="/settings/profile"
-            className="text-sm text-white/80 border border-white/30 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors shrink-0"
+            className="text-sm text-white/80 border border-white/30 px-3 py-1.5 rounded-lg hover:bg-white/10 active:opacity-60 transition-all shrink-0"
           >
             編集
           </Link>
@@ -129,7 +127,7 @@ export default async function SettingsPage() {
           <div className="divide-y divide-gray-50">
             <Link
               href="/privacy"
-              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-lg">
@@ -143,7 +141,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/terms"
-              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center text-lg">
@@ -155,7 +153,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/about"
-              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-lg">
@@ -169,7 +167,7 @@ export default async function SettingsPage() {
             </Link>
             <Link
               href="/contact"
-              className="flex items-center justify-between px-6 py-4 hover:underline transition-colors"
+              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <span className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center text-lg">
