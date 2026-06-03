@@ -90,7 +90,7 @@ export async function GET(
           status: log?.status || "NONE",
           note: log?.note || null,
           createdAt: log?.createdAt || current.toISOString(),
-          userName: log?.user?.name || null,
+          userName: log?.authorName || log?.user?.name || null,
         });
       }
       current.setDate(current.getDate() + 1);

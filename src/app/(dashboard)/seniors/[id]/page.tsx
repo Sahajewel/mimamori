@@ -9,7 +9,6 @@ import { NavActions } from "@/app/components/NavActions";
 import { ChatButton } from "@/app/components/ChatButton";
 import Link from "next/link";
 import { MemberList } from "@/app/components/Memberlist";
-import { Breadcrumb } from "@/app/components/Breadcrumb";
 
 export default async function SeniorDetailPage({
   params,
@@ -126,12 +125,7 @@ export default async function SeniorDetailPage({
               <span className="text-lg">←</span>
               <span>戻る</span>
             </Link>
-            <Breadcrumb
-              items={[
-                { label: "ダッシュボード", href: "/dashboard" },
-                { label: `${senior.name}さん` },
-              ]}
-            />
+
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
                 <span className="text-white text-sm">♡</span>
