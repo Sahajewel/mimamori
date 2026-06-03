@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { BackButton } from "../components/BackButton";
+import { auth } from "@/lib/auth";
 
-export default function GuidePage() {
+export default async function GuidePage() {
+  const session = await auth();
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <BackButton />
         </div>
       </nav>
@@ -275,23 +277,25 @@ export default function GuidePage() {
       </section>
 
       {/* CTA */}
-      <section className="relative text-center px-4 py-16 bg-indigo-600 overflow-hidden mt-6">
-        <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
-        <div className="relative z-10">
-          <p className="text-2xl md:text-3xl font-semibold text-white mb-3">
-            さあ、はじめましょう
-          </p>
-          <p className="text-base text-indigo-200 mb-8 max-w-md mx-auto">
-            大切なご家族を、みんなで見守りましょう。
-          </p>
-          <Link
-            href="/register"
-            className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
-          >
-            無料で始める →
-          </Link>
-        </div>
-      </section>
+      {!session?.user?.id && (
+        <section className="relative text-center px-4 py-16 bg-indigo-600 overflow-hidden mt-6">
+          <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-indigo-800 pointer-events-none" />
+          <div className="relative z-10">
+            <p className="text-2xl md:text-3xl font-semibold text-white mb-3">
+              さあ、はじめましょう
+            </p>
+            <p className="text-base text-indigo-200 mb-8 max-w-md mx-auto">
+              大切なご家族を、みんなで見守りましょう。
+            </p>
+            <Link
+              href="/register"
+              className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
+            >
+              無料で始める →
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
