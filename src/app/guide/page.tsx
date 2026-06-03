@@ -5,10 +5,10 @@ import { auth } from "@/lib/auth";
 export default async function GuidePage() {
   const session = await auth();
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 ">
+    <div className="min-h-screen  bg-gray-50 ">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-4">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
+      <nav className="bg-white border-b border-gray-100 px-4 py-4">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
           <BackButton />
         </div>
       </nav>
