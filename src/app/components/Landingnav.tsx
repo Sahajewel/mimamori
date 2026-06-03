@@ -24,6 +24,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
   }
 
   const menuLinks = [
+    { href: "/", label: "ホーム" },
     { href: "/guide", label: "使い方" },
     { href: "/privacy", label: "プライバシーポリシー" },
     { href: "/terms", label: "利用規約" },
