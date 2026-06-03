@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPushToSeniorMembers } from "@/lib/push";
-
-const TIMING_MAP: Record<string, { start: number; end: number }> = {
-  朝食後: { start: 7, end: 12 },
-  朝食前: { start: 6, end: 9 },
-  昼食後: { start: 11, end: 16 },
-  昼食前: { start: 10, end: 13 },
-  夕食後: { start: 17, end: 22 },
-  夕食前: { start: 16, end: 19 },
-  就寝前: { start: 20, end: 24 },
-  食間: { start: 10, end: 14 },
-};
+import { TIMING_MAP } from "@/lib/timingMap";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
