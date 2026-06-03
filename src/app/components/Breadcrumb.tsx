@@ -21,13 +21,13 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
             {item.href && !isLast ? (
               <Link
                 href={item.href}
-                className="hover:text-indigo-600 hover:underline transition-colors max-w-[140px] truncate"
+                className="hover:text-indigo-600 hover:underline transition-colors max-w-35 truncate"
               >
                 {item.label}
               </Link>
             ) : (
               // শেষ ধাপ — current পেজ, clickable না
-              <span className="text-gray-700 font-medium max-w-[140px] truncate">
+              <span className="text-gray-700 font-medium max-w-35 truncate">
                 {item.label}
               </span>
             )}

@@ -41,7 +41,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
           >
             {userImage ? (
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -53,7 +53,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
                 />
               </div>
             ) : (
-              <span className="text-sm font-medium text-gray-700 max-w-[120px] truncate">
+              <span className="text-sm font-medium text-gray-700 max-w-30 truncate">
                 {userName || "ユーザー"}
               </span>
             )}
@@ -88,7 +88,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 active:scale-95 transition-all shadow-sm"
           >
             ログイン
           </button>
@@ -98,7 +98,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               <Link
                 href="/login"
                 onClick={() => setUserOpen(false)}
-                className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               >
                 ログインする
               </Link>
@@ -140,7 +140,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
         </Link>
 
         {/* ছোট device — মাঝে user/image (বড় device-এ লুকানো) */}
-        <div className="lg:hidden">{userArea}</div>
+        <div className="lg:hidden ml-auto mr-2">{userArea}</div>
 
         {/* বড় device — ডানে nav-link + user একসাথে (ছোট device-এ লুকানো) */}
         <div className="hidden lg:flex items-center gap-1">

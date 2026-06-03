@@ -85,7 +85,7 @@ export function SideNav() {
       >
         {/* উপরে — logo */}
         <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-100">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
             <span className="text-white text-lg">♡</span>
           </div>
           <p className="font-semibold text-gray-900 text-base">Mimamori</p>
