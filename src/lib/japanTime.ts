@@ -1,37 +1,30 @@
-// Japan time (UTC+9) ঠিকঠাক হিসাব করার helper।
-// সমস্যা ছিল: new Date(toLocaleString(...)) server timezone-এ interpret হয়,
-// তাই মাঝরাতের আশেপাশে তারিখ এক পিছিয়ে যেত।
-//
-// এই helper সরাসরি UTC offset (+9) দিয়ে হিসাব করে — server যেখানেই থাক, ঠিক থাকবে।
+// Japan (UTC+9) সময় হিসাব
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
-const JST_OFFSET_MS = 9 * 60 * 60 * 1000; // UTC+9
-
-// এখন Japan-এ কোন দিন/সময়, সেটা একটা Date হিসেবে (UTC ফিল্ড গুলোতে Japan মান)
-export function nowInJapan(): Date {
+// Japan-এ এখন — Date object যার UTC ফিল্ডে Japan-এর মান
+function japanNow(): Date {
   return new Date(Date.now() + JST_OFFSET_MS);
 }
 
-// Japan-এ আজকের শুরু (00:00) — কিন্তু আসল UTC instant হিসেবে।
-// medicineLog.createdAt (UTC) এর সাথে { gte: startOfJapanToday() } তুলনা করা যাবে।
+// Japan-এ আজকের শুরু (00:00), আসল UTC instant হিসেবে
 export function startOfJapanToday(): Date {
-  const jpNow = new Date(Date.now() + JST_OFFSET_MS);
-  // Japan-এর আজকের তারিখ (UTC ফিল্ডে)
-  const y = jpNow.getUTCFullYear();
-  const m = jpNow.getUTCMonth();
-  const d = jpNow.getUTCDate();
-  // Japan-এর আজ 00:00 = UTC-তে সেই দিনের 00:00 মাইনাস ৯ ঘণ্টা
-  return new Date(Date.UTC(y, m, d) - JST_OFFSET_MS);
+  const jp = japanNow();
+  // Japan-এর আজকের Y/M/D নিয়ে, সেই দিনের Japan 00:00 = UTC 00:00 - 9h
+  return new Date(
+    Date.UTC(jp.getUTCFullYear(), jp.getUTCMonth(), jp.getUTCDate(), 0, 0, 0) -
+      JST_OFFSET_MS,
+  );
 }
 
-// Japan-এ এখন কত ঘণ্টা (0-23) — medicine timing চেক করতে
-export function japanHour(): number {
-  return new Date(Date.now() + JST_OFFSET_MS).getUTCHours();
-}
-// যেকোনো UTC date → Japan-এ সেই date কোন দিনের 00:00 (compare করার জন্য)
+// যেকোনো date Japan-এ কোন দিনের 00:00 (UTC instant)
 export function japanDayStart(date: Date): Date {
   const jp = new Date(date.getTime() + JST_OFFSET_MS);
   return new Date(
-    Date.UTC(jp.getUTCFullYear(), jp.getUTCMonth(), jp.getUTCDate()) -
+    Date.UTC(jp.getUTCFullYear(), jp.getUTCMonth(), jp.getUTCDate(), 0, 0, 0) -
       JST_OFFSET_MS,
   );
+}
+
+export function japanHour(): number {
+  return japanNow().getUTCHours();
 }
