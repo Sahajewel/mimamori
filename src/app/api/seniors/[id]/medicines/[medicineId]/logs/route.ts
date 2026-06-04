@@ -50,47 +50,46 @@ export async function GET(
     }
 
     // Start date থেকে আজ পর্যন্ত প্রতিদিন generate করো
-    const start = new Date(medicine.startDate);
-    const end = medicine.endDate ? new Date(medicine.endDate) : new Date();
 
-    // Japan time
-    const todayJapan = startOfJapanToday();
+    // ... medicine আনার পর:
 
-    const finalEnd = end > todayJapan ? todayJapan : end;
+    const todayStart = startOfJapanToday(); // আজকের Japan 00:00 (UTC instant)
+    const startDay = japanDayStart(new Date(medicine.startDate));
+    const endRaw = medicine.endDate
+      ? japanDayStart(new Date(medicine.endDate))
+      : todayStart;
+    const finalEnd =
+      endRaw.getTime() > todayStart.getTime() ? todayStart : endRaw;
 
     const allRecords = [];
 
-    // প্রতিদিন loop
-    const current = japanDayStart(start);
-    current.setHours(0, 0, 0, 0);
+    // instant দিয়ে দিন গুনি — প্রতিদিন ঠিক 24h যোগ (নিরাপদ)
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    for (let t = startDay.getTime(); t <= finalEnd.getTime(); t += DAY_MS) {
+      const dayStart = new Date(t); // এই দিনের Japan 00:00 (UTC instant)
 
-    while (current <= finalEnd) {
       for (const reminder of medicine.reminders) {
-        // এই দিনে এই reminder-এর log আছে কিনা
         const log = medicine.logs.find((l) => {
-          const logDate = japanDayStart(new Date(l.createdAt));
-
+          const logDay = japanDayStart(new Date(l.createdAt));
           return (
-            logDate.getTime() === current.getTime() &&
+            logDay.getTime() === dayStart.getTime() &&
             l.reminderId === reminder.id
           );
         });
 
         allRecords.push({
-          id: log?.id || `${current.toISOString()}-${reminder.id}`,
-          date: new Date(current),
+          id: log?.id || `${dayStart.toISOString()}-${reminder.id}`,
+          date: dayStart,
           reminderId: reminder.id,
           reminderTime: reminder.time,
           status: log?.status || "NONE",
           note: log?.note || null,
-          createdAt: log?.createdAt || current.toISOString(),
+          createdAt: log?.createdAt || dayStart.toISOString(),
           userName: log?.authorName || log?.user?.name || null,
         });
       }
-      current.setDate(current.getDate() + 1);
     }
 
-    // নতুন আগে সাজাও
     allRecords.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
