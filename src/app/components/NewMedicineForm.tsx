@@ -12,7 +12,14 @@ const frequencyOptions = [
   { value: "週1回", label: "週1回" },
   { value: "必要時", label: "必要時" },
 ];
-
+// Japan-এ আজকের তারিখ "YYYY-MM-DD" (date input-এর জন্য, device timezone যাই হোক)
+function japanTodayString(): string {
+  const jp = new Date(Date.now() + 9 * 60 * 60 * 1000); // UTC+9
+  const y = jp.getUTCFullYear();
+  const m = String(jp.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(jp.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 const timeOptions = [
   { value: "朝食前", label: "朝食前" },
   { value: "朝食後", label: "朝食後" },
@@ -51,9 +58,7 @@ export function NewMedicineForm() {
   const [times, setTimes] = useState<string[]>([]);
   const [ongoing, setOngoing] = useState(true);
   const [duration, setDuration] = useState("");
-  const [startDate, setStartDate] = useState(
-    new Date().toISOString().split("T")[0],
-  );
+  const [startDate, setStartDate] = useState(japanTodayString());
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
