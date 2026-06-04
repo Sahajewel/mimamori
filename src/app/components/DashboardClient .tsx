@@ -148,7 +148,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xl overflow-hidden flex-shrink-0 shadow-sm">
+                    <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xl overflow-hidden shrink-0 shadow-sm">
                       {senior.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img

@@ -10,8 +10,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const now = new Date();
-
   const hour = japanHour();
   const today = startOfJapanToday(); // Japan 00:00 (UTC instant)
 

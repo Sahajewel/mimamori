@@ -4,6 +4,7 @@ import { DashboardLogo } from "@/app/components/DashboardLogo";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { NotificationButton } from "@/app/components/NotificationButton";
 import { auth } from "@/lib/auth";
+import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 import { prisma } from "@/lib/prisma";
 
 import { redirect } from "next/navigation";
@@ -28,7 +29,7 @@ export default async function DashboardPage() {
               logs: {
                 where: {
                   createdAt: {
-                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                    gte: startOfJapanToday(),
                   },
                 },
               },
@@ -39,12 +40,9 @@ export default async function DashboardPage() {
     },
     orderBy: { createdAt: "asc" },
   });
-
   const now = new Date();
-  const japanTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  const hour = japanTime.getHours();
+
+  const hour = japanHour();
 
   function getGreeting() {
     if (hour >= 5 && hour < 11) return "おはようございます";

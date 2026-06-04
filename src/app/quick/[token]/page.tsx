@@ -280,9 +280,7 @@ export default function QuickPage() {
                       const isDone = doneReminders.has(reminder.id);
                       const active = isReminderActive(reminder.time);
                       const upcoming = isReminderUpcoming(reminder.time);
-                      const todayLog = data.todayLogs.find(
-                        (l) => l.reminderId === reminder.id,
-                      );
+
                       const isLoading =
                         loadingId === `${reminder.id}-TAKEN` ||
                         loadingId === `${reminder.id}-MISSED`;
