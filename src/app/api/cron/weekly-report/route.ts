@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
+import { japanDayStart, japanNow } from "@/lib/japanTime";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -17,17 +18,16 @@ export async function GET(req: Request) {
   }
 
   // 先週の日付
-  const now = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+  const jpNow = japanNow();
+  const dayOfWeek = jpNow.getUTCDay();
+  // আজকের Japan day-start (UTC instant)
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const todayStart = japanDayStart(new Date());
+
+  const startOfLastWeek = new Date(
+    todayStart.getTime() - (dayOfWeek + 6) * DAY_MS,
   );
-  const endOfLastWeek = new Date(now);
-  endOfLastWeek.setDate(now.getDate() - now.getDay()); // 今週の日曜
-  endOfLastWeek.setHours(23, 59, 59, 999);
-
-  const startOfLastWeek = new Date(endOfLastWeek);
-  startOfLastWeek.setDate(endOfLastWeek.getDate() - 6); // 先週の月曜
-  startOfLastWeek.setHours(0, 0, 0, 0);
-
+  const endOfLastWeek = new Date(todayStart.getTime() - dayOfWeek * DAY_MS - 1);
   // すべてのSeniorを取得
   const seniors = await prisma.senior.findMany({
     include: {

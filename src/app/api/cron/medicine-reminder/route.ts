@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPushToSeniorMembers } from "@/lib/push";
 import { TIMING_MAP } from "@/lib/timingMap";
+import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -10,14 +11,9 @@ export async function GET(req: Request) {
   }
 
   const now = new Date();
-  const japanTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  const hour = japanTime.getHours();
-  const today = new Date(
-    now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  today.setHours(0, 0, 0, 0);
+
+  const hour = japanHour();
+  const today = startOfJapanToday(); // Japan 00:00 (UTC instant)
 
   const activeTimings = Object.entries(TIMING_MAP)
     .filter(([, { start, end }]) => hour >= start + 1 && hour <= end)

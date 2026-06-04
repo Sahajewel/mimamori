@@ -2,7 +2,7 @@
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 // Japan-এ এখন — Date object যার UTC ফিল্ডে Japan-এর মান
-function japanNow(): Date {
+export function japanNow(): Date {
   return new Date(Date.now() + JST_OFFSET_MS);
 }
 
