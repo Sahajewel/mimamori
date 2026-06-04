@@ -9,6 +9,7 @@ import { NavActions } from "@/app/components/NavActions";
 import { ChatButton } from "@/app/components/ChatButton";
 import Link from "next/link";
 import { MemberList } from "@/app/components/Memberlist";
+import { japanDayStart, startOfJapanToday } from "@/lib/japanTime";
 
 export default async function SeniorDetailPage({
   params,
@@ -40,11 +41,7 @@ export default async function SeniorDetailPage({
                 {
                   ongoing: false,
                   endDate: {
-                    gt: new Date(
-                      new Date().toLocaleString("en-US", {
-                        timeZone: "Asia/Tokyo",
-                      }),
-                    ),
+                    gt: startOfJapanToday(),
                   },
                 },
               ],
@@ -85,17 +82,12 @@ export default async function SeniorDetailPage({
     data: { lastReadAt: new Date() },
   });
 
-  const todayJapan = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-  );
-  todayJapan.setHours(0, 0, 0, 0);
+  const todayStart = startOfJapanToday();
 
   const todayCheckIn = senior.checkIns.find((c) => {
-    const d = new Date(
-      new Date(c.createdAt).toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
+    return (
+      japanDayStart(new Date(c.createdAt)).getTime() === todayStart.getTime()
     );
-    d.setHours(0, 0, 0, 0);
-    return d.getTime() === todayJapan.getTime();
   });
 
   const lastCheckIn = senior.checkIns[0];

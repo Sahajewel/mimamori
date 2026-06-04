@@ -223,12 +223,6 @@ export function SeniorTabs({
           ) : (
             <div className="space-y-3">
               {medicines.map((medicine) => {
-                const taken = medicine.logs.filter(
-                  (l) => l.status === "TAKEN",
-                ).length;
-                const recorded = medicine.logs.length;
-                const rate =
-                  recorded > 0 ? Math.round((taken / recorded) * 100) : null;
                 const href = `/seniors/${seniorId}/medicines/${medicine.id}`;
 
                 return (
@@ -252,19 +246,6 @@ export function SeniorTabs({
                         <Spinner />
                       ) : (
                         <>
-                          {rate !== null && recorded > 0 && (
-                            <span
-                              className={`text-xs font-semibold ${
-                                rate >= 80
-                                  ? "text-green-500"
-                                  : rate >= 60
-                                    ? "text-amber-500"
-                                    : "text-red-400"
-                              }`}
-                            >
-                              {rate}%
-                            </span>
-                          )}
                           <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full font-medium">
                             服用中
                           </span>
