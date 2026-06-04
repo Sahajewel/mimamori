@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { sendPushToSeniorMembers } from "@/lib/push";
 import { z } from "zod";
+import { startOfJapanToday } from "@/lib/japanTime";
 const quickSchema = z.object({
   type: z.enum(["checkin", "medicine"]),
   status: z.string(),
@@ -16,10 +17,7 @@ export async function GET(
 ) {
   try {
     const { token } = await params;
-    const today = new Date(
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-    );
-    today.setHours(0, 0, 0, 0);
+    const today = startOfJapanToday();
 
     const senior = await prisma.senior.findUnique({
       where: { quickToken: token },
