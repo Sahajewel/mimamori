@@ -128,11 +128,9 @@ export default function MedicineDetailPage() {
   const takenCount = logs.filter((l) => l.status === "TAKEN").length;
   const missedCount = logs.filter((l) => l.status === "MISSED").length;
   const totalCount = logs.length;
-  const recordedCount = logs.filter(
-    (l) => l.status === "TAKEN" || l.status === "MISSED",
+  const noRecordCount = logs.filter(
+    (l) => l.status !== "TAKEN" && l.status !== "MISSED",
   ).length;
-  const adherenceRate =
-    recordedCount > 0 ? Math.round((takenCount / recordedCount) * 100) : 0;
 
   const totalPages = Math.ceil(totalCount / PER_PAGE);
   const paginatedLogs = logs.slice(
@@ -356,27 +354,11 @@ export default function MedicineDetailPage() {
               </p>
               <p className="text-sm text-gray-400 mt-1">合計</p>
             </div>
-            <div
-              className={`border rounded-xl p-3 text-center shadow-sm ${
-                adherenceRate >= 80
-                  ? "bg-green-50 border-green-100"
-                  : adherenceRate >= 60
-                    ? "bg-amber-50 border-amber-100"
-                    : "bg-red-50 border-red-100"
-              }`}
-            >
-              <p
-                className={`text-2xl font-semibold ${
-                  adherenceRate >= 80
-                    ? "text-green-500"
-                    : adherenceRate >= 60
-                      ? "text-amber-500"
-                      : "text-red-400"
-                }`}
-              >
-                {adherenceRate}%
+            <div className="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-gray-400">
+                {noRecordCount}
               </p>
-              <p className="text-sm text-gray-400 mt-1">服薬率</p>
+              <p className="text-sm text-gray-400 mt-1">記録なし</p>
             </div>
           </div>
         )}
