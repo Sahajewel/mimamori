@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { japanDayStart, startOfJapanToday } from "@/lib/japanTime";
 
 export async function GET(
   req: Request,
@@ -53,29 +54,22 @@ export async function GET(
     const end = medicine.endDate ? new Date(medicine.endDate) : new Date();
 
     // Japan time
-    const todayJapan = new Date(
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }),
-    );
-    todayJapan.setHours(0, 0, 0, 0);
+    const todayJapan = startOfJapanToday();
 
     const finalEnd = end > todayJapan ? todayJapan : end;
 
     const allRecords = [];
 
     // প্রতিদিন loop
-    const current = new Date(start);
+    const current = japanDayStart(start);
     current.setHours(0, 0, 0, 0);
 
     while (current <= finalEnd) {
       for (const reminder of medicine.reminders) {
         // এই দিনে এই reminder-এর log আছে কিনা
         const log = medicine.logs.find((l) => {
-          const logDate = new Date(
-            new Date(l.createdAt).toLocaleString("en-US", {
-              timeZone: "Asia/Tokyo",
-            }),
-          );
-          logDate.setHours(0, 0, 0, 0);
+          const logDate = japanDayStart(new Date(l.createdAt));
+
           return (
             logDate.getTime() === current.getTime() &&
             l.reminderId === reminder.id

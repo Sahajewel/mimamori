@@ -27,3 +27,11 @@ export function startOfJapanToday(): Date {
 export function japanHour(): number {
   return new Date(Date.now() + JST_OFFSET_MS).getUTCHours();
 }
+// যেকোনো UTC date → Japan-এ সেই date কোন দিনের 00:00 (compare করার জন্য)
+export function japanDayStart(date: Date): Date {
+  const jp = new Date(date.getTime() + JST_OFFSET_MS);
+  return new Date(
+    Date.UTC(jp.getUTCFullYear(), jp.getUTCMonth(), jp.getUTCDate()) -
+      JST_OFFSET_MS,
+  );
+}
