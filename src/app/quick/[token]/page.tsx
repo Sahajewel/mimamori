@@ -98,6 +98,14 @@ export default function QuickPage() {
             .map((l: TodayLog) => l.reminderId),
         );
         setDoneReminders(done);
+        // ← এই অংশ যোগ কর: প্রতিটা reminder-এর আসল status সেট কর
+        const statuses: Record<string, string> = {};
+        d.todayLogs.forEach((l: TodayLog) => {
+          if (l.status === "TAKEN" || l.status === "MISSED") {
+            statuses[l.reminderId] = l.status;
+          }
+        });
+        setDoneStatuses(statuses);
 
         if (d.todayCheckIn) {
           setCheckedInStatus(d.todayCheckIn.status);
