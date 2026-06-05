@@ -130,7 +130,7 @@ export async function POST(
 
       // Notification
       if (parsed.data.status === "EMERGENCY") {
-        await sendPushToSeniorMembers(senior.id, ownerId, {
+        await sendPushToSeniorMembers(senior.id, "", {
           title: `🚨 緊急！${senior.name}さんが助けを求めています！`,
           body: "今すぐ確認してください！",
           tag: "emergency",
