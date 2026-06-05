@@ -13,7 +13,11 @@ export default async function MissedMedicinePage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) {
+    redirect(
+      `/login?callbackUrl=${encodeURIComponent(`/seniors/${id}/medicines/missed`)}`,
+    );
+  }
 
   // member check (security)
   const member = await prisma.seniorMember.findFirst({
