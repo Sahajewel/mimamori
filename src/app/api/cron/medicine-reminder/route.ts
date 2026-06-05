@@ -103,48 +103,41 @@ export async function GET(req: Request) {
   }
 
   // Medicine refill check
-  const threeDaysLater = new Date(today);
-  threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+  // Medicine refill check — দিনে একবার (সকাল ৯টা)
+  if (hour === 20) {
+    const threeDaysLater = new Date(today);
+    threeDaysLater.setDate(threeDaysLater.getDate() + 3);
 
-  const expiringMedicines = await prisma.medicine.findMany({
-    where: {
-      active: true,
-      ongoing: false,
-      endDate: {
-        gte: today,
-        lte: threeDaysLater,
+    const expiringMedicines = await prisma.medicine.findMany({
+      where: {
+        active: true,
+        ongoing: false,
+        endDate: { gte: today, lte: threeDaysLater },
       },
-    },
-    include: {
-      senior: {
-        include: {
-          members: true,
-        },
-      },
-    },
-  });
+      include: { senior: { include: { members: true } } },
+    });
 
-  for (const medicine of expiringMedicines) {
-    const senior = medicine.senior;
-    const ownerMember = senior.members.find((m) => m.role === "OWNER");
+    for (const medicine of expiringMedicines) {
+      const senior = medicine.senior;
+      const ownerMember = senior.members.find((m) => m.role === "OWNER");
 
-    if (ownerMember) {
-      const daysLeft = Math.ceil(
-        (new Date(medicine.endDate!).getTime() - today.getTime()) /
-          (1000 * 60 * 60 * 24),
-      );
+      if (ownerMember) {
+        const daysLeft = Math.ceil(
+          (new Date(medicine.endDate!).getTime() - today.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
 
-      await sendPushToSeniorMembers(senior.id, "", {
-        title: `💊 ${senior.name}さんの薬が残り${daysLeft}日です`,
-        body: `${medicine.name}をそろそろ薬局で購入してください`,
-        tag: "medicine-refill",
-        requireInteraction: false,
-        silent: false,
-        url: `/seniors/${senior.id}`,
-      });
+        await sendPushToSeniorMembers(senior.id, "", {
+          title: `💊 ${senior.name}さんの薬があと${daysLeft}日です`,
+          body: `${medicine.name}が終了します。買い足した場合は、お薬の編集から終了日を更新してください`,
+          tag: "medicine-refill",
+          requireInteraction: false,
+          silent: false,
+          url: `/seniors/${senior.id}/medicines/${medicine.id}`,
+        });
+      }
     }
   }
-
   return NextResponse.json({
     success: true,
     notificationCount,
