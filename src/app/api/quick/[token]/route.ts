@@ -136,6 +136,7 @@ export async function POST(
           tag: "emergency",
           requireInteraction: true,
           silent: false,
+          url: `/seniors/${senior.id}`,
         });
       } else if (parsed.data.status === "CONCERN") {
         await sendPushToSeniorMembers(senior.id, ownerId, {
@@ -144,6 +145,7 @@ export async function POST(
           tag: "concern",
           requireInteraction: false,
           silent: false,
+          url: `/seniors/${senior.id}`,
         });
       }
     } else if (parsed.data.type === "medicine") {

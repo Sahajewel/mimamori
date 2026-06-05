@@ -51,7 +51,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <PushSubscriber />
+        <PushSubscriber isLoggedIn={!!session?.user?.id} />
         <LandingNav
           isLoggedIn={!!session?.user?.id}
           userName={session?.user?.name}
