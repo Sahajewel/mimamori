@@ -298,7 +298,7 @@ export function SeniorTabs({
           ) : (
             <>
               <div className="space-y-3">
-                {careNotes.slice(0, 1).map((note) => (
+                {careNotes.slice(0, 3).map((note) => (
                   <div
                     key={note.id}
                     className="py-3 border-b border-gray-50 last:border-0"
@@ -323,7 +323,7 @@ export function SeniorTabs({
                   </div>
                 ))}
               </div>
-              {careNotesTotal >= 3 && (
+              {careNotesTotal >= 1 && (
                 <Link
                   href={`/seniors/${seniorId}/notes`}
                   onClick={() => click(`/seniors/${seniorId}/notes`)}

@@ -1,7 +1,7 @@
 import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
-import { LogoutButton } from "@/app/components/LogoutButton";
+
 import { NotificationButton } from "@/app/components/NotificationButton";
 import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
@@ -61,7 +61,6 @@ export default async function DashboardPage() {
             <p className="text-sm text-gray-500 hidden sm:block">
               {session.user.name}さん
             </p>
-            <LogoutButton />
           </div>
         </div>
       </nav>

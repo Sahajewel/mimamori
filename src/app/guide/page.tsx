@@ -47,8 +47,9 @@ export default async function GuidePage() {
               { href: "#note", label: "8. ケアノート" },
               { href: "#chat", label: "9. 家族チャット" },
               { href: "#emergency", label: "10. 緊急アラート" },
-              { href: "#transfer", label: "11. オーナーの譲渡" },
-              { href: "#delete", label: "12. 削除について" },
+              { href: "#notifications", label: "11. 通知のしくみ" },
+              { href: "#transfer", label: "12. オーナーの譲渡" },
+              { href: "#delete", label: "13. 削除について" },
             ].map((item) => (
               <a
                 key={item.href}
@@ -241,8 +242,23 @@ export default async function GuidePage() {
           ]}
           note="通知を受け取るには、スマホで通知を「許可」しておく必要があります。"
         />
-
-        {/* 11. Transfer */}
+        {/* 11. Notifications */}
+        <GuideBlock
+          id="notifications"
+          icon="🔔"
+          bg="bg-orange-50"
+          color="text-orange-500"
+          title="11. 通知のしくみ"
+          intro="どんなときに、どんな通知が届くのかをご説明します。通知を受け取るには、スマホで通知を「許可」しておく必要があります。"
+          steps={[
+            "【お薬の時間】服用時間になるとボタンが押せるようになります。記録がないと、ご家族に通知が届きます（1時間ごと、その服用の締め切り時間まで）。「飲んだ」「飲めなかった」を記録すると、通知は止まります。",
+            "【お薬の買い足し】期間を決めたお薬は、終了日の3日前から毎朝9時に1回通知が届きます。買い足したときは、通知を押してお薬の編集画面から終了日を更新してください。",
+            "【緊急・要確認】チェックインで「緊急」「要確認」が記録されると、ご家族全員に通知が届きます。「元気」のときは通知は届きませんが、ページでいつでも確認できます。",
+            "【週次レポート】毎週月曜日の朝8時に、1週間のまとめがメールで届きます。",
+          ]}
+          note="⚠️ お薬がまだ残っているときは「使用中止」を押さないでください。お薬のリマインダーが止まってしまいます。買い足さない場合は、何もしなくて大丈夫です。お薬の期間が終われば、通知は自動的に止まります。「使用中止」は、お薬を完全にやめるとき（もう飲まないとき）だけ使ってください。"
+        />
+        {/* 12. Transfer */}
         <GuideBlock
           id="transfer"
           icon="👑"
@@ -258,7 +274,7 @@ export default async function GuidePage() {
           note="オーナーがアカウントを削除したいときは、先に譲渡が必要です（12番）。"
         />
 
-        {/* 12. Delete */}
+        {/* 13. Delete */}
         <GuideBlock
           id="delete"
           icon="🗑️"
