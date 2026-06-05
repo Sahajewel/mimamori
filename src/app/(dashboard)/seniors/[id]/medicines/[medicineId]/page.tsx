@@ -93,6 +93,13 @@ export default function MedicineDetailPage() {
   async function handleEdit() {
     if (!editName.trim()) return;
     setEditLoading(true);
+    // endDate বদলালে duration-ও হিসাব করো (startDate → endDate দিন)
+    let newDuration = null;
+    if (!editOngoing && editEndDate) {
+      const start = new Date(medicine.startDate).getTime();
+      const end = new Date(editEndDate).getTime();
+      newDuration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    }
     await fetch(`/api/seniors/${id}/medicines/${medicineId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -102,6 +109,7 @@ export default function MedicineDetailPage() {
         notes: editNotes || null,
         ongoing: editOngoing,
         endDate: editOngoing ? null : editEndDate || null,
+        duration: newDuration,
       }),
     });
     setEditLoading(false);
