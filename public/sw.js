@@ -9,6 +9,7 @@ self.addEventListener("push", (event) => {
     requireInteraction: data.requireInteraction ?? false,
     vibrate: data.tag === "emergency" ? [300, 100, 300, 100, 300] : [100],
     data: { sound: data.tag === "emergency" ? "emergency" : "normal" },
+    url: data.url || "/dashboard",
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -32,13 +33,12 @@ self.addEventListener("notificationclick", (event) => {
                 sound: "emergency",
               });
             }
+            client.navigate(url);
             return client.focus();
           }
         }
         // Login page-এ callbackUrl দিয়ে যাবে
-        return clients.openWindow(
-          `/login?callbackUrl=${encodeURIComponent(url)}`,
-        );
+        return clients.openWindow(url);
       }),
   );
 });
