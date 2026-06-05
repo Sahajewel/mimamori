@@ -177,6 +177,49 @@ export default function MedicineDetailPage() {
                   className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 />
               </div>
+              {/* 服用期間 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  服用期間
+                </label>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditOngoing(true)}
+                    className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
+                      editOngoing
+                        ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                        : "border-gray-200 text-gray-600"
+                    }`}
+                  >
+                    継続中
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditOngoing(false)}
+                    className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
+                      !editOngoing
+                        ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                        : "border-gray-200 text-gray-600"
+                    }`}
+                  >
+                    終了日を指定
+                  </button>
+                </div>
+                {!editOngoing && (
+                  <div>
+                    <input
+                      type="date"
+                      value={editEndDate}
+                      onChange={(e) => setEditEndDate(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    />
+                    <p className="text-xs text-gray-400 mt-1.5">
+                      お薬を買い足した場合は、新しい終了日を設定してください
+                    </p>
+                  </div>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   医師からの指示
@@ -328,49 +371,7 @@ export default function MedicineDetailPage() {
               </div>
             )}
           </div>
-          {/* 服用期間 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              服用期間
-            </label>
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              <button
-                type="button"
-                onClick={() => setEditOngoing(true)}
-                className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
-                  editOngoing
-                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
-                    : "border-gray-200 text-gray-600"
-                }`}
-              >
-                継続中
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditOngoing(false)}
-                className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
-                  !editOngoing
-                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
-                    : "border-gray-200 text-gray-600"
-                }`}
-              >
-                終了日を指定
-              </button>
-            </div>
-            {!editOngoing && (
-              <div>
-                <input
-                  type="date"
-                  value={editEndDate}
-                  onChange={(e) => setEditEndDate(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                />
-                <p className="text-xs text-gray-400 mt-1.5">
-                  お薬を買い足した場合は、新しい終了日を設定してください
-                </p>
-              </div>
-            )}
-          </div>
+
           {/* Stop button */}
           {medicine.active && medicine.currentUserRole !== "VIEWER" && (
             <div className="mt-5 pt-4 border-t border-gray-100">
