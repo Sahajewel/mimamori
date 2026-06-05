@@ -13,7 +13,10 @@ export default function ChangePassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   async function handleSubmit() {
     setError(null);
 
@@ -96,60 +99,71 @@ export default function ChangePassword() {
             </div>
           ) : (
             <div className="space-y-4">
+              {/* 現在のパスワード */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   現在のパスワード
                 </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 ..."
-                >
-                  {showPassword ? "非表示" : "表示"}
-                </button>
+                <div className="relative">
+                  <input
+                    type={showCurrent ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-16"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrent(!showCurrent)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-600 font-medium"
+                  >
+                    {showCurrent ? "非表示" : "表示"}
+                  </button>
+                </div>
               </div>
+
+              {/* 新しいパスワード */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   新しいパスワード
                 </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="8文字以上"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 ..."
-                >
-                  {showPassword ? "非表示" : "表示"}
-                </button>
+                <div className="relative">
+                  <input
+                    type={showNew ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="8文字以上"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-16"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNew(!showNew)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-600 font-medium"
+                  >
+                    {showNew ? "非表示" : "表示"}
+                  </button>
+                </div>
               </div>
+
+              {/* 新しいパスワード（確認） */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   新しいパスワード（確認）
                 </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 ..."
-                >
-                  {showPassword ? "非表示" : "表示"}
-                </button>
+                <div className="relative">
+                  <input
+                    type={showConfirm ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-16"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 hover:text-gray-600 font-medium"
+                  >
+                    {showConfirm ? "非表示" : "表示"}
+                  </button>
+                </div>
               </div>
 
               {error && (
