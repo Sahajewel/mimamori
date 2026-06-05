@@ -81,17 +81,6 @@ export default function RegisterForm() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <nav className="bg-white border-b border-gray-100 px-4 py-4">
-        <div className="max-w-md mx-auto flex items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-sm">♡</span>
-            </div>
-            <p className="font-semibold text-gray-900">Mimamori</p>
-          </Link>
-        </div>
-      </nav>
-
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {!success && (
