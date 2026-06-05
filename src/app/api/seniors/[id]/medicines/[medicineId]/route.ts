@@ -97,6 +97,11 @@ export async function PATCH(
         ...(body.name && { name: body.name }),
         ...(body.dosage !== undefined && { dosage: body.dosage }),
         ...(body.notes !== undefined && { notes: body.notes }),
+        ...(body.ongoing !== undefined && { ongoing: body.ongoing }),
+        ...(body.endDate !== undefined && {
+          endDate: body.endDate ? new Date(body.endDate) : null,
+        }),
+        ...(body.duration !== undefined && { duration: body.duration }),
       },
     });
 

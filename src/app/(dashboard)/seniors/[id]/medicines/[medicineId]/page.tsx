@@ -49,7 +49,8 @@ export default function MedicineDetailPage() {
   const [editDosage, setEditDosage] = useState("");
   const [editNotes, setEditNotes] = useState("");
   const [editLoading, setEditLoading] = useState(false);
-
+  const [editOngoing, setEditOngoing] = useState(true);
+  const [editEndDate, setEditEndDate] = useState("");
   useEffect(() => {
     let ignore = false;
 
@@ -66,6 +67,9 @@ export default function MedicineDetailPage() {
         setEditName(medData.name || "");
         setEditDosage(medData.dosage || "");
         setEditNotes(medData.notes || "");
+        setEditNotes(medData.notes || "");
+        setEditOngoing(medData.ongoing ?? true);
+        setEditEndDate(medData.endDate ? medData.endDate.split("T")[0] : "");
       }
     }
 
@@ -96,6 +100,8 @@ export default function MedicineDetailPage() {
         name: editName,
         dosage: editDosage || null,
         notes: editNotes || null,
+        ongoing: editOngoing,
+        endDate: editOngoing ? null : editEndDate || null,
       }),
     });
     setEditLoading(false);
@@ -322,7 +328,49 @@ export default function MedicineDetailPage() {
               </div>
             )}
           </div>
-
+          {/* 服用期間 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              服用期間
+            </label>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => setEditOngoing(true)}
+                className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
+                  editOngoing
+                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                    : "border-gray-200 text-gray-600"
+                }`}
+              >
+                継続中
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditOngoing(false)}
+                className={`py-2.5 text-sm rounded-xl border-2 transition-all ${
+                  !editOngoing
+                    ? "bg-indigo-50 border-indigo-500 text-indigo-700"
+                    : "border-gray-200 text-gray-600"
+                }`}
+              >
+                終了日を指定
+              </button>
+            </div>
+            {!editOngoing && (
+              <div>
+                <input
+                  type="date"
+                  value={editEndDate}
+                  onChange={(e) => setEditEndDate(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+                <p className="text-xs text-gray-400 mt-1.5">
+                  お薬を買い足した場合は、新しい終了日を設定してください
+                </p>
+              </div>
+            )}
+          </div>
           {/* Stop button */}
           {medicine.active && medicine.currentUserRole !== "VIEWER" && (
             <div className="mt-5 pt-4 border-t border-gray-100">
