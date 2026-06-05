@@ -11,6 +11,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+
+      // কোন পথ গুলো protected (login লাগে)
+      const protectedPaths = ["/dashboard", "/settings", "/seniors"];
+      const isProtected = protectedPaths.some((p) =>
+        nextUrl.pathname.startsWith(p),
+      );
+
+      if (isProtected && !isLoggedIn) {
+        return false; // → NextAuth আপনাআপনি login-এ পাঠাবে, callbackUrl সহ
+      }
+      return true;
+    },
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
