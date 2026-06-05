@@ -67,7 +67,7 @@ export default function MedicineDetailPage() {
         setEditName(medData.name || "");
         setEditDosage(medData.dosage || "");
         setEditNotes(medData.notes || "");
-        setEditNotes(medData.notes || "");
+
         setEditOngoing(medData.ongoing ?? true);
         setEditEndDate(medData.endDate ? medData.endDate.split("T")[0] : "");
       }
@@ -130,7 +130,18 @@ export default function MedicineDetailPage() {
         timeZone: "Asia/Tokyo",
       })
     : null;
-
+  const daysUntilEnd = medicine.endDate
+    ? Math.ceil(
+        (new Date(medicine.endDate).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24),
+      )
+    : null;
+  const showRefillBanner =
+    medicine.active &&
+    !medicine.ongoing &&
+    daysUntilEnd !== null &&
+    daysUntilEnd >= 0 &&
+    daysUntilEnd <= 3;
   const takenCount = logs.filter((l) => l.status === "TAKEN").length;
   const missedCount = logs.filter((l) => l.status === "MISSED").length;
   const totalCount = logs.length;
@@ -306,6 +317,23 @@ export default function MedicineDetailPage() {
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
+        {showRefillBanner && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">⚠️</span>
+              <div>
+                <p className="text-base font-semibold text-amber-800">
+                  このお薬はあと{daysUntilEnd}日で終了します
+                </p>
+                <p className="text-sm text-amber-700 mt-1 leading-relaxed">
+                  お薬を買い足した場合は、上の「✏️
+                  編集」から終了日を更新してください。
+                  もう飲まない場合は「この薬を使用中止にする」を選んでください。
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Medicine info */}
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-4 shadow-sm">
           <div className="flex items-center gap-4 mb-5">

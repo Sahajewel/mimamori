@@ -104,7 +104,7 @@ export async function GET(req: Request) {
 
   // Medicine refill check
   // Medicine refill check — দিনে একবার (সকাল ৯টা)
-  if (hour === 20) {
+  if (hour === 9) {
     const threeDaysLater = new Date(today);
     threeDaysLater.setDate(threeDaysLater.getDate() + 3);
 
