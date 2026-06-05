@@ -8,8 +8,10 @@ self.addEventListener("push", (event) => {
     tag: data.tag || "default",
     requireInteraction: data.requireInteraction ?? false,
     vibrate: data.tag === "emergency" ? [300, 100, 300, 100, 300] : [100],
-    data: { sound: data.tag === "emergency" ? "emergency" : "normal" },
-    url: data.url || "/dashboard",
+    data: {
+      sound: data.tag === "emergency" ? "emergency" : "normal",
+      url: data.url || "/dashboard",
+    },
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
