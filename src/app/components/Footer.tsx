@@ -7,7 +7,7 @@ export function Footer() {
   const pathname = usePathname();
 
   // dashboard এলাকায় (SideNav আছে) footer দেখাব না — navbar-এর মতোই
-  const hideOn = ["/dashboard", "/settings", "/seniors"];
+  const hideOn = ["/dashboard", "/settings", "/seniors", "/quick"];
   if (hideOn.some((p) => pathname.startsWith(p))) {
     return null;
   }
