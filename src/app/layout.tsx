@@ -6,6 +6,7 @@ import { LandingNav } from "./components/Landingnav";
 import { auth } from "@/lib/auth";
 import { Footer } from "./components/Footer";
 import { AppLoader } from "./components/Apploader";
+import { IOSInstallBanner } from "./components/IOSInstallBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <AppLoader>
           <PushSubscriber isLoggedIn={!!session?.user?.id} />
+          <IOSInstallBanner />
           <LandingNav
             isLoggedIn={!!session?.user?.id}
             userName={session?.user?.name}
