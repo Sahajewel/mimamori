@@ -75,12 +75,12 @@ export default async function SeniorDetailPage({
 
   const { senior, role } = seniorMember;
 
-  await prisma.seniorMember.update({
-    where: {
-      seniorId_userId: { seniorId: id, userId: session.user.id },
-    },
-    data: { lastReadAt: new Date() },
-  });
+  // await prisma.seniorMember.update({
+  //   where: {
+  //     seniorId_userId: { seniorId: id, userId: session.user.id },
+  //   },
+  //   data: { lastReadAt: new Date() },
+  // });
 
   const todayStart = startOfJapanToday();
 
