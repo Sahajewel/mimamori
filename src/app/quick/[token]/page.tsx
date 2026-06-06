@@ -258,7 +258,7 @@ export default function QuickPage() {
         {/* Medicine */}
         {data.medicines.length > 0 && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <p className="text-sm font-medium text-gray-400 text-center mb-4">
+            <p className="text-sm font-medium text-gray-600 text-center mb-4">
               お薬の記録
             </p>
             <div className="space-y-4">
@@ -269,7 +269,7 @@ export default function QuickPage() {
                     <p className="text-lg font-medium text-gray-800">
                       {medicine.name}
                       {medicine.dosage && (
-                        <span className="text-sm text-gray-400 ml-1">
+                        <span className="text-sm text-gray-600 ml-1">
                           {medicine.dosage}
                         </span>
                       )}
@@ -289,7 +289,7 @@ export default function QuickPage() {
                         <div key={reminder.id}>
                           <p className="text-base font-medium text-gray-600 mb-1">
                             {reminder.time}
-                            <span className="text-gray-300 ml-1">
+                            <span className="text-gray-600 ml-1">
                               {getTimeLabel(reminder.time)}
                             </span>
                           </p>
@@ -362,7 +362,7 @@ export default function QuickPage() {
           </div>
         )}
 
-        <p className="text-center text-xs text-gray-300 pb-4">
+        <p className="text-center text-sm text-gray-500 pb-4">
           Mimamori — ご家族をつなぐ
         </p>
       </div>
