@@ -5,6 +5,7 @@ import { PushSubscriber } from "./components/PushSubscriber";
 import { LandingNav } from "./components/Landingnav";
 import { auth } from "@/lib/auth";
 import { Footer } from "./components/Footer";
+import { AppLoader } from "./components/Apploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,14 +52,16 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <PushSubscriber isLoggedIn={!!session?.user?.id} />
-        <LandingNav
-          isLoggedIn={!!session?.user?.id}
-          userName={session?.user?.name}
-          userImage={session?.user?.image}
-        />
-        {children}
-        <Footer />
+        <AppLoader>
+          <PushSubscriber isLoggedIn={!!session?.user?.id} />
+          <LandingNav
+            isLoggedIn={!!session?.user?.id}
+            userName={session?.user?.name}
+            userImage={session?.user?.image}
+          />
+          {children}
+          <Footer />
+        </AppLoader>
       </body>
     </html>
   );
