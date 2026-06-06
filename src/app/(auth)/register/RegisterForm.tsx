@@ -109,6 +109,12 @@ export default function RegisterForm() {
                 <p className="text-sm text-gray-300 mt-2">
                   リンクは24時間有効です。
                 </p>
+                <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 mt-4">
+                  <p className="text-sm text-amber-700">
+                    📩
+                    メールが届かない場合は、迷惑メールフォルダ（スパム）もご確認ください。
+                  </p>
+                </div>
                 <Link
                   href="/login"
                   className="inline-block mt-6 text-base text-indigo-600 font-medium hover:underline"
