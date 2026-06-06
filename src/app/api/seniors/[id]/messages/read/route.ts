@@ -16,9 +16,9 @@ export async function POST(
     // LastRead time save করো
     await prisma.seniorMember.update({
       where: {
-        userId_seniorId: {
-          userId: session.user.id,
+        seniorId_userId: {
           seniorId: id,
+          userId: session.user.id,
         },
       },
       data: {
