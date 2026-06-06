@@ -174,7 +174,7 @@ export default function QuickPage() {
       <div className="max-w-sm mx-auto space-y-4">
         {/* Header */}
         <div className="text-center pb-2">
-          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-3xl">
+          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-3xl text-white">
             ♡
           </div>
           <p className="text-lg text-indigo-400">{getGreeting()}</p>
@@ -246,7 +246,7 @@ export default function QuickPage() {
               {showChangeCheckIn && (
                 <button
                   onClick={() => setShowChangeCheckIn(false)}
-                  className="w-full py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+                  className="w-full py-2 text-lg text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   キャンセル
                 </button>
