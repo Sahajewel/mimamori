@@ -174,10 +174,10 @@ export default function QuickPage() {
       <div className="max-w-sm mx-auto space-y-4">
         {/* Header */}
         <div className="text-center pb-2">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-3xl">
+          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-3xl">
             ♡
           </div>
-          <p className="text-xs text-indigo-400">{getGreeting()}</p>
+          <p className="text-lg text-indigo-400">{getGreeting()}</p>
           <h1 className="text-2xl font-medium text-gray-900 mt-1">
             {data.name}さん
           </h1>
@@ -196,7 +196,7 @@ export default function QuickPage() {
 
         {/* CheckIn */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <p className="text-xs font-medium text-gray-400 text-center mb-3">
+          <p className="text-sm font-medium text-gray-400 text-center mb-3">
             今日の体調
           </p>
 
@@ -210,7 +210,7 @@ export default function QuickPage() {
               </div>
               <button
                 onClick={() => setShowChangeCheckIn(true)}
-                className="w-full mt-2 py-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                className="w-full mt-2 py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
               >
                 体調が変わった場合は変更する →
               </button>
@@ -218,7 +218,7 @@ export default function QuickPage() {
           ) : (
             <div className="space-y-2">
               {showChangeCheckIn && (
-                <p className="text-xs text-center text-gray-400 mb-2">
+                <p className="text-sm text-center text-gray-400 mb-2">
                   体調を更新してください
                 </p>
               )}
@@ -246,7 +246,7 @@ export default function QuickPage() {
               {showChangeCheckIn && (
                 <button
                   onClick={() => setShowChangeCheckIn(false)}
-                  className="w-full py-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  className="w-full py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   キャンセル
                 </button>
@@ -258,7 +258,7 @@ export default function QuickPage() {
         {/* Medicine */}
         {data.medicines.length > 0 && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <p className="text-xs font-medium text-gray-400 text-center mb-4">
+            <p className="text-sm font-medium text-gray-400 text-center mb-4">
               お薬の記録
             </p>
             <div className="space-y-4">
@@ -266,10 +266,10 @@ export default function QuickPage() {
                 <div key={medicine.id}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-base">💊</span>
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-lg font-medium text-gray-800">
                       {medicine.name}
                       {medicine.dosage && (
-                        <span className="text-xs text-gray-400 ml-1">
+                        <span className="text-sm text-gray-400 ml-1">
                           {medicine.dosage}
                         </span>
                       )}
@@ -287,7 +287,7 @@ export default function QuickPage() {
 
                       return (
                         <div key={reminder.id}>
-                          <p className="text-xs text-gray-400 mb-1">
+                          <p className="text-base font-medium text-gray-600 mb-1">
                             {reminder.time}
                             <span className="text-gray-300 ml-1">
                               {getTimeLabel(reminder.time)}
@@ -297,7 +297,7 @@ export default function QuickPage() {
                           {/* Done */}
                           {isDone ? (
                             <div
-                              className={`rounded-xl py-2.5 text-center text-sm font-medium ${
+                              className={`rounded-xl py-2.5 text-center text-base font-medium ${
                                 doneStatuses[reminder.id] === "MISSED"
                                   ? "bg-gray-50 text-gray-400 border border-gray-100"
                                   : "bg-green-50 text-green-600 border border-green-100"
@@ -309,15 +309,15 @@ export default function QuickPage() {
                             </div>
                           ) : /* Upcoming — not yet time */
                           upcoming ? (
-                            <div className="rounded-xl py-2.5 text-center bg-gray-50 border border-gray-100">
-                              <p className="text-xs text-gray-400">
+                            <div className="rounded-xl py-4 text-center bg-gray-50 border border-gray-100">
+                              <p className="text-base text-gray-400">
                                 🔒 {getTimeLabel(reminder.time)}から
                               </p>
                             </div>
                           ) : /* Past — missed */
                           !active && !upcoming ? (
-                            <div className="rounded-xl py-2.5 text-center bg-red-50 border border-red-100">
-                              <p className="text-xs text-red-400">
+                            <div className="rounded-xl py-4 text-center bg-red-50 border border-red-100">
+                              <p className="text-base text-red-400">
                                 ✗ 時間が過ぎました
                               </p>
                             </div>
@@ -333,7 +333,7 @@ export default function QuickPage() {
                                   )
                                 }
                                 disabled={isLoading || isDone}
-                                className="py-3.5 bg-green-500 text-white text-sm font-medium rounded-xl hover:bg-green-600 disabled:opacity-50 transition-all active:scale-95"
+                                className="py-5 bg-green-500 text-white text-lg font-medium rounded-2xl hover:bg-green-600 disabled:opacity-50 transition-all active:scale-95"
                               >
                                 ✓ 飲んだ
                               </button>

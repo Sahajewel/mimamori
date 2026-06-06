@@ -18,7 +18,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
   const [userOpen, setUserOpen] = useState(false); // user dropdown
 
   // dashboard এলাকায় (SideNav আছে) navbar দেখাব না
-  const hideOn = ["/dashboard", "/settings", "/seniors"];
+  const hideOn = ["/dashboard", "/settings", "/seniors", "/quick"];
   if (hideOn.some((p) => pathname.startsWith(p))) {
     return null;
   }
