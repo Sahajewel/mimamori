@@ -20,7 +20,6 @@ export async function GET(req: Request) {
   // 先週の日付
   const jpNow = japanNow();
   const dayOfWeek = jpNow.getUTCDay();
-  // আজকের Japan day-start (UTC instant)
   const DAY_MS = 24 * 60 * 60 * 1000;
   const todayStart = japanDayStart(new Date());
 
@@ -28,7 +27,7 @@ export async function GET(req: Request) {
     todayStart.getTime() - (dayOfWeek + 6) * DAY_MS,
   );
   const endOfLastWeek = new Date(todayStart.getTime() - dayOfWeek * DAY_MS - 1);
-  // すべてのSeniorを取得
+
   const seniors = await prisma.senior.findMany({
     include: {
       members: {
@@ -73,19 +72,11 @@ export async function GET(req: Request) {
       (c) => c.status === "CONCERN",
     ).length;
 
-    // Medicine stats
-    const totalReminders = senior.medicines.reduce(
-      (acc, m) => acc + m.reminders.length * 7,
-      0,
-    );
+    // Medicine stats — percentage বাদ, count দেখাই (記録なし বিভ্রান্তিকর তাই)
     const takenCount = senior.medicines.reduce(
       (acc, m) => acc + m.logs.filter((l) => l.status === "TAKEN").length,
       0,
     );
-    const adherenceRate =
-      totalReminders > 0
-        ? Math.round((takenCount / totalReminders) * 100)
-        : null;
 
     // Date format
     const startStr = startOfLastWeek.toLocaleDateString("ja-JP", {
@@ -99,19 +90,21 @@ export async function GET(req: Request) {
       day: "numeric",
     });
 
-    // Medicine details
+    // Medicine details — percentage বাদ, 飲んだ/飲めなかった count
     const medicineRows = senior.medicines
       .map((m) => {
         const taken = m.logs.filter((l) => l.status === "TAKEN").length;
-        const total = m.reminders.length * 7;
-        const rate = total > 0 ? Math.round((taken / total) * 100) : 0;
+        const missed = m.logs.filter((l) => l.status === "MISSED").length;
         return `
           <tr>
-            <td style="padding: 8px 12px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #374151;">
+            <td style="padding: 10px 14px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #374151;">
               💊 ${m.name}
             </td>
-            <td style="padding: 8px 12px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: ${rate >= 80 ? "#10B981" : rate >= 60 ? "#F59E0B" : "#EF4444"}; text-align: center;">
-              ${taken}/${total}回 (${rate}%)
+            <td style="padding: 10px 14px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #10B981; text-align: center;">
+              ✓ ${taken}回
+            </td>
+            <td style="padding: 10px 14px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: ${missed > 0 ? "#EF4444" : "#9CA3AF"}; text-align: center;">
+              ✗ ${missed}回
             </td>
           </tr>
         `;
@@ -125,7 +118,7 @@ export async function GET(req: Request) {
           
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 24px;">
-            <div style="width: 48px; height: 48px; background: #EEF2FF; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px;">
+            <div style="width: 56px; height: 56px; background: #4F46E5; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 12px; color: #ffffff; line-height: 56px;">
               ♡
             </div>
             <h1 style="font-size: 18px; font-weight: 600; color: #111827; margin: 0 0 4px;">
@@ -136,17 +129,15 @@ export async function GET(req: Request) {
             </p>
           </div>
 
-          <!-- Stats -->
+          <!-- Stats: チェックイン / 飲んだ / 緊急 -->
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
             <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; text-align: center;">
               <p style="font-size: 24px; font-weight: 700; color: #4F46E5; margin: 0 0 4px;">${totalCheckIns}/7</p>
               <p style="font-size: 11px; color: #9CA3AF; margin: 0;">チェックイン</p>
             </div>
             <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; text-align: center;">
-              <p style="font-size: 24px; font-weight: 700; color: ${adherenceRate !== null ? (adherenceRate >= 80 ? "#10B981" : adherenceRate >= 60 ? "#F59E0B" : "#EF4444") : "#9CA3AF"}; margin: 0 0 4px;">
-                ${adherenceRate !== null ? `${adherenceRate}%` : "-"}
-              </p>
-              <p style="font-size: 11px; color: #9CA3AF; margin: 0;">服薬率</p>
+              <p style="font-size: 24px; font-weight: 700; color: #10B981; margin: 0 0 4px;">${takenCount}回</p>
+              <p style="font-size: 11px; color: #9CA3AF; margin: 0;">お薬を飲んだ</p>
             </div>
             <div style="background: ${emergencyCount > 0 ? "#FEF2F2" : "#F9FAFB"}; border-radius: 12px; padding: 16px; text-align: center;">
               <p style="font-size: 24px; font-weight: 700; color: ${emergencyCount > 0 ? "#EF4444" : "#9CA3AF"}; margin: 0 0 4px;">
@@ -177,14 +168,18 @@ export async function GET(req: Request) {
             <table style="width: 100%; border-collapse: collapse; background: #F9FAFB; border-radius: 12px; overflow: hidden;">
               <thead>
                 <tr>
-                  <th style="padding: 10px 12px; text-align: left; font-size: 12px; color: #9CA3AF; font-weight: 500;">薬名</th>
-                  <th style="padding: 10px 12px; text-align: center; font-size: 12px; color: #9CA3AF; font-weight: 500;">服用状況</th>
+                  <th style="padding: 10px 14px; text-align: left; font-size: 12px; color: #9CA3AF; font-weight: 500;">薬名</th>
+                  <th style="padding: 10px 14px; text-align: center; font-size: 12px; color: #9CA3AF; font-weight: 500;">飲んだ</th>
+                  <th style="padding: 10px 14px; text-align: center; font-size: 12px; color: #9CA3AF; font-weight: 500;">飲めなかった</th>
                 </tr>
               </thead>
               <tbody>
                 ${medicineRows}
               </tbody>
             </table>
+            <p style="font-size: 11px; color: #9CA3AF; margin: 8px 2px 0;">
+              ※ ご本人が記録した回数です。記録がない場合は含まれません。
+            </p>
           </div>
           `
               : ""
