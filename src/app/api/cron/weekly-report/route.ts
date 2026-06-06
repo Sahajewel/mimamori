@@ -77,6 +77,10 @@ export async function GET(req: Request) {
       (acc, m) => acc + m.logs.filter((l) => l.status === "TAKEN").length,
       0,
     );
+    const missedCount = senior.medicines.reduce(
+      (acc, m) => acc + m.logs.filter((l) => l.status === "MISSED").length,
+      0,
+    );
 
     // Date format
     const startStr = startOfLastWeek.toLocaleDateString("ja-JP", {
@@ -118,9 +122,9 @@ export async function GET(req: Request) {
           
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 24px;">
-            <div style="width: 56px; height: 56px; background: #4F46E5; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 12px; color: #ffffff; line-height: 56px;">
-              ♡
-            </div>
+           <div style="width: 56px; height: 56px; background: #4F46E5; border-radius: 16px; display: inline-block; text-align: center; margin-bottom: 12px;">
+  <span style="color: #ffffff; font-size: 28px; line-height: 56px;">♡</span>
+</div>
             <h1 style="font-size: 18px; font-weight: 600; color: #111827; margin: 0 0 4px;">
               ${senior.name}さんの週間レポート
             </h1>
