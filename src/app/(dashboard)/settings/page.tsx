@@ -210,7 +210,7 @@ export default async function SettingsPage() {
               </div>
               <Link
                 href="https://sahajewelkumar.vercel.app"
-                className="text-base text-gray-400 cursor-pointer"
+                className="text-base text-gray-400 cursor-pointer hover:text-gray-100"
               >
                 Saha Jewel Kumar
               </Link>

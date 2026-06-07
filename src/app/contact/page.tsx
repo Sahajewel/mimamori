@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { ContactFeedbackForm } from "@/app/components/ContactFeedbackForm";
 import { BackButton } from "@/app/components/BackButton";
@@ -27,7 +26,7 @@ export default function ContactPage() {
             👨‍💻 開発者に連絡する
           </h2>
           <div className="flex items-center gap-4 mb-6">
-            <div className="relative w-16 h-16 rounded-full bg-indigo-100 overflow-hidden flex-shrink-0">
+            <div className="relative w-16 h-16 rounded-full bg-indigo-100 overflow-hidden shrink-0">
               <Image
                 src="https://res.cloudinary.com/dqsgq6z74/image/upload/v1779533948/profile_lwdnjm.png"
                 alt="Saha Jewel Kumar"
@@ -85,7 +84,7 @@ export default function ContactPage() {
               </span>
             </a>
 
-            <a
+            {/* <a
               href="https://x.com/sahaJewelkumar"
               target="_blank"
               rel="noopener noreferrer"
@@ -121,7 +120,7 @@ export default function ContactPage() {
               <span className="text-gray-300 group-hover:text-indigo-400 transition-colors">
                 →
               </span>
-            </a>
+            </a> */}
 
             <a
               href="https://sahajewelkumar.vercel.app/"
@@ -212,10 +211,6 @@ export default function ContactPage() {
 
         {/* Feedback form */}
         <ContactFeedbackForm />
-
-        <p className="text-center text-sm text-gray-300">
-          © 2026 Mimamori — ご家族をつなぐ
-        </p>
       </div>
     </div>
   );

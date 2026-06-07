@@ -70,15 +70,19 @@ export default async function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-sm mx-auto">
             {!session?.user?.id && (
-              <Link
-                href="/register"
-                className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
-              >
-                無料で始める →
-              </Link>
+              <div>
+                <Link
+                  href="/register"
+                  className="inline-block px-10 py-4 bg-white text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-xl"
+                >
+                  無料で始める →
+                </Link>
+                <p className="text-sm text-gray-400 mt-4">
+                  今すぐ無料で始められます
+                </p>
+              </div>
             )}
           </div>
-          <p className="text-sm text-gray-400 mt-4">今すぐ無料で始められます</p>
         </div>
       </section>
 
