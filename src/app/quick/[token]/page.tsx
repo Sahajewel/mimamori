@@ -86,31 +86,41 @@ export default function QuickPage() {
   const [showChangeCheckIn, setShowChangeCheckIn] = useState(false);
   const [doneStatuses, setDoneStatuses] = useState<Record<string, string>>({});
   useEffect(() => {
-    fetch(`/api/quick/${token}`, { cache: "no-store" })
-      .then((r) => r.json())
-      .then((d) => {
-        setData(d);
-        const done = new Set<string>(
-          d.todayLogs
-            .filter(
-              (l: TodayLog) => l.status === "TAKEN" || l.status === "MISSED",
-            )
-            .map((l: TodayLog) => l.reminderId),
-        );
-        setDoneReminders(done);
-        // ← এই অংশ যোগ কর: প্রতিটা reminder-এর আসল status সেট কর
-        const statuses: Record<string, string> = {};
-        d.todayLogs.forEach((l: TodayLog) => {
-          if (l.status === "TAKEN" || l.status === "MISSED") {
-            statuses[l.reminderId] = l.status;
-          }
+    // data আনার function
+    function loadData() {
+      fetch(`/api/quick/${token}`, { cache: "no-store" })
+        .then((r) => r.json())
+        .then((d) => {
+          setData(d);
+          const done = new Set<string>(
+            d.todayLogs
+              .filter(
+                (l: TodayLog) => l.status === "TAKEN" || l.status === "MISSED",
+              )
+              .map((l: TodayLog) => l.reminderId),
+          );
+          setDoneReminders(done);
+          const statuses: Record<string, string> = {};
+          d.todayLogs.forEach((l: TodayLog) => {
+            if (l.status === "TAKEN" || l.status === "MISSED") {
+              statuses[l.reminderId] = l.status;
+            }
+          });
+          setDoneStatuses(statuses);
+          if (d.todayCheckIn) setCheckedInStatus(d.todayCheckIn.status);
         });
-        setDoneStatuses(statuses);
+    }
 
-        if (d.todayCheckIn) {
-          setCheckedInStatus(d.todayCheckIn.status);
-        }
-      });
+    loadData(); // প্রথমবার
+
+    // পেজ আবার সামনে এলে (PWA খুললে) fresh data
+    function handleVisible() {
+      if (!document.hidden) loadData();
+    }
+    document.addEventListener("visibilitychange", handleVisible);
+
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisible);
   }, [token]);
 
   async function handleCheckIn(status: string) {
@@ -266,7 +276,7 @@ export default function QuickPage() {
                 <div key={medicine.id}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-base">💊</span>
-                    <p className="text-lg font-medium text-gray-800">
+                    <p className="text-2xl font-medium text-gray-800">
                       {medicine.name}
                       {medicine.dosage && (
                         <span className="text-sm text-gray-600 ml-1">
