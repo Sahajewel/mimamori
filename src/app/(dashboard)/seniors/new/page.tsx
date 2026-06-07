@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { BackButton } from "@/app/components/BackButton";
+
 import Link from "next/link";
 
 export default function NewSeniorPage() {
