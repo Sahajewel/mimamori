@@ -5,8 +5,9 @@ import { PushSubscriber } from "./components/PushSubscriber";
 import { LandingNav } from "./components/Landingnav";
 import { auth } from "@/lib/auth";
 import { Footer } from "./components/Footer";
-import { AppLoader } from "./components/Apploader";
+
 import { IOSInstallBanner } from "./components/IOSInstallBanner";
+import { AppLoader } from "./components/Apploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
