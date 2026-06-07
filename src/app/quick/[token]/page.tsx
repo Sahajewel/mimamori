@@ -86,7 +86,7 @@ export default function QuickPage() {
   const [showChangeCheckIn, setShowChangeCheckIn] = useState(false);
   const [doneStatuses, setDoneStatuses] = useState<Record<string, string>>({});
   useEffect(() => {
-    fetch(`/api/quick/${token}`)
+    fetch(`/api/quick/${token}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => {
         setData(d);
