@@ -31,7 +31,7 @@ export function DeleteSeniorButton({ seniorId, seniorName }: Props) {
   }
 
   return (
-    <>
+    <div>
       <button
         onClick={() => setShowConfirm(true)}
         className="text-sm text-red-400 hover:text-red-600 transition-colors"
@@ -49,6 +49,11 @@ export function DeleteSeniorButton({ seniorId, seniorName }: Props) {
               {seniorName}
               さんのすべてのデータ（チェックイン・お薬・ノート）が削除されます。この操作は取り消せません。
             </p>
+            {error && (
+              <p className="text-sm text-red-500 text-center mb-4 bg-red-50 rounded-xl p-3">
+                {error}
+              </p>
+            )}
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
@@ -67,6 +72,6 @@ export function DeleteSeniorButton({ seniorId, seniorName }: Props) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
