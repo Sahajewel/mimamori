@@ -331,7 +331,7 @@ export function SeniorTabs({
                     className="py-3 border-b border-gray-50 last:border-0"
                   >
                     <ExpandableText text={note.content} limit={25} />
-                    <p className="text-sm text-gray-700 mb-2">{note.content}</p>
+
                     <div className="flex items-center gap-2">
                       <p className="text-xs text-gray-400">
                         {note.authorName || "退会したユーザー"}
