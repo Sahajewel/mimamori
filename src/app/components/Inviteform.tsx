@@ -179,7 +179,7 @@ export function InviteForm() {
                   router.push(`/seniors/${id}`);
                 }}
                 disabled={isLeaving} // ক্লিক করার পর বাটনটি ডিজেবল হয়ে যাবে
-                className="w-full py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full cursor-pointer py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isLeaving ? (
                   <>
