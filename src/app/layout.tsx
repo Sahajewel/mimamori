@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { PushSubscriber } from "./components/PushSubscriber";
-import { LandingNav } from "./components/Landingnav";
-import { auth } from "@/lib/auth";
-import { Footer } from "./components/Footer";
 
-import { IOSInstallBanner } from "./components/IOSInstallBanner";
-import { AppLoader } from "./components/AppLoader";
+import { LandingNav } from "@/app/components/Landingnav";
+import { auth } from "@/lib/auth";
+import { Footer } from "@/app/components/Footer";
+
+import { IOSInstallBanner } from "@/app/components/IOSInstallBanner";
+import { AppLoader } from "@/app/components/AppLoader";
+import { PushSubscriber } from "@/app/components/PushSubscriber";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
