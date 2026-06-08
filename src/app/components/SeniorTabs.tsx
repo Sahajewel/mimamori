@@ -330,7 +330,7 @@ export function SeniorTabs({
                     key={note.id}
                     className="py-3 border-b border-gray-50 last:border-0"
                   >
-                    <ExpandableText text={note.content} limit={25} />
+                    <ExpandableText text={note.content} limit={100} />
 
                     <div className="flex items-center gap-2">
                       <p className="text-xs text-gray-400">
