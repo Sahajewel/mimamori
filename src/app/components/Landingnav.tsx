@@ -74,7 +74,9 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               >
                 📊 ダッシュボード
               </Link>
-              <LogoutButton></LogoutButton>
+              <div className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors active:opacity-60">
+                <LogoutButton></LogoutButton>
+              </div>
             </div>
           )}
         </div>
