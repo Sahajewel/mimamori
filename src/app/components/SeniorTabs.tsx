@@ -61,7 +61,34 @@ function Spinner() {
     </svg>
   );
 }
+function ExpandableText({
+  text,
+  limit = 100,
+}: {
+  text: string;
+  limit?: number;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
+  // টেক্সট যদি লিমিটের চেয়ে ছোট হয়, তবে সরাসরি পুরোটা দেখাবে
+  if (text.length <= limit) {
+    return (
+      <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">{text}</p>
+    );
+  }
+
+  return (
+    <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">
+      {isExpanded ? text : `${text.slice(0, limit)}... `}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="text-xs text-indigo-600 hover:underline ml-1 font-medium focus:outline-none"
+      >
+        {isExpanded ? "閉じる" : "もっと読む"}
+      </button>
+    </p>
+  );
+}
 export function SeniorTabs({
   seniorId,
   checkIns,
@@ -303,6 +330,7 @@ export function SeniorTabs({
                     key={note.id}
                     className="py-3 border-b border-gray-50 last:border-0"
                   >
+                    <ExpandableText text={note.content} limit={25} />
                     <p className="text-sm text-gray-700 mb-2">{note.content}</p>
                     <div className="flex items-center gap-2">
                       <p className="text-xs text-gray-400">
