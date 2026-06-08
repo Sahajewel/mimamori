@@ -12,13 +12,20 @@ export function DeleteSeniorButton({ seniorId, seniorName }: Props) {
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [error, setError] = useState("");
   async function handleDelete() {
     setLoading(true);
-    await fetch(`/api/seniors/${seniorId}`, {
+    setError("");
+    const res = await fetch(`/api/seniors/${seniorId}`, {
       method: "DELETE",
     });
+    const data = await res.json();
     setLoading(false);
+
+    if (!res.ok) {
+      setError(data.error || "削除できませんでした");
+      return;
+    }
     router.push("/dashboard");
     router.refresh();
   }

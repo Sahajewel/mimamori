@@ -119,10 +119,22 @@ export async function DELETE(
     const member = await prisma.seniorMember.findFirst({
       where: { seniorId: id, userId: session.user.id, role: "OWNER" },
     });
-    if (member) {
+    if (!member) {
       return NextResponse.json({ error: "削除できません" }, { status: 403 });
     }
 
+    const memberCount = await prisma.seniorMember.count({
+      where: { seniorId: id },
+    });
+    if (memberCount > 1) {
+      return NextResponse.json(
+        {
+          error:
+            "他のメンバーがいるため削除できません。先に他の方をオーナーに設定してください。",
+        },
+        { status: 403 },
+      );
+    }
     await prisma.senior.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
