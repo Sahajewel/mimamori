@@ -34,7 +34,7 @@ type Note = {
   content: string;
   createdAt: Date;
   authorName: string | null;
-  user: { name: string; id: string };
+  user: { name: string; id: string } | null;
 };
 
 type Props = {
@@ -147,7 +147,7 @@ export function CareNotesClient({
                           noteId={note.id}
                           seniorId={seniorId}
                           content={note.content}
-                          isOwner={note.user.id === currentUserId}
+                          isOwner={note.user?.id === currentUserId}
                         />
                       </div>
                     </div>

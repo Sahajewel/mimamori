@@ -67,7 +67,7 @@ export default async function CareNotesPage({
             content: n.content,
             createdAt: n.createdAt,
             user: n.user,
-            // authorName: n.user?.name ?? null,
+            authorName: n.user?.name ?? null,
           }))}
           seniorId={id}
           seniorName={senior?.name ?? ""}
