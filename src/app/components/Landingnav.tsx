@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { LogoutButton } from "./LogoutButton";
 
 type Props = {
   isLoggedIn: boolean;
@@ -73,12 +74,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               >
                 📊 ダッシュボード
               </Link>
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors active:opacity-60"
-              >
-                🚪 ログアウト
-              </button>
+              <LogoutButton></LogoutButton>
             </div>
           )}
         </div>
