@@ -14,7 +14,7 @@ export function InviteForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [inviteUrl, setInviteUrl] = useState("");
-
+  const [isLeaving, setIsLeaving] = useState(false);
   async function handleSubmit() {
     if (!email.trim()) {
       setError("メールアドレスを入力してください");
@@ -174,10 +174,41 @@ export function InviteForm() {
                 📋 リンクをコピー
               </button>
               <button
-                onClick={() => router.push(`/seniors/${id}`)}
-                className="w-full py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setIsLeaving(true);
+                  router.push(`/seniors/${id}`);
+                }}
+                disabled={isLeaving} // ক্লিক করার পর বাটনটি ডিজেবল হয়ে যাবে
+                className="w-full py-3 border border-gray-200 text-gray-600 text-base font-medium rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                ← 戻る
+                {isLeaving ? (
+                  <>
+                    {/* আপনার প্রজেক্টের <Spinner /> কম্পোনেন্টটি এখানে কল করতে পারেন */}
+                    <svg
+                      className="animate-spin h-4 w-4 text-gray-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"
+                      />
+                    </svg>
+                    戻る中...
+                  </>
+                ) : (
+                  "← 戻る"
+                )}
               </button>
             </div>
           )}
