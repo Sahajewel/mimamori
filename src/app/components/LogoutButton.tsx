@@ -15,7 +15,7 @@ export function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={isLoading}
-      className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer disabled:opacity-50"
+      className="text-sm text-red-500 hover:text-red-600 transition-colors cursor-pointer disabled:opacity-50"
     >
       {isLoading ? (
         <span className="flex items-center gap-1">
