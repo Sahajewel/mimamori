@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth";
 import { Footer } from "./components/Footer";
 
 import { IOSInstallBanner } from "./components/IOSInstallBanner";
-import { AppLoader } from "./components/Apploader";
+import { AppLoader } from "./components/AppLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

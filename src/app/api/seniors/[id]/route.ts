@@ -119,7 +119,7 @@ export async function DELETE(
     const member = await prisma.seniorMember.findFirst({
       where: { seniorId: id, userId: session.user.id, role: "OWNER" },
     });
-    if (!member) {
+    if (member) {
       return NextResponse.json({ error: "削除できません" }, { status: 403 });
     }
 
