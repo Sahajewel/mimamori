@@ -85,13 +85,21 @@ export default function QuickPage() {
   const [checkedInStatus, setCheckedInStatus] = useState<string | null>(null);
   const [showChangeCheckIn, setShowChangeCheckIn] = useState(false);
   const [doneStatuses, setDoneStatuses] = useState<Record<string, string>>({});
+  const [loadError, setLoadError] = useState(false);
   useEffect(() => {
     // data আনার function
     function loadData() {
       fetch(`/api/quick/${token}`, { cache: "no-store" })
         .then((r) => r.json())
         .then((d) => {
+          // API error বা todayLogs নাই হলে — crash না করে handle করো
+          if (!d || d.error || !d.todayLogs) {
+            setData(null);
+            setLoadError(true); // নতুন state
+            return;
+          }
           setData(d);
+          setLoadError(false);
           const done = new Set<string>(
             d.todayLogs
               .filter(
@@ -108,7 +116,8 @@ export default function QuickPage() {
           });
           setDoneStatuses(statuses);
           if (d.todayCheckIn) setCheckedInStatus(d.todayCheckIn.status);
-        });
+        })
+        .catch(() => setLoadError(true)); // network error-ও handle
     }
 
     loadData(); // প্রথমবার
@@ -155,6 +164,20 @@ export default function QuickPage() {
       }),
     });
     setLoadingId(null);
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-indigo-50 flex flex-col items-center justify-center px-4 text-center">
+        <p className="text-4xl mb-3">🔗</p>
+        <p className="text-lg font-medium text-gray-700 mb-2">
+          リンクが無効です
+        </p>
+        <p className="text-sm text-gray-400">
+          ご家族に新しいリンクをお願いしてください。
+        </p>
+      </div>
+    );
   }
 
   if (!data) {
