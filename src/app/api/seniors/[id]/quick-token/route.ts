@@ -30,13 +30,20 @@ export async function POST(
         { status: 403 },
       );
     }
-
-    const quickToken = crypto.randomBytes(16).toString("hex");
-
-    await prisma.senior.update({
+    // senior-এর এখনকার token দেখো
+    const senior = await prisma.senior.findUnique({
       where: { id },
-      data: { quickToken },
+      select: { quickToken: true },
     });
+    let quickToken = senior?.quickToken;
+
+    if (!quickToken) {
+      quickToken = crypto.randomBytes(16).toString("hex");
+      await prisma.senior.update({
+        where: { id },
+        data: { quickToken },
+      });
+    }
 
     return NextResponse.json({
       quickToken,
