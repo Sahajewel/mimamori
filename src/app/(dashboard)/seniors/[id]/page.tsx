@@ -73,14 +73,20 @@ export default async function SeniorDetailPage({
 
   if (!seniorMember) notFound();
 
+  // 🟢 প্রথমে ডাটা ডেস্ট্রাকচার করে নিলাম, যাতে নিচের সব জায়গায় ভেরিয়েবলগুলো পাওয়া যায়
   const { senior, role } = seniorMember;
 
-  // await prisma.seniorMember.update({
-  //   where: {
-  //     seniorId_userId: { seniorId: id, userId: session.user.id },
-  //   },
-  //   data: { lastReadAt: new Date() },
-  // });
+  // 🟢 ১. checkIns এর ডেটকে string বানিয়ে নিলাম
+  const formattedCheckIns = senior.checkIns.map((checkIn) => ({
+    ...checkIn,
+    createdAt: checkIn.createdAt.toISOString(),
+  }));
+
+  // 🟢 ২. careNotes এর ডেটকেও string বানিয়ে নিলাম (যা টাইপস্ক্রিপ্ট চাচ্ছিল)
+  const formattedCareNotes = senior.careNotes.map((note) => ({
+    ...note,
+    createdAt: note.createdAt.toISOString(),
+  }));
 
   const todayStart = startOfJapanToday();
 
@@ -222,9 +228,9 @@ export default async function SeniorDetailPage({
         {/* Tabs */}
         <SeniorTabs
           seniorId={id}
-          checkIns={senior.checkIns}
+          checkIns={formattedCheckIns} // 🟢 ফিক্সড ডাটা
           medicines={senior.medicines}
-          careNotes={senior.careNotes}
+          careNotes={formattedCareNotes} // 🟢 ফিক্সড ডাটা
           role={role}
           careNotesTotal={senior.careNotes.length}
         />
