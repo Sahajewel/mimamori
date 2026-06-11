@@ -60,7 +60,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <div
           id="initial-loader"
-          className="fixed inset-0 bg-white z-[99999] flex flex-col items-center justify-center"
+          className="fixed inset-0 bg-white z-99999 flex flex-col items-center justify-center"
         >
           <div className="loader-logo">♡</div>
           <p className="loader-text">Mimamori</p>
