@@ -7,8 +7,9 @@ import { auth } from "@/lib/auth";
 import { Footer } from "@/app/components/Footer";
 
 import { IOSInstallBanner } from "@/app/components/IOSInstallBanner";
-import { AppLoader } from "@/app/components/AppLoader";
+
 import { PushSubscriber } from "@/app/components/PushSubscriber";
+import { InitialLoaderRemover } from "./components/InitialLoaderRemover";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,17 +58,28 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <AppLoader>
-          <PushSubscriber isLoggedIn={!!session?.user?.id} />
-          <IOSInstallBanner />
-          <LandingNav
-            isLoggedIn={!!session?.user?.id}
-            userName={session?.user?.name}
-            userImage={session?.user?.image}
-          />
-          {children}
-          <Footer />
-        </AppLoader>
+        <div
+          id="initial-loader"
+          className="fixed inset-0 bg-white z-[99999] flex flex-col items-center justify-center"
+        >
+          <div className="loader-logo">♡</div>
+          <p className="loader-text">Mimamori</p>
+          <div className="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <InitialLoaderRemover></InitialLoaderRemover>
+        <PushSubscriber isLoggedIn={!!session?.user?.id} />
+        <IOSInstallBanner />
+        <LandingNav
+          isLoggedIn={!!session?.user?.id}
+          userName={session?.user?.name}
+          userImage={session?.user?.image}
+        />
+        {children}
+        <Footer />
       </body>
     </html>
   );
