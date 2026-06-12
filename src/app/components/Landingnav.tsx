@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+
 import { LogoutButton } from "./LogoutButton";
 
 type Props = {
@@ -43,7 +43,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors active:opacity-60"
+            className="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors active:opacity-60"
           >
             {userImage ? (
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -70,7 +70,7 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
               <Link
                 href="/dashboard"
                 onClick={() => setUserOpen(false)}
-                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors active:opacity-60"
+                className="block px-4 py-2.5 cursor-pointer text-sm text-gray-600 hover:bg-gray-50 transition-colors active:opacity-60"
               >
                 📊 ダッシュボード
               </Link>
@@ -81,13 +81,13 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
           )}
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative ">
           <button
             onClick={() => {
               setUserOpen(!userOpen);
               setMenuOpen(false);
             }}
-            className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 active:scale-95 transition-all shadow-sm active:opacity-60"
+            className="px-4 cursor-pointer py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 active:scale-95 transition-all shadow-sm active:opacity-60"
           >
             ログイン
           </button>
@@ -143,15 +143,22 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
 
         {/* বড় device — ডানে nav-link + user একসাথে (ছোট device-এ লুকানো) */}
         <div className="hidden lg:flex items-center gap-1">
-          {menuLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {menuLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <div className="ml-1">{userArea}</div>
         </div>
 
@@ -170,16 +177,23 @@ export function LandingNav({ isLoggedIn, userName, userImage }: Props) {
 
           {menuOpen && (
             <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-100 rounded-xl shadow-lg py-2 z-50">
-              {menuLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {menuLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block px-4 py-2.5 text-sm transition-colors ${
+                      isActive
+                        ? "text-indigo-600 bg-indigo-50 font-medium"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
