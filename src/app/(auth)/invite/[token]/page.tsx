@@ -21,7 +21,11 @@ export default function AcceptInvitePage() {
     const res = await fetch(`/api/invitations/${token}`, {
       method: "POST",
     });
-
+    // login নাই (401) হলে — সরাসরি login-এ, token সহ
+    if (res.status === 401) {
+      router.push(`/login?token=${token}`);
+      return;
+    }
     const data = await res.json();
 
     if (!res.ok) {
@@ -59,7 +63,7 @@ export default function AcceptInvitePage() {
         </button>
 
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => router.push(`/login?callbackUrl=/invite/${token}`)}
           className="w-full py-3 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
         >
           ログインページへ
