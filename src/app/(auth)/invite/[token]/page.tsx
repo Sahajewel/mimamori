@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AcceptInvitePage() {
   const router = useRouter();
@@ -11,7 +11,9 @@ export default function AcceptInvitePage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   async function handleAccept() {
     setLoading(true);
     setError("");

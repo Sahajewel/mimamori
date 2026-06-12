@@ -187,13 +187,13 @@ export function InviteForm() {
 
               <button
                 onClick={shareInvite}
-                className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-colors mb-3 shadow-sm"
+                className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-colors mb-3 shadow-sm cursor-pointer"
               >
                 📤 共有する
               </button>
               <button
                 onClick={copyToClipboard}
-                className="w-full py-3 border border-indigo-200 text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors mb-3"
+                className="w-full py-3 border border-indigo-200 text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors mb-3 cursor-pointer"
               >
                 📋 リンクをコピー
               </button>
