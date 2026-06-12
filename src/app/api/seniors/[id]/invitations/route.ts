@@ -49,7 +49,8 @@ export async function POST(
       );
     }
 
-    const { email, role } = parsed.data;
+    const { role } = parsed.data;
+    const email = parsed.data.email.toLowerCase().trim();
 
     // ── নিয়ম ১: email-টা database-এ থাকতে হবে (existing, verified user) ──
     // অজানা email-এ invite করা যাবে না।

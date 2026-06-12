@@ -25,7 +25,7 @@ export function InviteForm() {
     const res = await fetch(`/api/seniors/${id}/invitations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, role }),
+      body: JSON.stringify({ email: email.toLowerCase().trim(), role }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -40,6 +40,24 @@ export function InviteForm() {
   async function copyToClipboard() {
     await navigator.clipboard.writeText(inviteUrl);
     alert("コピーしました！");
+  }
+  async function shareInvite() {
+    // Web Share সাপোর্ট করলে — native share menu
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Mimamori 招待",
+          text: "Mimamoriで家族を見守りましょう。下のリンクから参加してください：",
+          url: inviteUrl,
+        });
+      } catch {
+        // user cancel করলে — কিছু না
+      }
+    } else {
+      // সাপোর্ট না করলে — copy-তে fallback
+      await navigator.clipboard.writeText(inviteUrl);
+      alert("コピーしました！");
+    }
   }
 
   return (
@@ -168,8 +186,14 @@ export function InviteForm() {
               </div>
 
               <button
-                onClick={copyToClipboard}
+                onClick={shareInvite}
                 className="w-full py-3 bg-indigo-600 text-white text-base font-semibold rounded-xl hover:bg-indigo-700 transition-colors mb-3 shadow-sm"
+              >
+                📤 共有する
+              </button>
+              <button
+                onClick={copyToClipboard}
+                className="w-full py-3 border border-indigo-200 text-indigo-600 text-base font-semibold rounded-xl hover:bg-indigo-50 transition-colors mb-3"
               >
                 📋 リンクをコピー
               </button>
