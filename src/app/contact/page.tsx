@@ -21,7 +21,7 @@ export default function ContactPage() {
         </div>
 
         {/* Developer card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-5">
             👨‍💻 開発者に連絡する
           </h2>
@@ -53,11 +53,13 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">🐙</span>
-              <div className="flex-1">
-                <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-medium  text-gray-800 group-hover:text-indigo-600 transition-colors ">
                   GitHub
                 </p>
-                <p className="text-sm text-gray-400">github.com/Sahajewel</p>
+                <p className="text-sm text-gray-400 truncate">
+                  github.com/Sahajewel
+                </p>
               </div>
               <span className="text-gray-300 group-hover:text-indigo-400 transition-colors">
                 →
@@ -71,11 +73,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">💼</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   LinkedIn
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 truncate">
                   linkedin.com/in/sahajewelkumarbd
                 </p>
               </div>
@@ -91,11 +93,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">𝕏</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   X (Twitter)
                 </p>
-                <p className="text-sm text-gray-400">x.com/sahaJewelkumar</p>
+                <p className="text-sm text-gray-400 truncate">x.com/sahaJewelkumar </p>
               </div>
               <span className="text-gray-300 group-hover:text-indigo-400 transition-colors">
                 →
@@ -109,11 +111,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">📸</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   Instagram
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 truncate">
                   instagram.com/sahajewelkumarbd
                 </p>
               </div>
@@ -129,11 +131,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">🌐</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   Portfolio
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 truncate">
                   sahajewelkumar.vercel.app
                 </p>
               </div>
@@ -145,7 +147,7 @@ export default function ContactPage() {
         </div>
 
         {/* Mimamori social */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-5">
             📱 Mimamoriをフォローする
           </h2>
@@ -157,11 +159,13 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">𝕏</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   X (Twitter)
                 </p>
-                <p className="text-sm text-gray-400">x.com/mimamorihealth</p>
+                <p className="text-sm text-gray-400 truncate">
+                  x.com/mimamorihealth
+                </p>
               </div>
               <span className="text-gray-300 group-hover:text-indigo-400 transition-colors">
                 →
@@ -175,11 +179,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">📸</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   Instagram
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 truncate">
                   instagram.com/mimamorihealth
                 </p>
               </div>
@@ -194,11 +198,11 @@ export default function ContactPage() {
               className="flex items-center gap-4 px-5 py-4 border border-gray-100 rounded-xl hover:border-indigo-200 hover:bg-indigo-50 transition-all group"
             >
               <span className="text-2xl">f</span>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-base font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
                   Facebook
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-400 truncate">
                   facebook.com/mimamorihealth
                 </p>
               </div>

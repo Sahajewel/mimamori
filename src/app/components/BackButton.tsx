@@ -13,7 +13,7 @@ export function BackButton() {
         setClicked(true);
         router.back();
       }}
-      className={`flex items-center gap-1.5 transition-colors text-sm font-medium ${
+      className={`flex cursor-pointer items-center gap-1.5 transition-colors text-sm font-medium ${
         clicked ? "text-gray-300" : "text-indigo-600 hover:underline"
       }`}
     >
