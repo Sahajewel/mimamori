@@ -152,7 +152,7 @@ export function SeniorTabs({
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               <Heart className="w-5 h-5 text-indigo-500" />
-              チェックイン履歴
+              チェックイン
             </h2>
             {role !== "VIEWER" && (
               <Link
