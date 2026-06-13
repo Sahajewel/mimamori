@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { CalendarDays, Sparkles } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -54,17 +54,15 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
       <VisibilityRefresh />
       {/* Modern glass nav */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <DashboardLogo />
-          <div className="flex items-center gap-4">
-            <DashboardButton />
-            <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full">
-              <Sparkles className="w-4 h-4 text-indigo-500" />
-              <p className="text-sm font-medium text-indigo-700">
-                {session.user.name}さん
-              </p>
-            </div>
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
+          <DashboardLogo></DashboardLogo>
+          <div className="flex items-center gap-3">
+            <DashboardButton></DashboardButton>
+
+            <p className="text-sm text-gray-500 hidden sm:block">
+              {session.user.name}さん
+            </p>
           </div>
         </div>
       </nav>

@@ -7,9 +7,8 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mr-6">
-        <SideNav />
-      </div>
+      <SideNav />
+
       {/* Content সরবে না, full width */}
       {children}
     </div>
