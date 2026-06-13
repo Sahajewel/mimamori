@@ -30,6 +30,9 @@ export async function POST(
         { status: 403 },
       );
     }
+
+    const body = await req.json().catch(() => ({}));
+    const forceRenerate = body?.regenerate === true;
     // senior-এর এখনকার token দেখো
     const senior = await prisma.senior.findUnique({
       where: { id },
@@ -37,7 +40,7 @@ export async function POST(
     });
     let quickToken = senior?.quickToken;
 
-    if (!quickToken) {
+    if (!quickToken || forceRenerate) {
       quickToken = crypto.randomBytes(16).toString("hex");
       await prisma.senior.update({
         where: { id },

@@ -13,7 +13,21 @@ export function QuickLinkButton({
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
-
+  const [showRegenerate, setShowRegenerate] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  async function regenerateLink() {
+    setRegenerating(true);
+    const res = await fetch(`/api/seniors/${seniorId}/quick-token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ regenerate: true }),
+    });
+    const data = await res.json();
+    setQuickUrl(data.quickUrl);
+    setRegenerating(false);
+    setShowRegenerate(false);
+    setShowQR(false);
+  }
   async function generateLink() {
     setLoading(true);
     const res = await fetch(`/api/seniors/${seniorId}/quick-token`, {
@@ -248,6 +262,44 @@ export function QuickLinkButton({
               🖨️ 印刷
             </button>
           </div>
+          {/* এই অংশ — Buttons (コピー/QR/印刷) এর নিচে, safe zone */}
+          <div className="mt-3 pt-3 border-t border-indigo-100">
+            <button
+              onClick={() => setShowRegenerate(true)}
+              className="w-full py-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors"
+            >
+              🔄 新しいリンクを作り直す
+            </button>
+          </div>
+          {showRegenerate && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl w-full max-w-sm p-6">
+                <p className="text-lg font-semibold text-gray-900 mb-3 text-center">
+                  ⚠️ 新しいリンクを作り直しますか？
+                </p>
+                <p className="text-sm text-gray-500 text-center mb-5 leading-relaxed">
+                  今のQRコードやホーム画面のアイコンは、使えなくなります。
+                  ご本人に新しいQRコードを渡して、もう一度ホーム画面に追加してもらってください。
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setShowRegenerate(false)}
+                    disabled={regenerating}
+                    className="py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={regenerateLink}
+                    disabled={regenerating}
+                    className="py-3 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 disabled:opacity-50"
+                  >
+                    {regenerating ? "作成中..." : "作り直す"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
