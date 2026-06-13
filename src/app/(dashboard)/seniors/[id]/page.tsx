@@ -115,7 +115,7 @@ export default async function SeniorDetailPage({
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="group flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-all duration-200 pl-10"
+              className="group flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-all duration-200 pl-12"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span className="text-sm font-medium">戻る</span>
@@ -124,6 +124,7 @@ export default async function SeniorDetailPage({
               <div className="w-8 h-8 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-600 sm:flex hidden  items-center justify-center shadow-md">
                 <Heart className="w-4 h-4 text-white fill-white/20" />
               </div>
+
               <p className="font-semibold text-gray-800 hidden sm:block">
                 Mimamori
               </p>
