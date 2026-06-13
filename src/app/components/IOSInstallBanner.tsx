@@ -7,11 +7,14 @@ export function IOSInstallBanner() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    const ua = window.navigator.userAgent;
     // iOS device কিনা
     const isIOS =
-      /iphone|ipad|ipod/i.test(window.navigator.userAgent) &&
+      /iphone|ipad|ipod/i.test(ua) &&
       !(window as unknown as { MSStream?: unknown }).MSStream;
-
+    // Safari কিনা (iOS-এ Chrome=CriOS, Firefox=FxiOS, Edge=EdgiOS — এগুলো বাদ)
+    const isSafari =
+      /safari/i.test(ua) && !/crios|fxios|edgios|chrome/i.test(ua);
     // অলরেডি PWA (হোম স্ক্রিন) হিসেবে খোলা কিনা
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
@@ -19,7 +22,7 @@ export function IOSInstallBanner() {
         true;
 
     // iOS + browser (PWA না) হলেই দেখাও
-    if (isIOS && !isStandalone) {
+    if (isIOS && isSafari && !isStandalone) {
       setShow(true);
     }
   }, []);
