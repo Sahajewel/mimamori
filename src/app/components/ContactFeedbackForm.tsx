@@ -46,8 +46,8 @@ export function ContactFeedbackForm() {
 
   if (done) {
     return (
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-100 shadow-sm p-10 text-center">
-        <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg">
+      <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-100 shadow-sm p-10 text-center">
+        <div className="w-20 h-20 bg-linear-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg">
           <CheckCircle className="w-10 h-10 text-white" />
         </div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -168,7 +168,7 @@ export function ContactFeedbackForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-base font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
+          className="w-full py-3.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-base font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
         >
           {loading ? (
             <>

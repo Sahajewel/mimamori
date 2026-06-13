@@ -13,7 +13,7 @@ export function DashboardButton() {
     <Link
       href={isDashboard ? "/" : "/dashboard"}
       onClick={() => setLoading(true)}
-      className={`relative overflow-hidden px-4 py-2 text-sm font-medium rounded-lg transition-all shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 ${
+      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 ${
         loading ? "opacity-50" : "opacity-100"
       }`}
     >

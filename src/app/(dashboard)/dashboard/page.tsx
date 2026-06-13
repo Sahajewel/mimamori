@@ -2,7 +2,7 @@
 import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
-
+import { NotificationButton } from "@/app/components/NotificationButton";
 import { VisibilityRefresh } from "@/app/components/VisibilityRefresh";
 import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
@@ -54,24 +54,16 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
       <VisibilityRefresh />
       {/* Modern glass nav */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm overflow-hidden">
-        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4 flex items-center justify-between">
-          {/* Left Side */}
-          <div className="flex items-center gap-3 min-w-0">
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <DashboardLogo />
+          <div className="flex items-center gap-4">
             <DashboardButton />
-
-            <div className="flex-shrink-0">
-              <DashboardLogo />
-            </div>
-          </div>
-
-          {/* Right Side */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="hidden lg:flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-full">
+            <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full">
               <Sparkles className="w-4 h-4 text-indigo-500" />
-              <span className="text-sm font-medium text-indigo-700">
+              <p className="text-sm font-medium text-indigo-700">
                 {session.user.name}さん
-              </span>
+              </p>
             </div>
           </div>
         </div>
@@ -96,6 +88,9 @@ export default async function DashboardPage() {
                 })}
               </p>
             </div>
+          </div>
+          <div className="self-start">
+            <NotificationButton />
           </div>
         </div>
 
