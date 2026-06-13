@@ -54,19 +54,20 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
       <VisibilityRefresh />
       {/* Modern glass nav */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between flex-nowrap gap-4">
-          {/* Left side - Logo with shrink prevention */}
-          <div className="shrink-0 pl-4">
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-3 sm:px-4 py-4 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
+          {/* Logo */}
+          <div className="flex-shrink min-w-0">
             <DashboardLogo />
           </div>
 
-          {/* Right side - Button and user info, stays together */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Right side */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <DashboardButton />
-            <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full whitespace-nowrap">
+
+            <div className="hidden md:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full whitespace-nowrap">
               <Sparkles className="w-4 h-4 text-indigo-500" />
-              <p className="text-sm font-medium text-indigo-700">
+              <p className="text-sm font-medium text-indigo-700 truncate">
                 {session.user.name}さん
               </p>
             </div>
