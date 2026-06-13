@@ -115,7 +115,7 @@ export default async function SeniorDetailPage({
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="group flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-all duration-200"
+              className="group flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-all duration-200 pl-10"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span className="text-sm font-medium">戻る</span>
