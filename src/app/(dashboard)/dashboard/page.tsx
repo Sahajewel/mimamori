@@ -55,7 +55,7 @@ export default async function DashboardPage() {
       <VisibilityRefresh />
       {/* Modern glass nav */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-center">
           <DashboardLogo />
           <div className="flex items-center gap-4">
             <DashboardButton />
