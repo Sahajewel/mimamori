@@ -1,14 +1,14 @@
+// app/dashboard/page.tsx (Server Component)
 import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
-
 import { NotificationButton } from "@/app/components/NotificationButton";
 import { VisibilityRefresh } from "@/app/components/VisibilityRefresh";
 import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 import { prisma } from "@/lib/prisma";
-
 import { redirect } from "next/navigation";
+import { CalendarDays, Sparkles } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -42,7 +42,6 @@ export default async function DashboardPage() {
     orderBy: { createdAt: "asc" },
   });
   const now = new Date();
-
   const hour = japanHour();
 
   function getGreeting() {
@@ -52,39 +51,49 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <VisibilityRefresh></VisibilityRefresh>
-      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
-          <DashboardLogo></DashboardLogo>
-          <div className="flex items-center gap-3">
-            <DashboardButton></DashboardButton>
-
-            <p className="text-sm text-gray-500 hidden sm:block">
-              {session.user.name}さん
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
+      <VisibilityRefresh />
+      {/* Modern glass nav */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <DashboardLogo />
+          <div className="flex items-center gap-4">
+            <DashboardButton />
+            <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full">
+              <Sparkles className="w-4 h-4 text-indigo-500" />
+              <p className="text-sm font-medium text-indigo-700">
+                {session.user.name}さん
+              </p>
+            </div>
           </div>
         </div>
       </nav>
 
-      <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">
-            {getGreeting()}、{session.user.name}さん 👋
-          </h1>
-          <p className="text-base text-gray-400 mt-1">
-            {now.toLocaleDateString("ja-JP", {
-              timeZone: "Asia/Tokyo",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              weekday: "long",
-            })}
-          </p>
+      <div className="px-4 md:px-8 py-8 max-w-5xl mx-auto">
+        {/* Greeting with modern layout */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-indigo-800 bg-clip-text text-transparent">
+              {getGreeting()}、{session.user.name}さん 👋
+            </h1>
+            <div className="flex items-center gap-2 mt-2 text-gray-500">
+              <CalendarDays className="w-4 h-4" />
+              <p className="text-base">
+                {now.toLocaleDateString("ja-JP", {
+                  timeZone: "Asia/Tokyo",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "long",
+                })}
+              </p>
+            </div>
+          </div>
+          <div className="self-start">
+            <NotificationButton />
+          </div>
         </div>
-        <div className="mb-2">
-          <NotificationButton></NotificationButton>
-        </div>
+
         <DashboardClient
           seniorMembers={seniorMembers.map((m) => ({
             role: m.role,

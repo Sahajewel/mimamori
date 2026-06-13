@@ -65,7 +65,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       {/* Hero Section with animated gradient */}
-      <section className="relative flex flex-col items-center text-center px-4 py-24 md:py-32 overflow-hidden">
+      <section className="relative flex flex-col items-center text-center px-4 py-16  overflow-hidden">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-blue-50 animate-gradient-xy" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[150%] bg-indigo-100/20 rounded-full blur-3xl animate-pulse" />
