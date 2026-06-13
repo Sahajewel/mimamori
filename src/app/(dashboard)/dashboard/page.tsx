@@ -2,13 +2,13 @@
 import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
-import { NotificationButton } from "@/app/components/NotificationButton";
+
 import { VisibilityRefresh } from "@/app/components/VisibilityRefresh";
 import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Sparkles } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -59,7 +59,7 @@ export default async function DashboardPage() {
           <DashboardLogo></DashboardLogo>
           <div className="flex items-center gap-3">
             <DashboardButton></DashboardButton>
-
+            <Sparkles className="w-4 h-4 text-indigo-500" />
             <p className="text-sm text-gray-500 hidden sm:block">
               {session.user.name}さん
             </p>
@@ -86,9 +86,6 @@ export default async function DashboardPage() {
                 })}
               </p>
             </div>
-          </div>
-          <div className="self-start">
-            <NotificationButton />
           </div>
         </div>
 
