@@ -56,10 +56,13 @@ export default async function DashboardPage() {
       {/* Modern glass nav */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-nowrap gap-4">
+          {/* Left side - Logo with shrink prevention */}
           <div className="flex-shrink-0">
             <DashboardLogo />
           </div>
-          <div className="flex items-center gap-4 flex-shrink-0">
+
+          {/* Right side - Button and user info, stays together */}
+          <div className="flex items-center gap-3 flex-shrink-0">
             <DashboardButton />
             <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full whitespace-nowrap">
               <Sparkles className="w-4 h-4 text-indigo-500" />
