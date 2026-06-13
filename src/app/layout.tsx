@@ -58,11 +58,8 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <div
-          id="initial-loader"
-          className="fixed inset-0 bg-white  flex flex-col items-center justify-center"
-          style={{ zIndex: 99999 }}
-        >
+        <div id="initial-loader">
+          {" "}
           <div className="loader-logo">♡</div>
           <p className="loader-text">Mimamori</p>
           <div className="loader-dots">
@@ -71,6 +68,7 @@ export default async function RootLayout({
             <span></span>
           </div>
         </div>
+
         <InitialLoaderRemover></InitialLoaderRemover>
         <PushSubscriber isLoggedIn={!!session?.user?.id} />
         <IOSInstallBanner />
