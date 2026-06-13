@@ -51,18 +51,18 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
       <VisibilityRefresh />
       {/* Modern glass nav */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-nowrap gap-4">
           {/* Left side - Logo with shrink prevention */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0 pl-4">
             <DashboardLogo />
           </div>
 
           {/* Right side - Button and user info, stays together */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <DashboardButton />
             <div className="hidden sm:flex items-center gap-2 bg-indigo-50/50 px-3 py-1.5 rounded-full whitespace-nowrap">
               <Sparkles className="w-4 h-4 text-indigo-500" />
@@ -78,7 +78,7 @@ export default async function DashboardPage() {
         {/* Greeting with modern layout */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-indigo-800 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-gray-900 to-indigo-800 bg-clip-text text-transparent">
               {getGreeting()}、{session.user.name}さん 👋
             </h1>
             <div className="flex items-center gap-2 mt-2 text-gray-500">
