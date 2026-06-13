@@ -56,6 +56,39 @@ export default async function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+        #initial-loader {
+          position: fixed;
+          inset: 0;
+          background: #ffffff;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          z-index: 99999;
+        }
+        #initial-loader .loader-logo {
+          width: 64px;
+          height: 64px;
+          background: #4f46e5;
+          color: white;
+          font-size: 32px;
+          border-radius: 16px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #initial-loader .loader-text {
+          margin-top: 16px;
+          font-size: 18px;
+          font-weight: 600;
+          color: #111827;
+        }
+      `,
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <div
