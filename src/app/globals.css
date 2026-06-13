@@ -19,6 +19,12 @@
   }
 }
 
+@theme {
+  --color-brand: oklch(0.72 0.11 165); /* warm soft green */
+  --color-brand-dark: oklch(0.55 0.1 165); /* hover/heading এর গাঢ় সবুজ */
+  --color-brand-soft: oklch(0.96 0.02 165); /* হালকা সবুজ ব্যাকগ্রাউন্ড */
+  --color-surface: oklch(0.99 0.005 90); /* warm off-white */
+}
 body {
   background: var(--background);
   color: var(--foreground);
