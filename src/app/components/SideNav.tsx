@@ -66,7 +66,7 @@ export function SideNav() {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed top-4 left-4 z-50 w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors"
+        className="fixed top-4 left-2 z-50 w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center shadow-sm hover:bg-gray-50 transition-colors"
       >
         <span className="text-lg">{open ? "✕" : "☰"}</span>
       </button>
