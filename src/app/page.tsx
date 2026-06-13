@@ -75,7 +75,7 @@ export default async function HomePage() {
             <Heart className="w-4 h-4 fill-indigo-200" />
             🇯🇵 日本の高齢者ケアのために作られました
           </span>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 leading-tight mb-6">
+          <h1 className="text-5xl sm:text-4xl md:text-7xl font-bold text-gray-900 leading-tight mb-6">
             離れていても、
             <br />
             <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
