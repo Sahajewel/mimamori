@@ -2,9 +2,13 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const pathname = usePathname();
+  const isQuickPage = pathname?.startsWith("/quick");
+
   // "idle" = এখনো জানি না, "prompt" = banner দেখাও, "granted" = হয়ে গেছে,
   // "blocked" = user block করেছে, "hidden" = কিছু দেখাব না
   const [state, setState] = useState<
@@ -13,6 +17,7 @@ export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // sound listener — সবসময় (login হোক বা না হোক)
   useEffect(() => {
+    if (isQuickPage) return;
     if (!("serviceWorker" in navigator)) return;
     function onMessage(event: MessageEvent) {
       if (event.data?.type === "PLAY_SOUND") {
@@ -27,10 +32,14 @@ export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
     navigator.serviceWorker.addEventListener("message", onMessage);
     return () =>
       navigator.serviceWorker.removeEventListener("message", onMessage);
-  }, []);
+  }, [isQuickPage]);
 
   // permission অবস্থা যাচাই — login করা থাকলেই
   useEffect(() => {
+    if (isQuickPage) {
+      setState("hidden");
+      return;
+    }
     if (!isLoggedIn) {
       setState("hidden");
       return;
@@ -70,7 +79,7 @@ export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
       // "default" — এখনো চাওয়া হয়নি → banner দেখাও
       setState("prompt");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isQuickPage]);
 
   async function ensureSubscribed() {
     try {
