@@ -8,7 +8,6 @@ import {
   Heart,
   Pill,
   FileText,
-  Clock,
   User,
   ChevronRight,
   Plus,
@@ -134,7 +133,7 @@ export function SeniorTabs({
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md"
+                  ? "bg-linear-to-r from-indigo-600 to-indigo-500 text-white shadow-md"
                   : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
               }`}
             >

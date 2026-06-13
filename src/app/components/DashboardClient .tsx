@@ -81,7 +81,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
           <Link
             href="/seniors/new"
             onClick={() => setClickedHref("/seniors/new")}
-            className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+            className="group flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
           >
             {clickedHref === "/seniors/new" ? (
               <Spinner />
@@ -96,7 +96,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
       {/* Empty State - modernized */}
       {seniorMembers.length === 0 && (
         <div className="bg-white/50 backdrop-blur-sm border border-indigo-100 rounded-2xl p-12 text-center shadow-lg">
-          <div className="w-24 h-24 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center mx-auto mb-5 text-5xl shadow-inner">
+          <div className="w-24 h-24 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center mx-auto mb-5 text-5xl shadow-inner">
             🏠
           </div>
           <p className="text-xl font-semibold text-gray-900 mb-2">
@@ -212,7 +212,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
                 }`}
               >
                 {/* Animated gradient background on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-100/0 to-indigo-50/0 group-hover:from-indigo-50/30 group-hover:via-indigo-100/20 group-hover:to-indigo-50/30 transition-all duration-500 pointer-events-none" />
+                <div className="absolute inset-0 bg-linear-to-r from-indigo-50/0 via-indigo-100/0 to-indigo-50/0 group-hover:from-indigo-50/30 group-hover:via-indigo-100/20 group-hover:to-indigo-50/30 transition-all duration-500 pointer-events-none" />
 
                 {/* Header */}
                 <div className="relative flex items-start justify-between mb-5">
@@ -225,7 +225,7 @@ export function DashboardClient({ seniorMembers, now }: Props) {
                             ? "bg-red-100 text-red-600 ring-2 ring-red-300"
                             : isConcern
                               ? "bg-amber-100 text-amber-600 ring-2 ring-amber-300"
-                              : "bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-700 ring-2 ring-indigo-200"
+                              : "bg-linear-to-br from-indigo-100 to-indigo-200 text-indigo-700 ring-2 ring-indigo-200"
                         }`}
                       >
                         {senior.photoUrl ? (
