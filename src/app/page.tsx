@@ -64,30 +64,33 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
-      {/* Hero Section with animated linear */}
-      <section className="relative flex flex-col items-center text-center px-4 py-16  overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative px-4 py-16 overflow-hidden">
         {/* Animated linear background */}
         <div className="absolute inset-0 bg-linear-to-br from-indigo-50 via-white to-blue-50 animate-linear-xy" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[150%] bg-indigo-100/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl animate-float" />
-        <div className="relative z-10">
-          <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-sm font-medium px-5 py-2 rounded-full mb-8 shadow-sm">
-            <Heart className="w-4 h-4 fill-indigo-200" />
-            🇯🇵 日本の高齢者ケアのために作られました
-          </span>
-          <h1 className="text-5xl sm:text-4xl md:text-7xl font-bold text-gray-900 leading-tight mb-6">
-            離れていても、
-            <br />
-            <span className="bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-              いつも一緒に。
+
+        <div className="relative z-10 max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          {/* বাঁয়ে — text */}
+          <div className="text-center lg:text-left">
+            <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-sm font-medium px-5 py-2 rounded-full mb-8 shadow-sm">
+              <Heart className="w-4 h-4 fill-indigo-200" />
+              🇯🇵 日本の高齢者ケアのために作られました
             </span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed mb-10">
-            離れて暮らすご家族の毎日の様子を、家族みんなで安心して見守るプラットフォーム。ログイン不要で簡単に記録できます。
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-sm mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              離れていても、
+              <br />
+              <span className="bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                いつも一緒に。
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-500 max-w-lg leading-relaxed mb-10 mx-auto lg:mx-0">
+              離れて暮らすご家族の毎日を、みんなで見守るアプリ。
+              安否確認・お薬の管理・緊急通報を、ログイン不要でかんたんに。
+            </p>
             {!session?.user?.id && (
-              <div className="group">
+              <div className="group inline-block">
                 <Link
                   href="/register"
                   className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-base font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
@@ -102,6 +105,25 @@ export default async function HomePage() {
                 </p>
               </div>
             )}
+          </div>
+
+          {/* ডানে — app screenshot (ফোন mockup) */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative">
+              {/* ফোন frame */}
+              <div className="bg-gray-900 rounded-[2.5rem] p-3 shadow-2xl">
+                <div className="bg-white rounded-4xl overflow-hidden w-65 sm:w-70">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/hero-app.png"
+                    alt="Mimamori アプリ画面"
+                    className="w-full h-auto"
+                  />
+                </div>
+              </div>
+              {/* সাজানো — পেছনে একটা soft glow */}
+              <div className="absolute -z-10 inset-0 bg-indigo-200/40 rounded-[2.5rem] blur-2xl scale-95" />
+            </div>
           </div>
         </div>
       </section>
