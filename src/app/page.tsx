@@ -64,10 +64,10 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
-      {/* Hero Section with animated gradient */}
+      {/* Hero Section with animated linear */}
       <section className="relative flex flex-col items-center text-center px-4 py-16  overflow-hidden">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-blue-50 animate-gradient-xy" />
+        {/* Animated linear background */}
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-50 via-white to-blue-50 animate-linear-xy" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[150%] bg-indigo-100/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl animate-float" />
         <div className="relative z-10">
@@ -78,7 +78,7 @@ export default async function HomePage() {
           <h1 className="text-5xl sm:text-4xl md:text-7xl font-bold text-gray-900 leading-tight mb-6">
             離れていても、
             <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
               いつも一緒に。
             </span>
           </h1>
@@ -90,7 +90,7 @@ export default async function HomePage() {
               <div className="group">
                 <Link
                   href="/register"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-base font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-indigo-600 to-indigo-500 text-white text-base font-semibold rounded-xl hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   無料で始める
                   <span className="group-hover:translate-x-1 transition-transform">
@@ -107,7 +107,7 @@ export default async function HomePage() {
       </section>
 
       {/* Stats Section with glassmorphism */}
-      <section className="relative bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 px-4 py-16 overflow-hidden">
+      <section className="relative bg-linear-to-r from-indigo-600 via-indigo-500 to-blue-600 px-4 py-16 overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
         <div className="relative max-w-3xl mx-auto grid grid-cols-3 gap-8 text-center">
           {[
@@ -147,37 +147,37 @@ export default async function HomePage() {
           {[
             {
               icon: CheckCircle,
-              gradient: "from-emerald-500 to-teal-500",
+              linear: "from-emerald-500 to-teal-500",
               title: "毎日のチェックイン",
               desc: "今日の様子を家族みんなで確認。見逃しがあれば自動でお知らせします。",
             },
             {
               icon: Pill,
-              gradient: "from-blue-500 to-cyan-500",
+              linear: "from-blue-500 to-cyan-500",
               title: "お薬の管理",
-              desc: "飲み忘れを防ぐリマインダーと、時間帯別の服薬記録で安心。",
+              desc: "飲み忘れを防ぐリマインダー、時間帯別の服薬記録、そしてお薬の残量が少なくなると補充をお知らせします。",
             },
             {
               icon: AlertTriangle,
-              gradient: "from-red-500 to-rose-500",
+              linear: "from-red-500 to-rose-500",
               title: "緊急アラート",
               desc: "緊急時は家族全員のスマホに即時プッシュ通知でお知らせします。",
             },
             {
               icon: MessageSquare,
-              gradient: "from-purple-500 to-indigo-500",
+              linear: "from-purple-500 to-indigo-500",
               title: "家族チャット",
               desc: "ご本人について家族みんなで情報共有。写真も送れます。",
             },
             {
               icon: FileText,
-              gradient: "from-amber-500 to-orange-500",
+              linear: "from-amber-500 to-orange-500",
               title: "ケアノート",
               desc: "気になることをメモして家族で共有。大切な情報を記録。",
             },
             {
               icon: BarChart3,
-              gradient: "from-violet-500 to-fuchsia-500",
+              linear: "from-violet-500 to-fuchsia-500",
               title: "週間レポート",
               desc: "毎週月曜日にチェックイン・服薬状況をメールでお届け。",
             },
@@ -187,7 +187,7 @@ export default async function HomePage() {
               className="group relative bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div
-                className={`w-14 h-14 bg-gradient-to-br ${f.gradient} rounded-xl flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                className={`w-14 h-14 bg-linear-to-br ${f.linear} rounded-xl flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}
               >
                 <f.icon className="w-7 h-7 text-white" />
               </div>
@@ -200,25 +200,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* QR Feature with modern glass card */}
-      <section className="relative bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-50 px-4 py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20v20h20V20H0zM22 22h18v18H22V22z' fill='%234f46e5' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E')]" />
+      {/* QR + হোম স্ক্রিন Feature */}
+      <section className="relative bg-linear-to-br from-indigo-50 via-blue-50 to-indigo-50 px-4 py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20v20h20V20H0zM22 22h18v18H22V22z\' fill=\'%234f46e5\' fill-opacity=\'0.03\' fill-rule=\'evenodd\'/%3E%3C/svg%3E')]" />
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-indigo-100 text-indigo-600 text-sm font-medium px-5 py-2 rounded-full mb-6 shadow-sm">
             <QrCode className="w-4 h-4" />
             ログイン不要
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            QRコードで
+            ご本人は、
             <br />
-            かんたん記録
+            ボタンを押すだけ
           </h2>
-          <p className="text-lg text-gray-500 max-w-md mx-auto mb-12 leading-relaxed">
-            QRコードを印刷してご本人に渡すだけ。スマホのカメラで読み取り、ボタンを押すだけで体調とお薬を記録できます。アカウント登録も不要です。
+          <p className="text-lg text-gray-500 max-w-lg mx-auto mb-12 leading-relaxed">
+            ホーム画面のアイコンをタップするだけで、体調とお薬を記録できます。QRコードからも利用でき、アカウント登録やログインは不要です。
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             {[
-              { icon: Smartphone, text: "カメラで読み取る" },
+              { icon: Smartphone, text: "アイコンをタップ" },
               { icon: CheckCircle, text: "ボタンを押す" },
               { icon: Users, text: "家族に届く" },
             ].map((step, i) => (
@@ -272,7 +272,7 @@ export default async function HomePage() {
             <div key={step.num} className="relative flex-1 w-full">
               <div className="bg-white border border-gray-100 rounded-2xl p-8 text-center shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
+                  <div className="w-20 h-20 bg-linear-to-br from-indigo-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
                     <step.icon className="w-8 h-8" />
                   </div>
                   <div className="absolute -top-3 -right-3 w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">
@@ -295,7 +295,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials with modern design */}
-      <section className="bg-gradient-to-b from-gray-50 to-white px-4 py-24">
+      <section className="bg-linear-to-b from-gray-50 to-white px-4 py-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-indigo-500 tracking-wider uppercase mb-3">
@@ -325,7 +325,7 @@ export default async function HomePage() {
                 </div>
                 <p className="text-gray-700 leading-relaxed mb-4">“{t.text}”</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
                     <span className="text-indigo-600 font-semibold text-sm">
                       {t.author.charAt(0)}
                     </span>
@@ -345,7 +345,7 @@ export default async function HomePage() {
 
       {/* CTA Section */}
       {!session?.user?.id && (
-        <section className="relative text-center px-4 py-24 bg-gradient-to-br from-indigo-600 via-indigo-700 to-blue-800 overflow-hidden">
+        <section className="relative text-center px-4 py-24 bg-linear-to-br from-indigo-600 via-indigo-700 to-blue-800 overflow-hidden">
           <p className="text-4xl md:text-5xl font-bold text-white mb-4">
             今日から始めてみませんか？
           </p>
