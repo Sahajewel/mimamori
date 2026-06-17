@@ -28,21 +28,20 @@ self.addEventListener("notificationclick", (event) => {
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
+        // already খোলা window থাকলে — সেটায় navigate + focus
         for (const client of clientList) {
           if ("focus" in client) {
-            // শুধু emergency-তে sound
             if (tag === "emergency") {
-              client.postMessage({
-                type: "PLAY_SOUND",
-                sound: "emergency",
-              });
+              client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
             }
-            client.navigate(url);
-            return client.focus();
+            // navigate করার চেষ্টা, তারপর focus
+            return client.navigate(url).then(() => client.focus());
           }
         }
-        // Login page-এ callbackUrl দিয়ে যাবে
-        return clients.openWindow(url);
+        // কোনো window খোলা নাই (mobile/app বন্ধ) — নতুন window খোলো
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
       }),
   );
 });
