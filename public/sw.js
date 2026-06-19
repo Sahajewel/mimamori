@@ -23,23 +23,25 @@ self.addEventListener("notificationclick", (event) => {
 
   const tag = event.notification.tag;
   const url = event.notification.data?.url || "/dashboard";
+  const fullUrl = new URL(url, self.location.origin).href;
 
   event.waitUntil(
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          if ("focus" in client) {
-            if (tag === "emergency") {
-              client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
-            }
-            // client-কে navigate করতে বলি (postMessage দিয়ে)
-            client.postMessage({ type: "NAVIGATE", url: url });
-            return client.focus();
+          if (tag === "emergency") {
+            client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
+          }
+          // client URL মিলিয়ে — navigate
+          if ("navigate" in client && "focus" in client) {
+            return client
+              .navigate(fullUrl)
+              .then((c) => (c ? c.focus() : client.focus()));
           }
         }
         if (clients.openWindow) {
-          return clients.openWindow(url);
+          return clients.openWindow(fullUrl);
         }
       }),
   );
