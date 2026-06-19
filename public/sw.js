@@ -28,17 +28,14 @@ self.addEventListener("notificationclick", (event) => {
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
-        // already খোলা window থাকলে — সেটায় navigate + focus
         for (const client of clientList) {
-          if ("focus" in client) {
+          if ("focus" in client && "navigate" in client) {
             if (tag === "emergency") {
               client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
             }
-            // navigate করার চেষ্টা, তারপর focus
-            return client.navigate(url).then(() => client.focus());
+            return client.navigate(url).then((c) => (c || client).focus());
           }
         }
-        // কোনো window খোলা নাই (mobile/app বন্ধ) — নতুন window খোলো
         if (clients.openWindow) {
           return clients.openWindow(url);
         }
