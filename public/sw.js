@@ -33,11 +33,10 @@ self.addEventListener("notificationclick", (event) => {
           if (tag === "emergency") {
             client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
           }
-          // client URL মিলিয়ে — navigate
-          if ("navigate" in client && "focus" in client) {
-            return client
-              .navigate(fullUrl)
-              .then((c) => (c ? c.focus() : client.focus()));
+          // postMessage দিয়ে app-কে navigate করতে বলি (PWA-তে এটা কাজ করে)
+          client.postMessage({ type: "NAVIGATE", url: fullUrl });
+          if ("focus" in client) {
+            return client.focus();
           }
         }
         if (clients.openWindow) {
