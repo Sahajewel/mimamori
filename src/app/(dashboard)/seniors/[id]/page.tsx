@@ -18,7 +18,7 @@ export default async function SeniorDetailPage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) redirect(`/login?callbackUrl=/seniors/${id}`);
 
   const seniorMember = await prisma.seniorMember.findFirst({
     where: { seniorId: id, userId: session.user.id },

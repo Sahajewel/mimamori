@@ -59,6 +59,15 @@ export default function MedicineDetailPage() {
         fetch(`/api/seniors/${id}/medicines/${medicineId}`),
         fetch(`/api/seniors/${id}/medicines/${medicineId}/logs`),
       ]);
+
+      // login নাই (401) হলে — login-এ পাঠাও, callbackUrl সহ
+      if (medRes.status === 401) {
+        router.push(
+          `/login?callbackUrl=/seniors/${id}/medicines/${medicineId}`,
+        );
+        return;
+      }
+
       const medData = await medRes.json();
       const logData = await logRes.json();
       if (!ignore) {
@@ -67,7 +76,6 @@ export default function MedicineDetailPage() {
         setEditName(medData.name || "");
         setEditDosage(medData.dosage || "");
         setEditNotes(medData.notes || "");
-
         setEditOngoing(medData.ongoing ?? true);
         setEditEndDate(medData.endDate ? medData.endDate.split("T")[0] : "");
       }
@@ -77,7 +85,7 @@ export default function MedicineDetailPage() {
     return () => {
       ignore = true;
     };
-  }, [id, medicineId]);
+  }, [id, medicineId, router]);
 
   async function handleStop() {
     setStopping(true);
