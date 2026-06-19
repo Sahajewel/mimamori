@@ -29,11 +29,13 @@ self.addEventListener("notificationclick", (event) => {
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          if ("focus" in client && "navigate" in client) {
+          if ("focus" in client) {
             if (tag === "emergency") {
               client.postMessage({ type: "PLAY_SOUND", sound: "emergency" });
             }
-            return client.navigate(url).then((c) => (c || client).focus());
+            // client-কে navigate করতে বলি (postMessage দিয়ে)
+            client.postMessage({ type: "NAVIGATE", url: url });
+            return client.focus();
           }
         }
         if (clients.openWindow) {

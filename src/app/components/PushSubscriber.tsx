@@ -19,7 +19,7 @@ export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
   useEffect(() => {
     if (isQuickPage) return;
     if (!("serviceWorker" in navigator)) return;
-    function onMessage(event: MessageEvent) {
+    function onMessage(event) {
       if (event.data?.type === "PLAY_SOUND") {
         const audio = new Audio(
           event.data.sound === "emergency"
@@ -27,6 +27,10 @@ export function PushSubscriber({ isLoggedIn }: { isLoggedIn: boolean }) {
             : "/sounds/notification.mp3",
         );
         audio.play().catch(() => {});
+      }
+      // notification click → এই url-এ navigate
+      if (event.data?.type === "NAVIGATE" && event.data.url) {
+        window.location.href = event.data.url;
       }
     }
     navigator.serviceWorker.addEventListener("message", onMessage);
