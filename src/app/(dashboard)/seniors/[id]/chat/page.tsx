@@ -10,7 +10,8 @@ export default async function ChatPage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+
+  if (!session?.user?.id) redirect(`/login?callbackUrl=/seniors/${id}/chat`);
 
   // member চেক — এই senior-এর member না হলে ঢুকতে পারবে না
   const member = await prisma.seniorMember.findFirst({
