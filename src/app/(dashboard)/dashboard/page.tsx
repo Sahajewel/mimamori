@@ -3,7 +3,7 @@ import { DashboardButton } from "@/app/components/DashboardButton";
 import { DashboardClient } from "@/app/components/DashboardClient ";
 import { DashboardLogo } from "@/app/components/DashboardLogo";
 
-import { VisibilityRefresh } from "@/app/components/VisibilityRefresh";
+// import { VisibilityRefresh } from "@/app/components/VisibilityRefresh";
 import { auth } from "@/lib/auth";
 import { japanHour, startOfJapanToday } from "@/lib/japanTime";
 import { prisma } from "@/lib/prisma";
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/20 pb-24">
-      <VisibilityRefresh />
+      {/* <VisibilityRefresh /> */}
       {/* Modern glass nav */}
       <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex items-center justify-between pl-12">
