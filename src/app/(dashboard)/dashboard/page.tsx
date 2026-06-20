@@ -67,7 +67,7 @@ export default async function DashboardPage() {
         </div>
       </nav>
 
-      <div className="px-4 md:px-8 py-8 max-w-5xl mx-auto">
+      <div className="px-4 md:px-8 py-8 max-w-4xl mx-auto">
         {/* Greeting with modern layout */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
