@@ -108,21 +108,22 @@ export default async function SeniorDetailPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-gray-50">
       {/* Modern Glass Navbar */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/dashboard">
-            {" "}
-            <div className="max-w-2xl mx-auto flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-                  <span className="text-white text-sm">♡</span>
-                </div>
-                <p className="font-semibold text-gray-900">チェックイン</p>
+      <nav className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-10 pl-16">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard">
+              <span className="text-lg">←</span>
+              <span>戻る</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+                <span className="text-white text-sm">♡</span>
               </div>
+              <p className="font-semibold text-gray-900">Mimamori</p>
             </div>
-          </Link>
+          </div>
           {role === "OWNER" && <NavActions seniorId={id} role={role} />}
         </div>
       </nav>
