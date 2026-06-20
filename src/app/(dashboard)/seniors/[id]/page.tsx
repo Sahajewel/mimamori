@@ -9,7 +9,7 @@ import { ChatButton } from "@/app/components/ChatButton";
 import Link from "next/link";
 import { MemberList } from "@/app/components/Memberlist";
 import { japanDayStart, startOfJapanToday } from "@/lib/japanTime";
-import { Heart, CalendarClock, ArrowLeft } from "lucide-react";
+import { Heart, CalendarClock } from "lucide-react";
 
 export default async function SeniorDetailPage({
   params,
@@ -112,24 +112,17 @@ export default async function SeniorDetailPage({
       {/* Modern Glass Navbar */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100/50 px-4 py-4 sticky top-0 z-20 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="group flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-all duration-200 pl-12"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-              <span className="text-sm font-medium">戻る</span>
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-600 sm:flex hidden  items-center justify-center shadow-md">
-                <Heart className="w-4 h-4 text-white fill-white/20" />
+          <Link href="/dashboard">
+            {" "}
+            <div className="max-w-2xl mx-auto flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
+                  <span className="text-white text-sm">♡</span>
+                </div>
+                <p className="font-semibold text-gray-900">チェックイン</p>
               </div>
-
-              <p className="font-semibold text-gray-800 hidden sm:block">
-                Mimamori
-              </p>
             </div>
-          </div>
+          </Link>
           {role === "OWNER" && <NavActions seniorId={id} role={role} />}
         </div>
       </nav>
