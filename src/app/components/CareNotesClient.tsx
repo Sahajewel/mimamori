@@ -96,11 +96,11 @@ export function CareNotesClient({
             {notes.map((note, index) => (
               <div
                 key={note.id}
-                className="px-6 py-5 hover:bg-gray-50/70 transition-all duration-200"
+                className="px-4 sm:px-6 py-5 hover:bg-gray-50/70 transition-all duration-200"
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-2.5 sm:gap-4">
                   {/* সিরিয়াল নাম্বার */}
-                  <span className="text-xs font-semibold text-gray-300 bg-gray-100/80 w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-1">
+                  <span className="text-xs font-semibold text-gray-300 bg-gray-100/80 w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center shrink-0 mt-1">
                     {(currentPage - 1) * 10 + index + 1}
                   </span>
 
@@ -153,7 +153,7 @@ export function CareNotesClient({
                     </div>
 
                     {/* মাঝের অংশ: মূল নোটের টেক্সট */}
-                    <p className="text-[15px] text-gray-600 leading-relaxed whitespace-pre-wrap pl-1">
+                    <p className="text-[15px] text-gray-600 leading-relaxed whitespace-pre-wrap ">
                       {note.content}
                     </p>
                   </div>

@@ -27,9 +27,7 @@ export default async function SettingsPage() {
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-sm">♡</span>
             </div>
-            <p className="font-semibold text-gray-900 hidden sm:block">
-              Mimamori
-            </p>
+            <p className="font-semibold text-gray-900 ">Mimamori</p>
           </div>
         </div>
       </nav>
