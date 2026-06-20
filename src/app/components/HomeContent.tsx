@@ -1,9 +1,8 @@
-// app/page.tsx
+// app/components/HomeContent.tsx
 import Link from "next/link";
-
+import { FeedbackSection } from "@/app/components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { FeedbackSection } from "@/app/components/FeedbackSection";
 import {
   CheckCircle,
   Heart,
@@ -20,7 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-// ---------- লোডার কম্পোনেন্ট (সার্ভার-সাইডেও রেন্ডার হবে) ----------
+// ---------- লোডার (যা আমরা fallback হিসেবে ব্যবহার করব) ----------
 export function PageLoader() {
   return (
     <div
@@ -73,7 +72,7 @@ export function PageLoader() {
   );
 }
 
-// ---------- মূল কন্টেন্ট (অ্যাসিঙ্ক ডেটা ফেচ) ----------
+// ---------- মূল কন্টেন্ট (async ডেটা ফেচ) ----------
 export async function HomeContent() {
   const session = await auth();
   const testimonials = await prisma.feedback.findMany({
@@ -435,5 +434,3 @@ export async function HomeContent() {
     </div>
   );
 }
-
-// ---------- মূল পেজ (Suspense দিয়ে ঘেরা) ----------

@@ -1,3 +1,4 @@
+// app/page.tsx
 import { Suspense } from "react";
 import { HomeContent, PageLoader } from "@/app/components/HomeContent";
 
