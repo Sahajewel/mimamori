@@ -63,7 +63,7 @@ export default async function RootLayout({
         #initial-loader {
           position: fixed;
           inset: 0;
-          background: #ffffff;
+          background: ##4F46E5;
           display: flex;
           flex-direction: column;
           justify-content: center;
