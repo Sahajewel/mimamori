@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { Suspense } from "react";
 import {
   CheckCircle,
   Heart,
@@ -18,9 +19,17 @@ import {
   Smartphone,
 } from "lucide-react";
 
-export default async function HomePage() {
-  const session = await auth();
-  // Dynamic testimonials
+// Loader component for the testimonials section
+function Loader() {
+  return (
+    <div className="flex justify-center items-center py-12">
+      <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+    </div>
+  );
+}
+
+// Testimonials list component (async data fetching)
+async function TestimonialsList() {
   const testimonials = await prisma.feedback.findMany({
     where: {
       showOnLanding: true,
@@ -61,6 +70,43 @@ export default async function HomePage() {
           rating: t.rating,
         }))
       : staticTestimonials;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {displayTestimonials.map((t, index) => (
+        <div
+          key={index}
+          className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+        >
+          <div className="flex gap-1 mb-4">
+            {[...Array(5)].map((_, i) => (
+              <span
+                key={i}
+                className={`text-lg ${
+                  i < t.rating ? "text-yellow-400" : "text-gray-200"
+                }`}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <p className="text-gray-700 leading-relaxed mb-4">“{t.text}”</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
+              <span className="text-indigo-600 font-semibold text-sm">
+                {t.author.charAt(0)}
+              </span>
+            </div>
+            <p className="text-sm font-medium text-gray-500">{t.author}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default async function HomePage() {
+  const session = await auth();
 
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
@@ -316,7 +362,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials with modern design */}
+      {/* Testimonials with modern design - now with Suspense */}
       <section className="bg-linear-to-b from-gray-50 to-white px-4 py-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
@@ -327,38 +373,9 @@ export default async function HomePage() {
               ご家族の声
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {displayTestimonials.map((t, index) => (
-              <div
-                key={index}
-                className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`text-lg ${
-                        i < t.rating ? "text-yellow-400" : "text-gray-200"
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <p className="text-gray-700 leading-relaxed mb-4">“{t.text}”</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-full flex items-center justify-center">
-                    <span className="text-indigo-600 font-semibold text-sm">
-                      {t.author.charAt(0)}
-                    </span>
-                  </div>
-                  <p className="text-sm font-medium text-gray-500">
-                    {t.author}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<Loader />}>
+            <TestimonialsList />
+          </Suspense>
         </div>
       </section>
 
