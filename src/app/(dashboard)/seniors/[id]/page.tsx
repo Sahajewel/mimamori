@@ -122,7 +122,7 @@ export default async function SeniorDetailPage({
             </Link>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center">
-                <span className="text-white text-sm">♡</span>
+                <span className="text-white text-sm hidden sm:block">♡</span>
               </div>
               <p className="font-semibold text-gray-900 hidden sm:block">
                 Mimamori
