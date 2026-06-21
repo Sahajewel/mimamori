@@ -16,6 +16,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const TEST_EMAILS = ["sahastamford@gmail.com", "mimamori.health@gmail.com"];
 export default async function AdminPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login?callbackUrl=/admin");
@@ -46,10 +47,16 @@ export default async function AdminPage() {
     recentUsers,
     recentCheckIns,
   ] = await Promise.all([
-    prisma.user.count(),
-    prisma.user.count({ where: { role: "FAMILY" } }),
-    prisma.user.count({ where: { role: "CAREGIVER" } }),
-    prisma.user.count({ where: { role: "ADMIN" } }),
+    prisma.user.count({ where: { email: { notIn: TEST_EMAILS } } }),
+    prisma.user.count({
+      where: { role: "FAMILY", email: { notIn: TEST_EMAILS } },
+    }),
+    prisma.user.count({
+      where: { role: "CAREGIVER", email: { notIn: TEST_EMAILS } },
+    }),
+    prisma.user.count({
+      where: { role: "ADMIN", email: { notIn: TEST_EMAILS } },
+    }),
     prisma.senior.count(),
     prisma.checkIn.count(),
     prisma.checkIn.count({ where: { createdAt: { gte: today } } }),
@@ -59,6 +66,7 @@ export default async function AdminPage() {
     prisma.message.count(),
     prisma.careNote.count(),
     prisma.user.findMany({
+      where: { email: { notIn: TEST_EMAILS } },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: {
