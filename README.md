@@ -117,7 +117,7 @@ Planned next: SMS/voice escalation for emergencies that outlives silent-mode pho
 **Saha Jewel Kumar** — Full-Stack Developer, based in Saitama, Japan (9+ years).
 Designed, built, and shipped Mimamori solo — product, database, backend, frontend, and PWA.
 
-[Portfolio](https://sahajewelkumar.vercel.app) · [GitHub](https://github.com/Sahajewel) · [LinkedIn](https://www.linkedin.com/in/sahajewelkumarbd)
+[Portfolio](https://sahajewelkumar.vercel.app) · [GitHub](https://github.com/Sahajewel) · [LinkedIn](https://www.linkedin.com/in/sahajewelkumar)
 
 ---
 
