@@ -1,0 +1,15 @@
+model AiSummary {
+    id         String   @id @default(uuid())
+    seniorId   String
+    senior     Senior   @relation(fields: [seniorId], references: [id], onDelete: Cascade)
+    type       String
+    rangeStart DateTime
+    rangeEnd   DateTime
+    content    String   @db.Text
+    status     String   @default("draft") // draft, published, reviewed
+    reviewedBy String? // user hard-delete হলে null
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([seniorId, type, rangeStart])
+}

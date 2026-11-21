@@ -13,6 +13,7 @@ model Senior {
   medicines   Medicine[]
   messages    Message[]
   members     SeniorMember[]
+  aiSummaries AiSummary[]
 
   @@index([id])
   @@index([quickToken])
