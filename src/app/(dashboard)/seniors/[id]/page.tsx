@@ -10,6 +10,7 @@ import Link from "next/link";
 import { MemberList } from "@/app/components/Memberlist";
 import { japanDayStart, startOfJapanToday } from "@/lib/japanTime";
 import { Heart, CalendarClock } from "lucide-react";
+import GenerateWeeklySummary from "@/app/components/GenerateWeeklySummary";
 
 export default async function SeniorDetailPage({
   params,
@@ -151,6 +152,7 @@ export default async function SeniorDetailPage({
                   senior.name.charAt(0).toUpperCase()
                 )}
               </div>
+
               {todayCheckIn && (
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
                   {todayCheckIn.status === "OK" && (
@@ -264,6 +266,10 @@ export default async function SeniorDetailPage({
           careNotesTotal={senior.careNotes.length}
         />
       </div>
+      <section>
+        <h2 className="text-lg font-semibold mb-2">週間ケアノート要約</h2>
+        <GenerateWeeklySummary seniorId={senior.id} />
+      </section>
     </div>
   );
 }
