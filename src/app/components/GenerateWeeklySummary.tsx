@@ -48,6 +48,32 @@ export default function GenerateWeeklySummary({
       setLoading(false);
     }
   }
+
+  const handleSaveDraft = async () => {
+    try {
+      await fetch("/api/ai/summarize/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seniorId, status: "draft" }),
+      });
+      alert("下書きとして保存されました (Draft saved)");
+    } catch (e) {
+      alert("エラーが発生しました");
+    }
+  };
+  const handleMarkReviewed = async () => {
+    try {
+      const res = await fetch("/api/ai/summarize/review", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seniorId, status: "reviewed" }),
+      });
+      if (!res.ok) throw new Error();
+      alert("確認済みにしました！ (Marked as reviewed)");
+    } catch (e) {
+      alert("エラーが発生しました");
+    }
+  };
   return (
     <div className="space-y-3">
       <button
@@ -65,10 +91,16 @@ export default function GenerateWeeklySummary({
             ※ AI生成の下書きです。内容を確認してから家族と共有してください。
           </p>
           <div className="mt-3 flex gap-2">
-            <button className="text-sm px-3 py-1 border rounded">
+            <button
+              onClick={handleSaveDraft}
+              className="text-sm px-3 py-1 border rounded"
+            >
               下書き保存
             </button>
-            <button className="text-sm px-3 bg-emerald-600 text-white rounded">
+            <button
+              onClick={handleMarkReviewed}
+              className="text-sm px-3 bg-emerald-600 text-white rounded"
+            >
               確認済みにする
             </button>
           </div>
