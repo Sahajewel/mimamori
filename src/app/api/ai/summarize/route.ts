@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateText } from "ai"; // 👈 streamText এর জায়গায় generateText
 import { NextRequest, NextResponse } from "next/server";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 
 export const maxDuration = 30; // 👈 Vercel টাইমআউট ফিক্স
 
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     // 👇 এখানে generateText ব্যবহার করছি
     const { text } = await generateText({
-      model: openai("gpt-4o-mini"),
+      model: google("gemini-flash-latest"),
       prompt: careNotesSummaryPrompt(notesText, senior.name),
     });
 

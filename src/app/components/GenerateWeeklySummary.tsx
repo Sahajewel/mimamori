@@ -15,19 +15,34 @@ export default function GenerateWeeklySummary({
     setLoading(true);
     setError("");
     setSummary("");
+
     try {
       const res = await fetch("/api/ai/summarize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ seniorId, type: "care-notes" }),
       });
+
+      // 👇 আগে টেক্সট হিসেবে রেসপন্সটা পড়ি
+      const textResponse = await res.text();
+
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to generate");
+        let errorMessage = "Failed to generate summary";
+        try {
+          // চেষ্টা করি এটা JSON কি না
+          const data = JSON.parse(textResponse);
+          errorMessage = data.error || errorMessage;
+        } catch {
+          // যদি JSON না হয়, তবে পুরো টেক্সটটাই এরর মেসেজ হিসেবে দেখাই
+          errorMessage = textResponse;
+        }
+        throw new Error(errorMessage);
       }
-      const text = await res.text();
-      setSummary(text);
+
+      // সফল হলে টেক্সটটাই সামারি হিসেবে সেট করি
+      setSummary(textResponse);
     } catch (e: any) {
+      // এবার আসল এররটা UI-তে দেখাবে
       setError(e.message);
     } finally {
       setLoading(false);
