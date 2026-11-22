@@ -2,11 +2,11 @@
 import { careNotesSummaryPrompt } from "@/lib/ai/prompts";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateText } from "ai"; // 👈 streamText এর জায়গায় generateText
+import { streamText } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { google } from "@ai-sdk/google";
 
-export const maxDuration = 30; // 👈 Vercel টাইমআউট ফিক্স
+export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,28 +49,32 @@ export async function POST(req: NextRequest) {
       .map((n) => `[${n.createdAt.toISOString().slice(0, 10)}] ${n.content}`)
       .join("\n");
 
-    // 👇 এখানে generateText ব্যবহার করছি
-    const { text } = await generateText({
+    // 👇 streamText ব্যবহার করছি
+    const result = streamText({
       model: google("gemini-flash-latest"),
       prompt: careNotesSummaryPrompt(notesText, senior.name),
-    });
-
-    // ডেটাবেসে সেভ
-    await prisma.aiSummary.create({
-      data: {
-        seniorId,
-        type,
-        rangeStart,
-        rangeEnd,
-        content: text,
-        status: "draft",
+      onError({ error }) {
+        console.error("AI Stream Error:", error);
+      },
+      // 👇 টেক্সট পুরো তৈরি হওয়ার পর ডেটাবেসে সেভ হবে
+      onFinish: async ({ text }) => {
+        await prisma.aiSummary.create({
+          data: {
+            seniorId,
+            type,
+            rangeStart,
+            rangeEnd,
+            content: text, // 👈 এখানে সম্পূর্ণ তৈরি হওয়া string টেক্সট যাচ্ছে
+            status: "draft",
+          },
+        });
       },
     });
 
-    // সরাসরি টেক্সট রেসপন্স পাঠাচ্ছি
-    return new NextResponse(text, { status: 200 });
+    // 👇 স্ট্রিম রেসপন্স হিসেবে রিটার্ন করছি
+    return result.toTextStreamResponse();
   } catch (error: any) {
-    console.error("AI Route Error:", error); // Vercel লগে দেখতে পাবি
+    console.error("AI Route Error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to generate summary" },
       { status: 500 },
