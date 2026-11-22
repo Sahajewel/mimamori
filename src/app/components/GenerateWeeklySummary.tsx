@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { useState } from "react";
 
 export default function GenerateWeeklySummary({
@@ -19,8 +21,12 @@ export default function GenerateWeeklySummary({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ seniorId, type: "care-notes" }),
       });
-      if (!res.ok) throw new Error((await res.json()).error ?? "Failed");
-      setSummary(await res.text());
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to generate");
+      }
+      const text = await res.text();
+      setSummary(text);
     } catch (e: any) {
       setError(e.message);
     } finally {

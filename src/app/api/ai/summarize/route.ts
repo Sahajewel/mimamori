@@ -1,54 +1,79 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { careNotesSummaryPrompt } from "@/lib/ai/prompts";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { streamText } from "ai";
+import { generateText } from "ai"; // 👈 streamText এর জায়গায় generateText
 import { NextRequest, NextResponse } from "next/server";
 import { openai } from "@ai-sdk/openai";
+
+export const maxDuration = 30; // 👈 Vercel টাইমআউট ফিক্স
+
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const session = await auth();
+    if (!session?.user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { seniorId, type } = await req.json();
-  if (type !== "care-notes")
-    return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
+    const { seniorId, type } = await req.json();
+    if (type !== "care-notes")
+      return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
 
-  const senior = await prisma.senior.findFirst({
-    where: {
-      id: seniorId,
-      members: {
-        some: { userId: session.user.id, role: { in: ["OWNER", "EDITOR"] } },
+    const senior = await prisma.senior.findFirst({
+      where: {
+        id: seniorId,
+        members: {
+          some: { userId: session.user.id, role: { in: ["OWNER", "EDITOR"] } },
+        },
       },
-    },
-  });
-  if (!senior)
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const rangeEnd = new Date();
-  const rangeStart = new Date(rangeEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const notes = await prisma.careNote.findMany({
-    where: { seniorId, createdAt: { gte: rangeStart, lte: rangeEnd } },
-    orderBy: { createdAt: "desc" },
-    select: { content: true, createdAt: true, authorName: true },
-  });
+    });
+    if (!senior)
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  if (notes.length === 0) {
+    const rangeEnd = new Date();
+    const rangeStart = new Date(rangeEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const notes = await prisma.careNote.findMany({
+      where: { seniorId, createdAt: { gte: rangeStart, lte: rangeEnd } },
+      orderBy: { createdAt: "desc" },
+      select: { content: true, createdAt: true, authorName: true },
+    });
+
+    if (notes.length === 0) {
+      return NextResponse.json(
+        { error: "No care notes in this period" },
+        { status: 400 },
+      );
+    }
+
+    const notesText = notes
+      .map((n) => `[${n.createdAt.toISOString().slice(0, 10)}] ${n.content}`)
+      .join("\n");
+
+    // 👇 এখানে generateText ব্যবহার করছি
+    const { text } = await generateText({
+      model: openai("gpt-4o-mini"),
+      prompt: careNotesSummaryPrompt(notesText, senior.name),
+    });
+
+    // ডেটাবেসে সেভ
+    await prisma.aiSummary.create({
+      data: {
+        seniorId,
+        type,
+        rangeStart,
+        rangeEnd,
+        content: text,
+        status: "draft",
+      },
+    });
+
+    // সরাসরি টেক্সট রেসপন্স পাঠাচ্ছি
+    return new NextResponse(text, { status: 200 });
+  } catch (error: any) {
+    console.error("AI Route Error:", error); // Vercel লগে দেখতে পাবি
     return NextResponse.json(
-      { error: "No care notes in this period" },
-      { status: 400 },
+      { error: error.message || "Failed to generate summary" },
+      { status: 500 },
     );
   }
-
-  const notesText = notes
-    .map((n) => `[${n.createdAt.toISOString().slice(0, 10)}] ${n.content}`)
-    .join("\n");
-  const result = streamText({
-    model: openai("gpt-4o-mini"),
-    prompt: careNotesSummaryPrompt(notesText, senior.name),
-    onFinish: async ({ text }) => {
-      await prisma.aiSummary.create({
-        data: { seniorId, type, content: text },
-      });
-    },
-  });
-  return result.toUIMessageStreamResponse();
 }

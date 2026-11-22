@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/components/HomeContent.tsx
 import Link from "next/link";
 import { FeedbackSection } from "@/app/components/FeedbackSection";
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+
 import {
   CheckCircle,
   Heart,
@@ -18,7 +18,12 @@ import {
   Smartphone,
 } from "lucide-react";
 import Image from "next/image";
-
+import { Session } from "next-auth";
+import type { Feedback } from "@prisma/client";
+interface HomeContentProps {
+  session: Session | null;
+  testimonials: Feedback[];
+}
 // ---------- লোডার (যা আমরা fallback হিসেবে ব্যবহার করব) ----------
 export function PageLoader() {
   return (
@@ -73,17 +78,7 @@ export function PageLoader() {
 }
 
 // ---------- মূল কন্টেন্ট (async ডেটা ফেচ) ----------
-export async function HomeContent() {
-  const session = await auth();
-  const testimonials = await prisma.feedback.findMany({
-    where: {
-      showOnLanding: true,
-      comment: { not: null },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 6,
-  });
-
+export function HomeContent({ session, testimonials }: HomeContentProps) {
   const staticTestimonials = [
     {
       text: "母が一人暮らしで心配でしたが、毎日チェックインが届くので安心できるようになりました。",
